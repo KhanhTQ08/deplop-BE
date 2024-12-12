@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en">
+<head th:fragment="headlink">
+
+<link rel="icon" th:href="@{/assets/img/kaiadmin/favicon.ico}"
+	type="image/x-icon" />
+
+<!-- Fonts and icons -->
+<script th:src="@{/assets/js/plugin/webfont/webfont.min.js}"></script>
+<script>
+	WebFont
+			.load({
+				google : {
+					families : [ "Public Sans:300,400,500,600,700" ]
+				},
+				custom : {
+					families : [ "Font Awesome 5 Solid",
+							"Font Awesome 5 Regular", "Font Awesome 5 Brands",
+							"simple-line-icons", ],
+					urls : [/* Use Thymeleaf to load fonts.min.css */"@{/assets/css/fonts.min.css}" ],
+				},
+				active : function() {
+					sessionStorage.fonts = true;
+				},
+			});
+</script>
+
+<!-- CSS Files -->
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/plugins.min.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/kaiadmin.min.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/fontawesome.min.css}">
+
+<!-- CSS Just for demo purpose, don't include it in your project -->
+<link rel="stylesheet" th:href="@{/assets/css/demo.css}" />
+
+	<style>
+		.customBtnDelete {
+			background-color: #dd103a;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customUpdate {
+			background-color: #66ba4b;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customUpdate:focus {
+			color: #ffff;
+		}
+		.customUpdate:hover {
+			color: #fff;
+		}
+		.modal-title-custom {
+			font-size: 45px;
+			font-weight: 700;
+			color: #ff4971;
+		}
+		.notNull {
+			color: red;
+			font-size: 20px;
+		}
+		form label {
+			font-size: 25px;
+			color: black;
+			font-weight: 500;
+		}
+		.customTitleListMovie {
+			font-weight: 900;
+			font-size: 30px;
+			color: #ff4971;
+			font-family: "Roboto", sans-serif;
+		}
+		.customAdd {
+			background-color: #58ba45;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 15px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customBtnDelete:focus, .customBtnDelete:hover {
+			color: #ffff;
+		}
+	</style>
+</head>
+</html>

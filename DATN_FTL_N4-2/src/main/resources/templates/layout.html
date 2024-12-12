@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en">
+<head th:insert="~{adminViews/headlink :: headlink}"></head>
+
+<body>
+	<!-- <div th:replace="adminViews/aside :: sidebar"></div> -->
+	<div th:replace="~{adminViews/aside:: .sidebar}"></div>
+	  
+	
+        <!-- Fragment `mainView` từ trang con sẽ được chèn vào đây -->
+        <div layout:fragment="mainView">
+      
+        </div>
+	<div th:insert="~{adminViews/footlink :: footlink}"></div>
+</body>
+</html>

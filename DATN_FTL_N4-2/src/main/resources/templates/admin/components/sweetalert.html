@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Admin - Phòng Chiếu</title>
+<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+	name='viewport' />
+	<link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+ <script src="../assets/js/aside.js"></script>
+<script>
+		WebFont.load({
+			google: {"families":["Public Sans:300,400,500,600,700"]},
+			custom: {"families":["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../assets/css/fonts.min.css']},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+<!-- CSS Files -->
+<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="../assets/css/plugins.min.css">
+<link rel="stylesheet" href="../assets/css/kaiadmin.min.css">
+
+<!-- CSS Just for demo purpose, don't include it in your project -->
+<link rel="stylesheet" href="../assets/css/demo.css">
+
+	<style>
+		.modal-title-custom {
+			font-size: 45px;
+			font-weight: 700;
+			color: #ff4971;
+		}
+
+		form label {
+			font-size: 25px;
+			color: black;
+			font-weight: 500;
+		}
+
+		.customAdd {
+			background-color: #58ba45;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 15px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customTitleListMovie {
+			font-weight: 900;
+			font-size: 30px;
+			color: #ff4971;
+			font-family: "Roboto", sans-serif;
+		}
+
+		.customBtnDelete {
+			background-color: #dd103a;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customUpdate {
+			background-color: #66ba4b;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+		.customUpdate:focus, .customUpdate:hover {
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div th:replace="~{adminViews/aside:: .sidebar}"></div>
+		<div class="main-panel">
+			<div class="container">
+				<div class="page-inner">
+
+					<div class="modal fade" id="modalRoom" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered"> <!-- Added modal-xl -->
+							<div class="modal-content">
+								<div class="modal-header">
+									<span class="fs-5 modal-title-custom" id="staticBackdropLabel">Thêm Phòng</span>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body m-0">
+									<!-- Form to add or update room -->
+									<form id="roomForm"
+										  th:action="@{${roomBean.roomId != null} ? '/update-room' : '/add-room'}"
+										  th:object="${roomBean}" method="post"
+										  enctype="multipart/form-data">
+										<!-- Hidden field to store roomId -->
+										<input type="hidden" th:field="*{roomId}" />
+										<div class="col-md-12"> <!-- Thay đổi từ col-md-6 -->
+											<div class="form-group">
+												<label for="roomName">Tên Phòng <span style="color: red">*</span></label>
+												<input type="text" class="form-control full-width-input" th:field="*{roomName}" placeholder="Nhập tên phòng">
+												<div th:if="${#fields.hasErrors('roomName')}" th:errors="*{roomName}" class="text-danger"></div>
+											</div>
+										</div>
+										<div class="form-group mt-3 d-flex justify-content-end gap-2 align-items-center">
+											<button class="btn btn-success d-flex align-items-center">
+												<i class="bi bi-plus-square me-1"></i>
+												<span th:text="${roomBean.roomId != null} ? 'Cập nhật' : 'Thêm mới'"></span>
+											</button>
+											<a class="btn btn-secondary d-flex align-items-center" th:href="@{/reset-room}">
+												<i class="bi bi-arrow-clockwise me-1"></i>
+												Làm mới
+											</a>
+										</div>
+									</form>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="w-100 text-center">
+						<!-- Button để mở Modal -->
+						<button type="button" class="customAdd float-lg-start d-flex" data-bs-toggle="modal" data-bs-target="#modalRoom">
+							Thêm phòng
+						</button>
+						<span class="customTitleListMovie text-center">Danh sách phòng</span>
+					</div>
+
+					<!-- Bảng hiển thị danh sách phòng chiếu -->
+					<div class="table-responsive">
+						<table id="myTable" class="table table-striped custom-table">
+							<thead>
+							<tr>
+								<th class="text-center">STT</th>
+								<th class="text-center">Tên Phòng</th>
+								<th class="text-center">Hành động</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr th:each="room, stat : ${rooms}">
+								<td th:text="${stat.index + 1}" class="text-center"></td>
+								<td th:text="${room.roomName}" class="text-center"></td>
+								<td class="text-center">
+									<!-- Nút sửa phòng chiếu -->
+									<a class="customUpdate" th:href="@{'/update-room'(roomId=${room.roomId})}"><i class="bi bi-pencil-square"></i></a> <!-- Nút xóa phòng chiếu -->
+									<form method="post" th:action="@{'/delete-room'}" style="display: inline;">
+										<input type="hidden" name="roomId" th:value="${room.roomId}" />
+										<button type="submit" class="customBtnDelete"><i class="bi bi-trash"></i></button>
+									</form>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--   Core JS Files   -->
+	<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+	<script src="../assets/js/core/popper.min.js"></script>
+	<script src="../assets/js/core/bootstrap.min.js"></script>
+	<!-- Sweet Alert -->
+	<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+	<!-- jQuery Scrollbar -->
+	<script
+		src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+	<!-- Kaiadmin JS -->
+	<script src="../assets/js/kaiadmin.min.js"></script>
+	<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+	<script src="../assets/js/setting-demo2.js"></script>
+	<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+	<script>
+		$(document).ready( function () {
+			$('#myTable').DataTable();
+		} );
+
+		//== Class definition
+		var SweetAlert2Demo = function() {
+
+			//== Demos
+			var initDemos = function() {
+				//== Sweetalert Demo 1
+				$('#alert_demo_1').click(function(e) {
+					swal('Good job!', {
+						buttons: {
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+					});
+				});
+
+				//== Sweetalert Demo 2
+				$('#alert_demo_2').click(function(e) {
+					swal("Here's the title!", "...and here's the text!", {
+						buttons: {
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+					});
+				});
+
+				//== Sweetalert Demo 3
+				$('#alert_demo_3_1').click(function(e) {
+					swal("Good job!", "You clicked the button!", {
+						icon : "warning",
+						buttons: {
+							confirm: {
+								className : 'btn btn-warning'
+							}
+						},
+					});
+				});
+
+				$('#alert_demo_3_2').click(function(e) {
+					swal("Good job!", "You clicked the button!", {
+						icon : "error",
+						buttons: {
+							confirm: {
+								className : 'btn btn-danger'
+							}
+						},
+					});
+				});
+
+				$('#alert_demo_3_3').click(function(e) {
+					swal("Good job!", "You clicked the button!", {
+						icon : "success",
+						buttons: {
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+					});
+				});
+
+				$('#alert_demo_3_4').click(function(e) {
+					swal("Good job!", "You clicked the button!", {
+						icon : "info",
+						buttons: {
+							confirm: {
+								className : 'btn btn-info'
+							}
+						},
+					});
+				});
+
+				//== Sweetalert Demo 4
+				$('#alert_demo_4').click(function(e) {
+					swal({
+						title: "Good job!",
+						text: "You clicked the button!",
+						icon: "success",
+						buttons: {
+							confirm: {
+								text: "Confirm Me",
+								value: true,
+								visible: true,
+								className: "btn btn-success",
+								closeModal: true
+							}
+						}
+					});
+				});
+
+				$('#alert_demo_5').click(function(e){
+					swal({
+						title: 'Input Something',
+						html: '<br><input class="form-control" placeholder="Input Something" id="input-field">',
+						content: {
+							element: "input",
+							attributes: {
+								placeholder: "Input Something",
+								type: "text",
+								id: "input-field",
+								className: "form-control"
+							},
+						},
+						buttons: {
+							cancel: {
+								visible: true,
+								className: 'btn btn-danger'
+							},
+							confirm: {
+								className : 'btn btn-success'
+							}
+						},
+					}).then(
+					function() {
+						swal("", "You entered : " + $('#input-field').val(), "success");
+					}
+					);
+				});
+
+				$('#alert_demo_6').click(function(e) {
+					swal("This modal will disappear soon!", {
+						buttons: false,
+						timer: 3000,
+					});
+				});
+
+				$('#alert_demo_7').click(function(e) {
+					swal({
+						title: 'Are you sure?',
+						text: "You won't be able to revert this!",
+						type: 'warning',
+						buttons:{
+							confirm: {
+								text : 'Yes, delete it!',
+								className : 'btn btn-success'
+							},
+							cancel: {
+								visible: true,
+								className: 'btn btn-danger'
+							}
+						}
+					}).then((Delete) => {
+						if (Delete) {
+							swal({
+								title: 'Deleted!',
+								text: 'Your file has been deleted.',
+								type: 'success',
+								buttons : {
+									confirm: {
+										className : 'btn btn-success'
+									}
+								}
+							});
+						} else {
+							swal.close();
+						}
+					});
+				});
+
+				$('#alert_demo_8').click(function(e) {
+					swal({
+						title: 'Are you sure?',
+						text: "You won't be able to revert this!",
+						type: 'warning',
+						buttons:{
+							cancel: {
+								visible: true,
+								text : 'No, cancel!',
+								className: 'btn btn-danger'
+							},
+							confirm: {
+								text : 'Yes, delete it!',
+								className : 'btn btn-success'
+							}
+						}
+					}).then((willDelete) => {
+						if (willDelete) {
+							swal("Poof! Your imaginary file has been deleted!", {
+								icon: "success",
+								buttons : {
+									confirm : {
+										className: 'btn btn-success'
+									}
+								}
+							});
+						} else {
+							swal("Your imaginary file is safe!", {
+								buttons : {
+									confirm : {
+										className: 'btn btn-success'
+									}
+								}
+							});
+						}
+					});
+				})
+
+			};
+
+			return {
+				//== Init
+				init: function() {
+					initDemos();
+				},
+			};
+		}();
+
+		//== Class Initialization
+		jQuery(document).ready(function() {
+			SweetAlert2Demo.init();
+		});
+	</script>
+</body>
+</html>

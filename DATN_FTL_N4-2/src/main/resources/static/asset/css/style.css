@@ -1,0 +1,92 @@
+.short-text .content {
+  display: inline;
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  max-width: 200px; /* Giới hạn chiều rộng để tạo hiệu ứng cắt nội dung */
+}
+
+.short-text.expanded .content {
+  white-space: normal;
+  max-width: none;
+}
+
+.ellipsis {
+  display: none;
+}
+
+.short-text:not(.expanded) .ellipsis {
+  display: inline;
+}
+
+.short-text:not(.expanded) .view-more {
+  display: inline;
+}
+
+.short-text.expanded .view-more {
+  display: none;
+}
+.table-content {
+  display: inline-block;
+  max-width: 300px; /* Độ rộng giới hạn */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.view-more {
+  color: blue;
+  cursor: pointer;
+}
+
+table {
+    
+   
+width: 100%; /* Hoặc chiều rộng cụ thể nếu bạn muốn */
+    table-layout: fixed; /* Bảng có chiều rộng cố định */
+}
+th, td {
+    
+ 
+border: 1px solid #000; /* Đường viền cho các ô */
+    width: 8.33%; /* Chiều rộng cho mỗi cột */
+    
+  
+text-align: center; /* Căn giữa nội dung */
+    padding: 10px; /* Khoảng cách bên trong ô */
+    
+
+word-wrap: break-word; /* Ngắt từ nếu không đủ chỗ */
+    
+  
+overflow-wrap: break-word; /* Tương tự như word-wrap */
+    
+   
+white-space: normal; /* Đảm bảo nội dung xuống dòng */
+
+overflow: hidden; /* Ẩn phần nội dung vượt quá */
+}
+
+.table-container {
+  /* Khoảng cách phía trên nếu cần */
+    overflow-y: auto; /* Cho phép thanh cuộn dọc */
+    transition: max-height 0.3s; /* Thêm hiệu ứng chuyển đổi */
+}
+
+table {
+    width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+    border-collapse: collapse; /* Gộp các viền bảng lại với nhau */
+}
+
+th, td {
+    border: 1px solid #ddd; /* Thêm viền cho ô bảng */
+    padding: 8px; /* Thêm khoảng cách trong ô bảng */
+    text-align: left; /* Căn trái cho nội dung */
+}
+
+th {
+    background-color: #f2f2f2; /* Màu nền cho tiêu đề */
+}
+
+
+

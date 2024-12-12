@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quên mật khẩu - For The Love</title>
+<link rel="stylesheet" href="/slider_1-main/css/style.css">
+<link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+	crossorigin="anonymous"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert CSS -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- Animate.css -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<link rel="stylesheet" href="/slider_1-main/css/user-qmk.css">
+<link rel="stylesheet" href="/css/user-login.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+	<div th:replace="userViews/header:: .navbar"></div>
+	<div class="div-top"></div>
+
+	<div class="container mt-5">
+		<div class="card-login mb-3" style="width: 100%; height: auto;">
+			<div class="row g-0">
+				<div class="col-md-7">
+					<img
+						src="https://cdn.dribbble.com/userupload/4060830/file/original-f36227a16988f859b16895028ead7580.jpg?resize=450x338&vertical=center"
+						class="img-fluid rounded-start w-100 h-100 custom-border-radius"
+						alt="...">
+				</div>
+				<div class="col-md-5 mt-5">
+
+					<form class="form-login" id="forgotPasswordForm" method="post">
+						<label class="custom-tieude-login">Quên mật khẩu</label>
+						<div class="alert-container"></div>
+
+
+						<div class="flex-column">
+							<label>Email cần nhập</label>
+						</div>
+						<div class="inputForm">
+							<svg height="20" width="20" viewBox="0 0 24 24"
+								xmlns="http://www.w3.org/2000/svg">
+								<path
+									d="M20.1 4H3.9C2.85 4 2 4.85 2 5.9v12.2C2 19.15 2.85 20 3.9 20h16.2c1.05 0 1.9-.85 1.9-1.9V5.9c0-1.05-.85-1.9-1.9-1.9zm0 2l-8.1 5L3.9 6h16.2zM4 18V7.98l8 4.92 8-4.92V18H4z"
+									fill="none" stroke="#000" stroke-width="2" />
+							</svg>
+							<input type="text" name="email" id="email" class="input"
+								placeholder="Hãy nhập email của bạn">
+						</div>
+						<button type="submit" class="btn-shine mt-3">
+							<span>Gửi mã</span>
+						</button>
+						<p class="p">
+							<span>Bạn đã có tài khoản?</span> <a th:href="@{/login}"
+								style="text-decoration: none;"> <span class="span">Đăng
+									nhập </span>
+							</a> <a th:href="@{/register}" style="text-decoration: none;"> <span
+								class="span">/ Đăng ký</span>
+							</a>
+						</p>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal nhập OTP -->
+	<!-- Modal nhập mã OTP -->
+	<!-- Modal nhập mã OTP -->
+	<div class="modal fade" id="otpModal" tabindex="-1"
+		aria-labelledby="otpModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="otpModalLabel">Nhập mã OTP</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+				    <div class="otp-timer" id="otp-timer">Thời gian còn lại: 03:00</div> <!-- Hiển thị thời gian -->
+				
+					<form id="verifyOtpForm">
+						<div class="otp-input-container">
+							<input type="text" class="otp-input" maxlength="1" id="otp1"
+								name="otp1" /> <input type="text" class="otp-input"
+								maxlength="1" id="otp2" name="otp2" /> <input type="text"
+								class="otp-input" maxlength="1" id="otp3" name="otp3" /> <input
+								type="text" class="otp-input" maxlength="1" id="otp4"
+								name="otp4" /> <input type="text" class="otp-input"
+								maxlength="1" id="otp5" name="otp5" /> <input type="text"
+								class="otp-input" maxlength="1" id="otp6" name="otp6" />
+						</div>
+						<button type="submit" class="btn-custom">Xác nhận
+							OTP</button>
+							
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal thay đổi mật khẩu -->
+	<div class="modal fade" id="resetPasswordModal" tabindex="-1"
+		aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="resetPasswordModalLabel">Đặt lại
+						mật khẩu</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+				
+					<form id="resetPasswordForm">
+						<div class="mb-3">
+							<label for="newPassword" class="form-label">Mật khẩu mới</label>
+							<div class="input-container">
+								<input type="password" class="form-control" id="newPassword"
+									name="newPassword" placeholder="Nhập mật khẩu mới"> <span
+									class="toggle-password" id="togglePassword"> <span
+									id="eyeIcon">🐵</span> <!-- Biểu tượng mắt -->
+								</span>
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="confirmPassword" class="form-label">Xác nhận
+								mật khẩu</label>
+							<div class="input-container">
+								<input type="password" class="form-control" id="confirmPassword"
+									name="confirmPassword" placeholder="Xác nhận mật khẩu mới">
+								<span class="toggle-password" id="toggleConfirmPassword">
+									<span id="eyeIconConfirm">🐵</span> <!-- Biểu tượng mắt -->
+								</span>
+							</div>
+						</div>
+
+						<button type="submit" class="btn-custom">Đặt lại mật
+							khẩu</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- FOOTER -->
+	<div style="margin-top: -15px"></div>
+
+	<div th:replace="userViews/footer:: footer"></div>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="/slider_1-main/js/help.js"></script>
+	<script src="/slider_1-main/js/search.js"></script>
+	<script src="/slider_1-main/js/qmk.js"></script>
+	<style>
+.swal2-title, .swal2-popup {
+	font-weight: normal !important; /* Đảm bảo không bị in đậm */
+}
+.btn-custom {
+  background-color: #FF3D49; /* Màu nền đỏ */
+  color: white; /* Chữ trắng */
+  border: none; /* Xóa border */
+  padding: 10px 20px; /* Thêm padding */
+  font-size: 1rem; /* Kích thước chữ */
+  border-radius: 5px; /* Bo góc */
+  transition: background-color 0.3s ease; /* Thêm hiệu ứng chuyển màu nền */
+  margin-left:140px;
+}
+
+.btn-custom:hover {
+  background-color: #D92B3C; /* Màu nền khi hover */
+}
+
+.btn-custom:focus {
+  outline: none; /* Xóa viền focus */
+}
+.input-container {
+    position: relative; /* Đặt vị trí tương đối để căn chỉnh phần tử con */
+}
+
+.input-container input {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    padding-right: 40px; /* Chừa khoảng trống bên phải cho biểu tượng */
+    padding-left: 10px; /* Thêm padding bên trái cho input */
+    border-radius: 5px;
+    border: 2px solid #FF3D49;
+    font-size: 16px;
+}
+
+.toggle-password {
+    position: absolute; /* Đặt vị trí tuyệt đối trong .input-container */
+    right: 10px; /* Căn cách mép phải 10px */
+    top: 50%; /* Căn giữa theo chiều dọc */
+    transform: translateY(-50%); /* Dịch chuyển để căn chính giữa */
+    cursor: pointer; /* Hiển thị con trỏ khi di chuột qua */
+    font-size: 1.3em; /* Tăng kích thước biểu tượng */
+    user-select: none; /* Vô hiệu hóa chọn text trên biểu tượng */
+    color: #FF3D49; /* Màu biểu tượng */
+}
+
+.toggle-password:hover {
+    opacity: 0.7; /* Hiệu ứng khi hover */
+}
+
+/* Thêm hiệu ứng focus cho input */
+.input-container input:focus {
+    border-color: #FF3D49;
+    outline: none;
+}
+.otp-timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #FF3D49;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+</style>
+	<script>
+		//Đối với mật khẩu mới
+		document.getElementById("togglePassword").addEventListener(
+				"click",
+				function() {
+					const passwordInput = document
+							.getElementById("newPassword");
+					const eyeIcon = document.getElementById("eyeIcon");
+
+					// Kiểm tra và thay đổi loại mật khẩu
+					if (passwordInput.type === "password") {
+						passwordInput.type = "text"; // Hiển thị mật khẩu
+						eyeIcon.textContent = "🙈"; // Biểu tượng khỉ nhắm mắt
+					} else {
+						passwordInput.type = "password"; // Ẩn mật khẩu
+						eyeIcon.textContent = "🐵"; // Biểu tượng khỉ mở mắt
+					}
+				});
+
+		// Đối với mật khẩu xác nhận
+		document.getElementById("toggleConfirmPassword").addEventListener(
+				"click",
+				function() {
+					const passwordInput = document
+							.getElementById("confirmPassword");
+					const eyeIcon = document.getElementById("eyeIconConfirm"); // Đảm bảo ID đúng cho biểu tượng
+
+					// Kiểm tra và thay đổi loại mật khẩu
+					if (passwordInput.type === "password") {
+						passwordInput.type = "text"; // Hiển thị mật khẩu
+						eyeIcon.textContent = "🙈"; // Biểu tượng khỉ nhắm mắt
+					} else {
+						passwordInput.type = "password"; // Ẩn mật khẩu
+						eyeIcon.textContent = "🐵"; // Biểu tượng khỉ mở mắt
+					}
+				});
+	</script>
+<script>
+$(document).ready(function () {
+    let countdown = 180; // 3 phút (tính bằng giây)
+    let timerInterval;
+
+    const startCountdown = () => {
+        const timerElement = document.getElementById("otp-timer");
+
+        timerInterval = setInterval(() => {
+            if (countdown <= 0) {
+                clearInterval(timerInterval);
+                $("#otpModal").modal("hide");
+                Toast.fire({
+                    icon: 'error',
+                    title: 'OTP đã hết hạn. Vui lòng yêu cầu lại.'
+                });
+                return;
+            }
+
+            const minutes = Math.floor(countdown / 60);
+            const seconds = countdown % 60;
+            timerElement.textContent = `Thời gian còn lại: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            countdown--;
+        }, 1000);
+    };
+
+    $('#otpModal').on('shown.bs.modal', function () {
+        countdown = 180; // Reset thời gian đếm ngược
+        clearInterval(timerInterval); // Đảm bảo không có bộ đếm cũ nào đang chạy
+        startCountdown(); // Bắt đầu đếm ngược
+    });
+
+    $('#otpModal').on('hidden.bs.modal', function () {
+        clearInterval(timerInterval); // Dừng bộ đếm khi modal bị đóng
+    });
+});
+
+</script>
+</body>
+
+</html>

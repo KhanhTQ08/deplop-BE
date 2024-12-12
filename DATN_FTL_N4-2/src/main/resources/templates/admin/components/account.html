@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Admin - Tài Khoản</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+          name='viewport'/>
+    <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+            rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- DataTables CSS -->
+    <link
+            href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"
+            rel="stylesheet">
+
+    <!-- Fonts and icons -->
+    <script th:src="@{/assets/js/plugin/webfont/webfont.min.js}"></script>
+     <script src="../assets/js/aside.js"></script>
+    <script>
+        WebFont.load({
+            google: {
+                "families": ["Public Sans:300,400,500,600,700"]
+            },
+            custom: {
+                "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+                urls: [/* Updated Thymeleaf syntax */'[[@{/assets/css/fonts.min.css}]]']
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <style>
+
+        /* Custom Button Styles */
+        .customBtnDelete {
+            background-color: #dd103a;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate, .customAdd {
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate {
+            background-color: #66ba4b;
+        }
+
+        .customAdd {
+            background-color: #58ba45;
+            font-size: 15px;
+        }
+
+        .modal-title-custom {
+            font-size: 45px;
+            font-weight: 700;
+            color: #1db954;
+        }
+
+        .notNull {
+            color: red;
+            font-size: 20px;
+        }
+
+        form label {
+            font-size: 25px;
+            font-weight: 500;
+        }
+
+        .customTitleListMovie {
+            font-weight: 900;
+            font-size: 30px;
+            color: #ff4971;
+        }
+
+        /* Đổi màu cho nút 'Thêm Tài Khoản' sang màu xanh đọt chuối */
+        /* Đổi màu cho nút 'Thêm Tài Khoản' sang màu xanh đọt chuối */
+        #addAccountBtn {
+            background-color: #66ba4b; /* Màu xanh đọt chuối */
+            color: white; /* Màu chữ trắng */
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Thêm hiệu ứng hover khi di chuột qua nút */
+        #addAccountBtn:hover {
+            background-color: #58ba45; /* Màu xanh đậm hơn khi hover */
+        }
+
+        /* Đảm bảo nút nằm bên trái */
+        #addAccountBtn {
+            float: left; /* Đặt nút nằm bên trái */
+        }
+    </style>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/plugins.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/kaiadmin.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/demo.css}">
+</head>
+
+<body>
+<div class="wrapper">
+    <div th:replace="~{adminViews/aside:: .sidebar}"></div>
+    <div class="main-panel">
+
+        <div class="container mt-5">
+            <div class="container mt-3">
+                <div class="modal fade" id="modalAccount" data-bs-backdrop="static"
+                     data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 id="modalTitle" class="modal-title">Thêm Tài Khoản</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container">
+                                    <form id="accountForm" th:action="@{/add-account}" method="post"
+                                          th:object="${account}">
+                                        <input type="hidden" th:field="*{accountId}"/>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="username">Tên đăng nhập:</label>
+                                                <input type="text" id="username" th:field="*{username}"
+                                                       class="form-control"/>
+                                                <p class="text-danger" th:if="${#fields.hasErrors('username')}">
+                                                    <span th:errors="*{username}"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="password">Mật khẩu:</label>
+                                                <input type="password" id="password" th:field="*{password}"
+                                                       class="form-control"/>
+                                                <p class="text-danger" th:if="${#fields.hasErrors('password')}">
+                                                    <span th:errors="*{password}"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="fullName">Họ và tên:</label>
+                                                <input type="text" id="fullName" th:field="*{fullName}"
+                                                       class="form-control"/>
+                                                <p class="text-danger" th:if="${#fields.hasErrors('fullName')}">
+                                                    <span th:errors="*{fullName}"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="phoneNumber">Số điện thoại:</label>
+                                                <input type="text" id="phoneNumber" th:field="*{phoneNumber}"
+                                                       class="form-control"/>
+                                                <p class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}">
+                                                    <span th:errors="*{phoneNumber}"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="email">Email:</label>
+                                                <input type="email" id="email" th:field="*{email}"
+                                                       class="form-control"/>
+                                                <p class="text-danger" th:if="${#fields.hasErrors('email')}">
+                                                    <span th:errors="*{email}"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="roleId">Vai trò:</label>
+                                                <select id="roleId" class="form-control" th:field="*{roleId}" disabled>
+                                                    <option value="" disabled selected>--- Chọn vai trò ---</option>
+                                                    <option th:each="role : ${roles}" th:value="${role.roleId}"
+                                                            th:text="${role.roleName}"
+                                                            th:selected="${role.roleId == account.roleId}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="submit" class="btn btn-success">Lưu lại</button>
+                                            <button type="reset" class="btn btn-secondary">Làm mới</button>
+                                        </div>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="deletedAccountModal" tabindex="-1"
+                     aria-labelledby="deletedAccountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deletedAccountModalLabel">Danh
+                                    Sách Tài Khoản Đã Xóa</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body"
+                                 style="max-height: 400px; overflow-y: auto;">
+                                <!-- Thêm class "dataTable" và "table-striped" để DataTables nhận diện bảng và tạo màu sắc cho dòng chẵn lẻ -->
+                                <table id="deletedAccountTable"
+                                       class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">STT</th>
+                                        <th class="text-center">Tên đăng nhập</th>
+                                        <th class="text-center">Họ và tên</th>
+                                        <th class="text-center">Số điện thoại</th>
+                                        <th class="text-center">Vai trò</th>
+                                        <th class="text-center">Hành động</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="account, stat : ${deletedAccount}">
+                                        <td class="text-center" th:text="${stat.index + 1}"></td>
+                                        <td class="text-center" th:text="${account.username}"></td>
+                                        <td class="text-center" th:text="${account.fullName}"></td>
+                                        <td class="text-center" th:text="${account.phoneNumber}"></td>
+                                        <td class="text-center" th:text="${account.role.roleName}"></td>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <form
+                                                        th:action="@{/restore-account/{accountId}(accountId=${account.accountId})}"
+                                                        method="post">
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="bi bi-arrow-repeat"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movie List Table -->
+                <div class="w-100 text-center">
+						<span class="customTitleListMovie text-center">Danh sách tài khoản</span>
+                </div>
+                <!-- Table for Account List -->
+                <div class="table-responsive">
+                    <!-- Button to Open Add Account Modal -->
+                    <div class="w-100 text-center mb-4">
+                        <button type="button" id="addAccountBtn" data-bs-toggle="modal"
+                                data-bs-target="#modalAccount" class="me-3">Thêm Tài Khoản
+                        </button>
+
+                        <button type="button" id="addAccountBtn" data-bs-toggle="modal" style="background-color: blue;"
+                                data-bs-target="#deletedAccountModal">Khôi phục
+                        </button>
+                    </div>
+                    <table id="accountsTable" class="table table-striped custom-table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">STT</th>
+                            <th class="text-center">Tên đăng nhập</th>
+                            <th class="text-center">Họ và tên</th>
+                            <th class="text-center">Số điện thoại</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Vai trò</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="account, stat : ${accounts}">
+                            <td class="text-center" th:text="${stat.index + 1}"></td>
+                            <td class="text-center" th:text="${account.username}"></td>
+                            <td class="text-center" th:text="${account.fullName}"></td>
+                            <td class="text-center" th:text="${account.phoneNumber?: 'Không có số điện thoại'}"></td>
+                            <td class="text-center" th:text="${account.email}"></td>
+                            <td class="text-center" th:text="${account.role.roleName}"></td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <form th:action="@{/delete-account}" method="post"
+                                          class="delete-form">
+                                        <input type="hidden" name="accountId"
+                                               th:value="${account.accountId}"/>
+                                        <button type="submit" class="customBtnDelete deleteBtn">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS Files -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+        src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#deletedAccountTable').DataTable({
+            "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+        });
+    });
+
+</script>
+<script>
+    document.querySelectorAll(".deleteBtn").forEach(button => {
+        button.addEventListener("click", function (event) {
+            const form = this.closest("form");
+            const showtimeId = form.querySelector("input[name='accountId']").value;
+
+            // Sử dụng SweetAlert để xác nhận xóa
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                text: "Bạn có chắc chắn muốn xóa không?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Nếu người dùng nhấn "Có, xóa nó!", gửi form
+                    form.submit();
+                }
+            });
+
+            // Ngừng hành động mặc định để tránh gửi form ngay lập tức
+            event.preventDefault();
+        });
+    });
+</script>
+<th:block th:if="${khoiphuctaikhoanMessage}">
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Khôi phục thành công!',
+            text: /*[${khoiphucMessage}]*/ 'Tài khoản đã được khôi phục thành công!',
+        });
+    </script>
+</th:block>
+<th:block th:if="${xoaMessage}">
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Vô hiệu hóa thành công!',
+            text: /*[${xoaMessage}]*/ 'Tài khoản đã được vô hiệu hóa thành công!',
+        });
+    </script>
+</th:block>
+<script>
+    $(document).ready(function () {
+        $('#accountsTable').DataTable({
+            "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+        });
+
+
+    });
+</script>
+<th:block th:if="${themMessage}">
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Thêm mới thành công!',
+            text: /*[${successMessage}]*/ 'Thêm tài khoản thành công!',
+        });
+    </script>
+</th:block>
+<th:block th:if="${errorMessage}">
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Thêm mới thất bại!',
+            text: 'Vui lòng kiểm tra lại các trường đã điền!',  <!-- Thông báo lỗi -->
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Hiển thị modal thêm suất chiếu
+                $('#modalAccount').modal('show');
+            }
+        });
+    </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<div class="sidebar" data-background-color="dark">
+	<div class="sidebar-logo">
+		<!-- Logo Header -->
+		<div class="logo-header" data-background-color="dark">
+			<a href="/admin" class="logo mt-5 mb-3 ms-5"> <img
+				th:src="@{/assets/img/kaiadmin/ok.png}" alt="brand-navar"
+				class="navbar-brand logo-image" height="100" width="100">
+			</a>
+			<div class="nav-toggle">
+				<button class="btn btn-toggle toggle-sidebar">
+					<i class="gg-menu-right"></i>
+				</button>
+				<button class="btn btn-toggle sidenav-toggler">
+					<i class="gg-menu-left"></i>
+				</button>
+			</div>
+			<button class="topbar-toggler more">
+				<i class="gg-more-vertical-alt"></i>
+			</button>
+		</div>
+		<!-- End Logo Header -->
+	</div>
+	<div class="sidebar-wrapper scrollbar scrollbar-inner">
+		<li class="sidebar-content">
+			<ul class="nav nav-secondary">
+				<li class="nav-item active"><a data-bs-toggle="collapse"
+					href="#dashboard" class="collapsed" aria-expanded="false"> <i
+						class="fas fa-home"></i>
+						<p>Thống kê</p> <span class="caret"></span>
+				</a>
+					<div class="collapse" id="dashboard">
+						<ul class="nav nav-collapse">
+							<li><a href="/charts/movieindex"> <span class="sub-item">Tổng
+										danh thu</span></a></li>
+							<li><a href="/charts/movies"> <span class="sub-item">Doanh
+										thu theo phim</span></a></li>
+							<li><a href="/charts/cinemas"> <span class="sub-item">Doanh
+										thu theo Rạp</span></a></li>
+						</ul>
+					</div></li>
+				<li class="nav-section"><span class="sidebar-mini-icon">
+						<i class="fa fa-ellipsis-h"></i>
+				</span></li>
+				<li class="nav-item"><a data-bs-toggle="collapse" href="#base">
+						<i class="fas fa-layer-group"></i>
+						<p>Quản lý</p> <span class="caret"></span>
+				</a>
+					<div class="collapse" id="base">
+						<ul class="nav nav-collapse">
+							<li><a href="/flim" id="dashboard-link" data-page="movieindex"> <span class="sub-item">Phim</span></a>
+							</li>
+							<li><a href="/showtime"> <span class="sub-item">Ca
+										chiếu</span></a></li>
+							<li><a href="/cinemaWithRoom"> <span class="sub-item">Phòng
+										chiếu</span></a></li>
+							<li><a href="/seatWithRoomAndCinema"> <span
+									class="sub-item">Ghế</span></a></li>
+							<li><a href="/invoiceDetailsAllUser"> <span
+									class="sub-item">Hóa đơn</span></a></li>
+							<li><a href="/cinema"> <span class="sub-item">Rạp
+										chiếu</span></a></li>
+						</ul>
+					</div></li>
+
+				<li class="nav-item"><a data-bs-toggle="collapse"
+					href="#sidebarLayouts"> <i class="fas fa-th-list"></i>
+						<p>Tài khoản</p> <span class="caret"></span>
+				</a>
+					<div class="collapse" id="sidebarLayouts">
+						<ul class="nav nav-collapse">
+							<li><a href="/account"> <span class="sub-item">Quản
+										lý tài khoản</span>
+							</a></li>
+
+						</ul>
+					</div></li>
+				<li class="nav-item"><a data-bs-toggle="collapse" href="#forms">
+						<i class="fas fa-pen-square"></i>
+						<p>Sản phẩm</p> <span class="caret"></span>
+				</a>
+					<div class="collapse" id="forms">
+						<ul class="nav nav-collapse">
+							<li><a href="/product"> <span class="sub-item">Quản
+										lý sản phẩm</span>
+							</a></li>
+						</ul>
+					</div></li>
+
+
+				<li class="nav-item " style="margin-top: 80%"
+					th:if="${session.acc != null}">
+					<div class="justify-content-center align-items-center d-flex mt-5">
+						<form th:action="@{/logout}" method="post" id="logoutForm">
+							<button type="submit" class="btn-logout">
+								<i class="bi bi-box-arrow-left"></i> Đăng xuất
+							</button>
+						</form>
+
+					</div>
+				</li>
+<script>
+    document.getElementById('logoutForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Ngừng việc gửi form để hiện thông báo trước
+
+        // Hiển thị thông báo SweetAlert
+        Swal.fire({
+        	 title: 'Xác nhận đăng xuất',
+             text: "Bạn có chắc chắn muốn đăng xuất không?",
+             icon: 'warning',
+             showCancelButton: true,
+             confirmButtonColor: '#3085d6',
+             cancelButtonColor: '#d33',
+             confirmButtonText: 'Đăng xuất',
+             cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng xác nhận, gửi form để đăng xuất
+                this.submit();
+            }
+        });
+    });
+</script>
+<script>
+//Bắt sự kiện khi click vào các mục trong sidebar
+document.querySelectorAll('.nav-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();  // Ngừng hành động mặc định (tải lại trang)
+
+        // Lấy dữ liệu trang từ thuộc tính `data-page`
+        const page = this.getAttribute('data-page');
+
+        // Cập nhật trạng thái "active" của các mục
+        document.querySelectorAll('.nav-item').forEach(function(item) {
+            item.classList.remove('active');  // Xóa "active" khỏi tất cả các mục
+        });
+        this.parentElement.classList.add('active');  // Thêm "active" vào mục hiện tại
+
+        // Cập nhật nội dung nếu cần
+        updateContent(page);
+    });
+});
+
+// Hàm để cập nhật nội dung khi click vào các mục (có thể sử dụng AJAX)
+function updateContent(page) {
+    // Sử dụng AJAX để lấy dữ liệu mà không tải lại trang
+    fetch(`/charts/${page}`)
+        .then(response => response.text())  // Lấy nội dung trang mới
+        .then(data => {
+            // Cập nhật phần nội dung chính của trang
+            document.getElementById('content-area').innerHTML = data;
+        })
+        .catch(error => {
+            console.error('Có lỗi khi tải trang:', error);
+        });
+}
+
+</script>
+				<style>
+				
+				/* Tô sáng mục đang active trong sidebar */
+.nav-item.active > .nav-link {
+    background-color: #3498db;  /* Màu nền sáng cho mục đang active */
+    color: white;  /* Màu chữ sáng */
+}
+				
+.btn-logout {
+	background-color: #fff;
+	color: black;
+	border: none;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+}
+
+.btn-logout:hover {
+	background-color: #f1f1f1;
+}
+
+.logo-image {
+	height: 100px; /* Chiều cao tối ưu */
+	width: 100px; /* Chiều rộng tối ưu */
+	object-fit: contain; /* Đảm bảo ảnh không bị méo */
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	/* Hiệu ứng khi hover */
+}
+
+.logo-image:hover {
+	transform: scale(1.1); /* Phóng to nhẹ khi hover */
+}
+</style>
+			</ul>
+	</div>
+</div>
+
+
+

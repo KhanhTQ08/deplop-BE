@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Invoice Details</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Invoice Details</h1>
+
+    <!-- Table displaying accounts -->
+    <table id="myTable-account" class="table table-striped">
+        <thead>
+        <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">Full Name</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Phone Number</th>
+            <th class="text-center">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="account : ${accountEntities}">
+            <td class="text-center" th:text="${account.accountId}"></td>
+            <td class="text-center" th:text="${account.fullName}"></td>
+            <td class="text-center" th:text="${account.email}"></td>
+            <td class="text-center" th:text="${account.phoneNumber != null ? account.phoneNumber : 'No Phone Number'}"></td>
+            <td class="text-center">
+                <button class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#invoiceModal-' + ${account.accountId}">
+                    <i class="bi bi-eye"></i> View Invoices
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Modal for each account -->
+    <div th:each="account : ${accountEntities}">
+        <div class="modal fade" th:id="'invoiceModal-' + ${account.accountId}" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" style="max-width: 80%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Invoice Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="text-center mb-3">Invoice List</h3>
+                        <table id="myTable-invoice" class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th class="text-center">Invoice ID</th>
+                                <th class="text-center">Account</th>
+                                <th class="text-center">Movie</th>
+                                <th class="text-center">Booking Date</th>
+                                <th class="text-center">Booking Time</th>
+                                <th class="text-center">Total Amount</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="invoice : ${listInvoiceAllUser}" th:if="${invoice.account.accountId == account.accountId}">
+                                <td class="text-center" th:text="${invoice.invoiceId}"></td>
+                                <td class="text-center" th:text="${invoice.account.fullName}"></td>
+                                <td class="text-center" th:text="${invoice.showtime.movie.movieName}"></td>
+                                <td class="text-center" th:text="${invoice.bookingDate}"></td>
+                                <td class="text-center" th:text="${invoice.bookingTime}"></td>
+                                <td class="text-center" th:text="${invoice.totalAmount}"></td>
+                                <td class="text-center" th:text="${invoice.status}"></td>
+                                <td class="text-center">
+                                    <button class="btn btn-danger text-white" data-bs-toggle="modal" th:data-bs-target="'#ticketsModal-' + ${invoice.invoiceId}">
+                                        View More
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for each invoice detail -->
+    <div th:each="invoice : ${listInvoiceAllUser}">
+        <div class="modal fade" th:id="'ticketsModal-' + ${invoice.invoiceId}" tabindex="-1" role="dialog" aria-labelledby="ticketsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" style="max-width: 80%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Invoice Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Danh sách vé</h5>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Seat</th>
+                                <th>Room</th>
+                                <th>Cinema</th>
+                                <th>Address</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="ticket, ticketStat : ${invoice.tickets}">
+                                <td th:text="${ticketStat.index + 1}"></td>
+                                <td th:text="${ticket.seat.seatName}"></td>
+                                <td th:text="${ticket.seat.room.roomName}"></td>
+                                <td th:text="${ticket.invoice.showtime.cinemaInformation.cinemaName}"></td>
+                                <td th:text="${ticket.invoice.showtime.cinemaInformation.address}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <h5 th:if="${invoice.invoiceDetails != null && !invoice.invoiceDetails.isEmpty()}">Danh sách sản phẩm</h5>
+                        <table class="table table-bordered table-striped" th:if="${invoice.invoiceDetails != null && !invoice.invoiceDetails.isEmpty()}">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="invoiceDetail, detailStat : ${invoice.invoiceDetails}">
+                                <td th:text="${detailStat.index + 1}"></td>
+                                <td th:text="${invoiceDetail.product.productName}"></td>
+                                <td th:text="${invoiceDetail.quantity}"></td>
+                                <td th:text="${invoiceDetail.price}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <h5>Thông Tin Phim</h5>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Movie Name</th>
+                                <th>Duration</th>
+                                <th>Director</th>
+                                <th>Genre</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td th:text="${invoice.showtime.movie.movieName}"></td>
+                                <td th:text="${invoice.showtime.movie.duration + ' phút'}"></td>
+                                <td th:text="${invoice.showtime.movie.director}"></td>
+                                <td th:text="${invoice.showtime.movie.genre}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#myTable-account').DataTable({
+            "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#myTable-invoice').DataTable({
+            "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

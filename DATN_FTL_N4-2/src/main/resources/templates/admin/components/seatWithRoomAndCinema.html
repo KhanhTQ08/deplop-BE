@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Admin - Phòng Chiếu</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+    <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Thêm SweetAlert CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
+ <script src="../assets/js/aside.js"></script>
+    <script>
+        WebFont.load({
+            google: { "families": ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+                urls: ['../assets/css/fonts.min.css']
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+
+    <!-- Tải CSS của Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Tải CSS của DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+
+    <!-- Tải Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Tải jQuery từ CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Tải JS của Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Tải SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Tải các JS từ thư mục local -->
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="../assets/js/kaiadmin.min.js"></script>
+    <script src="../assets/js/setting-demo2.js"></script>
+
+    <!-- Tải DataTables -->
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/plugins.min.css">
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css">
+    <link rel="stylesheet" href="../assets/css/demo.css">
+
+    <style>
+        .modal-title-custom {
+            font-size: 45px;
+            font-weight: 700;
+            color: #ff4971;
+        }
+
+        form label {
+            font-size: 25px;
+            color: black;
+            font-weight: 500;
+        }
+
+        .customAdd {
+            background-color: #58ba45;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 15px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customTitleListMovie {
+            font-weight: 900;
+            font-size: 30px;
+            color: #ff4971;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .customBtnDelete {
+            background-color: #dd103a;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate {
+            background-color: #66ba4b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate:focus,
+        .customUpdate:hover {
+            color: #fff;
+        }
+
+        /* Style cho Dropdown */
+        select.form-control {
+            width: 80%;
+            /* Điều chỉnh chiều dài combobox */
+            padding: 7px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            color: #495057;
+            background-color: #f8f9fa;
+            transition: border-color 0.3s ease-in-out;
+            justify-content: center;
+
+        }
+
+        /* Custom Dropdown button với mũi tên */
+        .select-wrapper {
+            position: relative;
+        }
+
+        /* Thêm mũi tên xuống vào dropdown */
+        .select-wrapper i {
+            position: absolute;
+            left: 73%;
+            top: 15%;
+            transform: translateY(10%);
+            font-size: 18px;
+            color: #495057;
+        }
+
+        /* Dùng flexbox để hiển thị ngang */
+        form.d-flex {
+            display: flex;
+            align-items: center;
+            /* Căn giữa theo chiều dọc */
+            gap: 20px;
+            /* Khoảng cách giữa các dropdown */
+        }
+
+        /* Đặt chiều rộng cho mỗi dropdown */
+        form .form-group {
+            flex: 1;
+        }
+
+        form label {
+            display: block;
+            /* Đảm bảo nhãn nằm trên dropdown */
+            margin-bottom: 5px;
+            /* Tạo khoảng cách giữa label và select */
+        }
+
+        .no-rooms-container {
+            display: flex;
+            /* Sử dụng flexbox */
+            flex-direction: column;
+            /* Sắp xếp nội dung theo cột */
+            justify-content: center;
+            /* Căn giữa theo chiều dọc */
+            align-items: center;
+            /* Căn giữa theo chiều ngang */
+            height: 60vh;
+            /* Chiều cao toàn màn hình */
+            text-align: center;
+            /* Căn giữa văn bản */
+            padding: 20px;
+            /* Thêm khoảng cách */
+        }
+
+        .no-rooms-title {
+            font-size: 24px;
+            /* Kích thước chữ tiêu đề */
+            font-weight: bold;
+            /* In đậm tiêu đề */
+            margin-bottom: 10px;
+            /* Khoảng cách dưới tiêu đề */
+            color: #333;
+            /* Màu chữ tiêu đề */
+        }
+
+        .no-rooms-content img {
+            width: 200px;
+            /* Kích thước hình ảnh */
+            height: auto;
+            /* Giữ tỷ lệ hình ảnh */
+            margin-bottom: 15px;
+            /* Khoảng cách dưới hình ảnh */
+        }
+
+        .no-rooms-container span {
+            font-size: 16px;
+            /* Kích thước chữ mô tả */
+            color: #555;
+            /* Màu chữ mô tả */
+            font-weight: 300;
+
+        }
+
+        #updateSeatPriceModalLabel {
+            font-size: 20px;
+            font-family: "Roboto", sans-serif;
+            font-weight: 400;
+            color: #191818;
+        }
+
+        #updateSeatPriceModalLabelCinema,
+        #updateSeatPriceModalLabelRoom {
+            font-size: 20px;
+            font-family: "Roboto", sans-serif;
+            font-weight: 900;
+            color: #ff4971;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrapper">
+    <div th:replace="~{adminViews/aside:: .sidebar}"></div>
+
+    <div class="main-panel">
+        <div class="container">
+            <div class="page-inner">
+                <div class="w-100 text-center">
+                    <!-- Button để mở Modal -->
+                    <span class="customTitleListMovie text-center">Danh Sách Ghế</span>
+                </div>
+
+                <form action="/seatWithRoomAndCinema" method="get" class="d-flex align-items-center gap-3">
+                    <div class="container">
+                        <div class="row">
+                            <!-- Dropdown chọn rạp -->
+                            <div class="ps-0 col-md-5">
+                                <div class="form-group formCinemaWithRoom">
+                                    <label for="cinemaId" class="title-custom">Chọn rạp chiếu:</label>
+                                    <div class="select-wrapper">
+                                        <select id="cinemaId" name="cinemaId" class="form-select custom-select"
+                                                onchange="this.form.submit()">
+                                            <option value="">Tất cả</option>
+                                            <th:block th:each="cinema : ${cinemas}">
+                                                <option th:value="${cinema.cinemaId}" th:text="${cinema.cinemaName}"
+                                                        th:selected="${cinema.cinemaId == selectedCinemaId}">
+                                                </option>
+                                            </th:block>
+                                        </select>
+                                        <script>
+                                            // Khởi tạo Select2 sau khi DOM đã được tải hoàn toàn
+                                            $(document).ready(function() {
+                                                $('#cinemaId').select2();
+                                            });
+                                        </script>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- Dropdown chọn phòng -->
+                            <div class="col-md-5">
+                                <div class="form-group formRoomWithCinema">
+                                    <label for="roomId" class="title-custom">Chọn phòng chiếu:</label>
+                                    <div class="select-wrapper">
+                                        <select id="roomId" name="roomId" class="form-select"
+                                                onchange="this.form.submit()">
+                                            <option value="">Tất cả</option>
+                                            <th:block th:each="room : ${rooms}">
+                                                <option th:value="${room.roomId}" th:text="${room.roomName}"
+                                                        th:selected="${room.roomId == selectedRoomId}">
+                                                </option>
+                                            </th:block>
+                                        </select>
+                                        <script>
+                                            // Khởi tạo Select2 sau khi DOM đã được tải hoàn toàn
+                                            $(document).ready(function() {
+                                                $('#roomId').select2();
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Display total number of seats only when both cinema and room are selected -->
+                            <div class="col-md-2">
+                                <div class="form-group text-center">
+                                    <label for="roomId" class="title-custom">Tổng Số Ghế</label>
+                                    <div class="select-wrapper">
+                                        <h4 th:if="${seats != null and #lists.size(seats) > 0}"
+                                            th:text="${#lists.size(seats)}" class="cusTom"
+                                            style="color: #ff4971; font-weight: 700"></h4>
+                                        <!-- Optionally display a message if no seats are available -->
+                                        <h4 th:if="${seats == null or #lists.size(seats) == 0}" class="cusTom"
+                                            style="color: #ff4971; font-weight: 700">Chưa có ghế</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Bảng danh sách phòng chiếu -->
+                <div th:if="${rooms == null || rooms.isEmpty() || cinemas == null || cinemas.isEmpty()}"
+                     class="no-rooms-container">
+                    <div class="no-rooms-content">
+                        <img src="https://homepage.momocdn.net/next-js/_next/static/public/cinema/not-found.svg"
+                             alt="Not Found">
+                    </div>
+                    <h2 class="no-rooms-title">Vui lòng chọn Rạp chiếu và Phòng phù hợp</h2>
+                    <span>Bạn hãy chọn Rạp chiếu và Phòng trên Combobox đi!</span>
+                </div>
+
+
+                <!-- Nút mở modal -->
+                <div th:if="${seats != null and #lists.size(seats) > 0}" class="mt-4 text-end">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            data-bs-target="#updateSeatPriceModal" onclick="setModalData()">
+                        <i class="bi bi-pencil-fill"></i> Cập nhật giá ghế
+                    </button>
+                </div>
+
+                <!-- Modal cập nhật giá ghế -->
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+                      rel="stylesheet">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+                      rel="stylesheet">
+
+                <div class="modal fade" id="updateSeatPriceModal" tabindex="-1"
+                     aria-labelledby="updateSeatPriceModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateSeatPriceModalLabel">Cập nhật giá ghế</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+
+                            <!-- Modal Body -->
+                            <div class="modal-body">
+                                <form action="/updateSeatPrice" method="post" id="updateSeatPriceForm">
+
+                                    <div class="w-100 text-center mb-5">
+                                        <h6 id="updateSeatPriceModalLabelCinema" class="mb-1"></h6>
+                                        <h6 id="updateSeatPriceModalLabelRoom" class="mb-0"></h6>
+                                    </div>
+                                    <!-- Input Hidden -->
+                                    <input type="hidden" id="cinemaIdInput" name="cinemaId" value="1">
+                                    <input type="hidden" id="roomIdInput" name="roomId" value="1">
+
+                                    <!-- Giá Thường và Giá VIP -->
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <label for="normalPrice" class="form-label">Giá Thường:</label>
+                                            <input type="number" class="form-control" id="normalPrice"
+                                                   name="normalPrice" placeholder="Nhập giá thường" step="1000"
+                                                   min="0">
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="vipPrice" class="form-label">Giá VIP:</label>
+                                            <input type="number" class="form-control" id="vipPrice" name="vipPrice"
+                                                   placeholder="Nhập giá VIP" step="1000" min="0">
+                                        </div>
+                                    </div>
+
+                                    <!-- Nút Cập Nhật -->
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i> Cập Nhật
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table th:if="${seats != null}" border="1" id="seatTable"
+                       class="table table-striped custom-table mt-5">
+                    <thead>
+                    <tr>
+                        <th class="text-center">STT</th>
+                        <th class="text-center">Tên ghế</th>
+                        <th class="text-center">Loại ghế</th>
+                        <th class="text-center">Giá ghế</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="seat, stat : ${seats}">
+                        <td th:text="${stat.index + 1}" class="text-center"></td>
+                        <td class="text-center" th:text="${seat.seatName}"></td>
+                        <td class="text-center" th:text="${seat.status}"></td>
+                        <td class="text-center seat-price" th:attr="data-price=${seat.seatPrice}"
+                            th:text="${seat.seatPrice}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#seatTable').DataTable();
+    });
+
+    /*js format seatprice*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const priceElements = document.querySelectorAll('.seat-price');
+
+        priceElements.forEach(function (element) {
+            // Lấy giá trị gốc từ data-price
+            const dataPrice = element.getAttribute('data-price');
+            let price = parseFloat(dataPrice);
+
+            if (!isNaN(price)) {
+                // Format giá trị và cập nhật lại nội dung
+                element.textContent = formatPrice(price);
+            } else {
+                // Giá trị không hợp lệ
+                element.textContent = 'Giá không hợp lệ';
+            }
+        });
+
+        // Hàm định dạng giá
+        function formatPrice(price) {
+            return price.toLocaleString('vi-VN') + ' VND';
+        }
+    });
+
+
+    function setModalData() {
+        // Lấy giá trị từ dropdown
+        const cinemaId = document.getElementById('cinemaId').value;
+        const roomId = document.getElementById('roomId').value;
+
+        // Gán giá trị vào input ẩn
+        document.getElementById('cinemaIdInput').value = cinemaId;
+        document.getElementById('roomIdInput').value = roomId;
+
+        // Cập nhật tiêu đề modal
+        const cinemaName = document.querySelector(`#cinemaId option[value='${cinemaId}']`).textContent;
+        const roomName = document.querySelector(`#roomId option[value='${roomId}']`).textContent;
+        document.querySelector('#updateSeatPriceModalLabel').textContent = `Cập nhật giá ghế`;
+        document.querySelector('#updateSeatPriceModalLabelCinema').textContent = `${cinemaName}`;
+        document.querySelector('#updateSeatPriceModalLabelRoom').textContent = `${roomName}`;
+    }
+
+
+    /*js lấy giá đưa vào input*/
+    document.addEventListener("DOMContentLoaded", function () {
+        // Lấy tất cả các phần tử có class 'seat-price'
+        let prices = document.querySelectorAll('.seat-price');
+
+        // Mảng để lưu các giá trị không trùng lặp
+        let uniquePrices = [];
+
+        // Duyệt qua tất cả các phần tử và lấy giá trị
+        prices.forEach(function (priceElement) {
+            let price = priceElement.getAttribute('data-price');
+            // Kiểm tra nếu giá chưa có trong mảng uniquePrices
+            if (price && !uniquePrices.includes(price)) {
+                uniquePrices.push(price);
+            }
+        });
+
+        // Kiểm tra nếu có 1 giá trị duy nhất
+        if (uniquePrices.length === 1) {
+            let price = parseFloat(uniquePrices[0]);
+
+            // Gán giá trị vào input normalPrice
+            document.getElementById('normalPrice').value = price;
+
+            // Gán giá trị 0 vào vipPrice khi chỉ có 1 giá trị
+            document.getElementById('vipPrice').value = 0;
+
+        } else if (uniquePrices.length >= 2) {
+            let price1 = parseFloat(uniquePrices[0]);
+            let price2 = parseFloat(uniquePrices[1]);
+
+            // Khai báo các biến cho giá trị vip và normal
+            let vipPrice, normalPrice;
+
+            // So sánh hai giá trị và gán vào vipPrice và normalPrice
+            if (price1 > price2) {
+                vipPrice = price1;
+                normalPrice = price2;
+            } else {
+                vipPrice = price2;
+                normalPrice = price1;
+            }
+
+            // Gán giá trị vào các input trong form
+            document.getElementById('normalPrice').value = normalPrice;
+            document.getElementById('vipPrice').value = vipPrice;
+        }
+    });
+
+
+    /*js bắt lỗi seatPrice Update*/
+    document.getElementById('updateSeatPriceForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Ngăn form submit mặc định
+
+        // Lấy giá trị của các input
+        const normalPrice = parseFloat(document.getElementById('normalPrice').value);
+        const vipPrice = parseFloat(document.getElementById('vipPrice').value);
+
+        // Kiểm tra giá trị hợp lệ
+        if (isNaN(normalPrice) || normalPrice < 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Bạn ơi, Lưu ý!',
+                text: 'Vui lòng nhập đúng số tiền!'
+            });
+            return;
+        }
+
+        if (isNaN(vipPrice) || vipPrice < 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Bạn ơi, Lưu ý!',
+                text: 'Vui lòng nhập đúng số tiền!'
+            });
+            return;
+        }
+
+
+        // Nếu hợp lệ, gửi form
+        this.submit();
+    });
+
+    // Hiển thị thông báo từ server
+    const successMessage = /*[[${success}]]*/ null; // Thông báo thành công từ server
+    const errorMessage = /*[[${error}]]*/ null;     // Thông báo lỗi từ server
+
+    if (successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành công',
+            text: successMessage,
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    if (errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: errorMessage
+        });
+    }
+
+
+
+
+</script>
+
+
+</body>
+</html>
+
