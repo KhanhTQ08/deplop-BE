@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+	<title>Admin-Chức Năng</title>
+	<meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+		  name="viewport" />
+	<link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+	<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<!-- Fonts and icons -->
+	<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+	<script>
+		WebFont.load({
+			google : {
+				families : [ "Public Sans:300,400,500,600,700" ]
+			},
+			custom : {
+				families : [ "Font Awesome 5 Solid", "Font Awesome 5 Regular",
+					"Font Awesome 5 Brands", "simple-line-icons", ],
+				urls : [ "../assets/css/fonts.min.css" ],
+			},
+			active : function() {
+				sessionStorage.fonts = true;
+			},
+		});
+
+	</script>
+	<link rel="stylesheet" href="../assets/css/style.css">
+	<link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../assets/css/plugins.min.css" />
+	<link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
+	<link rel="stylesheet"
+		  href="https:/cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+
+	<!-- CSS Just for demo purpose, don't include it in your project -->
+	<link rel="stylesheet" href="../assets/css/demo.css" />
+</head>
+<body>
+
+<style>
+	.customBtnDelete {
+		background-color: #dd103a;
+		color: white;
+		border: none;
+		padding: 5px 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 20px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+
+	.customUpdate {
+		background-color: #66ba4b;
+		color: white;
+		border: none;
+		padding: 5px 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 20px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+
+	.customUpdate:focus {
+		color: #ffff;
+	}
+	.customUpdate:hover {
+		color: #fff;
+	}
+	.modal-title-custom {
+		font-size: 45px;
+		font-weight: 700;
+		color: #ff4971;
+	}
+	.notNull {
+		color: red;
+		font-size: 20px;
+	}
+	form label {
+		font-size: 25px;
+		color: black;
+		font-weight: 500;
+	}
+	.customTitleListMovie {
+		font-weight: 900;
+		font-size: 30px;
+		color: #ff4971;
+		font-family: "Roboto", sans-serif;
+	}
+	.customAdd {
+		background-color: #58ba45;
+		color: white;
+		border: none;
+		padding: 5px 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 15px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+	.modal-title-custom {
+		font-size: 45px;
+		font-weight: 700;
+		color: #ff4971;
+	}
+	.notNull {
+		color: red;
+		font-size: 20px;
+	}
+	form label {
+		font-size: 25px;
+		color: black;
+		font-weight: 500;
+	}
+	.customTitleListMovie {
+		font-weight: 900;
+		font-size: 30px;
+		color: #ff4971;
+		font-family: "Roboto", sans-serif;
+	}
+	.customAdd {
+		background-color: #58ba45;
+		color: white;
+		border: none;
+		padding: 5px 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 15px;
+		margin: 4px 2px;
+		body {
+			background-color: #f8f9fa; /* Nền nhạt */
+			font-family: Arial, sans-serif;
+		}
+
+		table {
+			width: 100%;
+			margin-top: 20px;
+			border-collapse: collapse; /* Gộp đường viền */
+		}
+
+		thead th {
+			background-color: #f1f1f1; /* Màu nền nhạt cho tiêu đề */
+			color: #000; /* Màu chữ đen */
+			text-align: center;
+			padding: 10px;
+			font-weight: bold;
+			border-bottom: 2px solid #dee2e6; /* Viền dưới của tiêu đề */
+		}
+
+		tbody td {
+			text-align: center;
+			padding: 10px;
+			vertical-align: middle; /* Canh giữa nội dung trong ô */
+			background-color: #f9f9f9; /* Màu nền xen kẽ */
+		}
+
+		tbody tr:nth-child(even) td {
+			background-color: #ffffff; /* Màu nền cho hàng chẵn */
+		}
+
+		tbody tr:nth-child(odd) td {
+			background-color: #f9f9f9; /* Màu nền cho hàng lẻ */
+		}
+
+		.btn-action {
+			display: inline-block;
+			padding: 5px 10px;
+			font-size: 14px;
+			font-weight: bold;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			margin: 0 5px; /* Khoảng cách giữa các nút */
+		}
+
+		.btn-edit {
+			background-color: #28a745; /* Màu xanh sửa */
+		}
+
+		.btn-edit:hover {
+			background-color: #218838; /* Đậm hơn khi hover */
+		}
+
+		.btn-delete {
+			background-color: #dc3545; /* Màu đỏ xóa */
+		}
+
+		.btn-delete:hover {
+			background-color: #c82333; /* Đậm hơn khi hover */
+		}
+</style>
+<div class="wrapper">
+	<!-- Sidebar -->
+
+	<div th:replace="~{adminViews/aside:: .sidebar}"></div>
+
+
+	<div class="main-panel">
+	<div class="main-header">
+				<div class="main-header-logo">
+					<!-- Logo Header -->
+					<div class="logo-header" data-background-color="dark">
+
+						<a href="../index.html" class="logo"> <img
+							src="../assets/img/kaiadmin/logo_light.svg" alt="navbar brand"
+							class="navbar-brand" height="20">
+						</a>
+						<div class="nav-toggle">
+							<button class="btn btn-toggle toggle-sidebar">
+								<i class="gg-menu-right"></i>
+							</button>
+							<button class="btn btn-toggle sidenav-toggler">
+								<i class="gg-menu-left"></i>
+							</button>
+						</div>
+						<button class="topbar-toggler more">
+							<i class="gg-more-vertical-alt"></i>
+						</button>
+
+					</div>
+					<!-- End Logo Header -->
+				</div>
+				<!-- Navbar Header -->
+				<nav
+					class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+
+					<div class="container-fluid">
+						<nav
+							class="navbar navbar-header-left navbar-expand-lg p-0 d-none d-lg-flex">
+							<div class="fw-bold" style="font-size: 24px; color: black;">
+								Bảng Điều Khiển</div>
+						</nav>
+						<ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+							<li class="nav-item topbar-user dropdown hidden-caret"><a
+								class="dropdown-toggle profile-pic" data-bs-toggle="dropdown"
+								href="#" aria-expanded="false"> <span
+									class="profile-username"> <span class="op-7">Xin
+											chào,</span> <span class="fw-bold"> <span
+											th:text="${session.loggedInUser}">Hizrian</span>
+									</span>
+								</span>
+							</a></li>
+						</ul>
+
+					</div>
+				</nav>
+				<!-- End Navbar -->
+			</div>
+		<div class="container m-0">
+
+			<div class="page-inner m-0">
+				<div class="container">
+					<div class="modal fade" id="modalUserroles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-scrollable modal-xl"> <!-- Thay modal-xl -->
+							<div class="modal-content">
+								<div class="modal-header">
+									<span class="fs-5 modal-title-custom" id="staticBackdropLabel">Thêm Phân Quyền</span>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body m-0">
+									<div class="container">
+										<form id="userRoleForm" th:object="${userRoleBean}" method="post" th:action="@{/add-userrole}">
+											<input type="hidden" th:field="*{userRoleId}" />
+
+											<div>
+												<label for="roleId">Chọn Quyền:</label>
+												<select class="form-select" th:field="*{roleId}" required>
+													<option value="" disabled selected>----- Chọn quyền -----</option>
+													<option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
+												</select>
+											</div>
+
+											<div>
+												<label for="functionalityId">Chọn Chức năng:</label>
+												<select class="form-select" th:field="*{functionalityId}" required>
+													<option value="" disabled selected>----- Chọn chức năng -----</option>
+													<option th:each="functionality : ${functionalities}" th:value="${functionality.functionalityId}" th:text="${functionality.functionalityName}"></option>
+												</select>
+											</div>
+
+											<button type="submit" class="btn btn-primary">Lưu</button>
+										</form>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="w-100 text-center">
+
+						<span class="customTitleListMovie text-center">Danh Sách Chức Quyền</span>
+					</div>
+
+
+			<div class="table-responsive">
+				<!-- Button để mở Modal -->
+				<button type="button" class="customAdd float-lg-start d-flex mb-3" data-bs-toggle="modal" data-bs-target="#modalUserroles">
+					Thêm Chức Quyền
+				</button>
+				<table id="myTable" class="table table-striped custom-table">
+					<thead>
+					<tr>
+						<th class="text-center">STT</th>
+						<th class="text-center">Quyền</th>
+						<th class="text-center">Chức năng</th>
+						<th class="text-center">Hành động</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="userrole, stat : ${userroles}">
+						<td th:text="${stat.index + 1}" class="text-center"></td>
+						<td th:text="${userrole.role.roleName}"></td>
+						<td th:text="${userrole.functionality.functionalityName}"></td>
+						<td>
+							<div class="d-flex justify-content-center gap-2">
+								<a class="customUpdate" th:href="@{'/update-userrole?userRoleId=' + ${userrole.userRoleId}}">
+									<i class="bi bi-pencil-square"></i>
+								</a>
+								<form method="post" th:action="@{/delete-userrole}">
+									<input type="hidden" name="userRoleId" th:value="${userrole.userRoleId}" />
+									<button type="submit" class="customBtnDelete">
+										<i class="bi bi-trash"></i>
+									</button>
+								</form>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!--   Core JS Files   -->
+<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="../assets/js/core/popper.min.js"></script>
+<script src="../assets/js/core/bootstrap.min.js"></script>
+
+<!-- jQuery Scrollbar -->
+<script
+		src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<!-- Chart JS -->
+<script src="../assets/js/plugin/chart.js/chart.min.js"></script>
+
+<!-- jQuery Sparkline -->
+<script
+		src="../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+<!-- Chart Circle -->
+<script src="../assets/js/plugin/chart-circle/circles.min.js"></script>
+
+<!-- Datatables -->
+<script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+
+<!-- Bootstrap Notify -->
+<script
+		src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+<!-- jQuery Vector Maps -->
+<script src="../assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+<script src="../assets/js/plugin/jsvectormap/world.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#myTable').DataTable({
+        "language": {
+            "sSearch": "Tìm kiếm:", // "Search"
+            "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+            "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+            "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+            "sInfoFiltered": "(lọc từ _MAX_ mục)",
+            "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+            "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+
+            "sInfoPostFix": "", // Không thay đổi
+            "oPaginate": {
+                "sFirst": "Đầu tiên", // "First"
+                "sPrevious": "Trước", // "Previous"
+                "sNext": "Tiếp theo", // "Next"
+                "sLast": "Cuối cùng" // "Last"
+            },
+            "oAria": {
+                "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+            }
+        }
+    });
+});
+</script>
+<!-- Google Maps Plugin -->
+<script src="../assets/js/plugin/gmaps/gmaps.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<!-- Sweet Alert -->
+<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<!-- Kaiadmin JS -->
+<script src="../assets/js/kaiadmin.min.js"></script>
+
+<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+<script src="../assets/js/setting-demo2.js"></script>
+</body>
+</html>

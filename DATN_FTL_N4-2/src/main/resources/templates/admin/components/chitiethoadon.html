@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<title>Admin - Hóa Đơn</title>
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+		  name='viewport'/>
+	<link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+	<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+	<script>
+		WebFont.load({
+			google: {
+				"families": ["Public Sans:300,400,500,600,700"]
+			},
+			custom: {
+				"families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular",
+					"Font Awesome 5 Brands", "simple-line-icons"],
+				urls: ['../assets/css/fonts.min.css']
+			},
+			active: function () {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../assets/css/plugins.min.css">
+	<link rel="stylesheet" href="../assets/css/kaiadmin.min.css">
+	<link rel="stylesheet" href="https:/cdn.datatables.net/2.1.8/css/dataTables.dataTables.css"/>
+
+	<link rel="stylesheet" href="../assets/css/demo.css">
+	<style>
+		.customBtnDelete {
+			background-color: #dd103a;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customUpdate {
+			background-color: #66ba4b;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customUpdate:focus {
+			color: #ffff;
+		}
+
+		.customUpdate:hover {
+			color: #fff;
+		}
+
+		.modal-title-custom {
+			font-size: 45px;
+			font-weight: 700;
+			color: #ff4971;
+		}
+
+		.notNull {
+			color: red;
+			font-size: 20px;
+		}
+
+		form label {
+			font-size: 25px;
+			color: black;
+			font-weight: 500;
+		}
+
+		.customTitleListMovie {
+			font-weight: 900;
+			font-size: 30px;
+			color: #ff4971;
+			font-family: "Roboto", sans-serif;
+		}
+
+		.customAdd {
+			background-color: #58ba45;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 15px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+
+<body>
+<div class="wrapper">
+<div th:replace="~{adminViews/aside:: .sidebar}"></div>
+
+	<div class="main-panel">
+<div class="main-header">
+				<div class="main-header-logo">
+					<!-- Logo Header -->
+					<div class="logo-header" data-background-color="dark">
+
+						<a href="../index.html" class="logo"> <img
+							src="../assets/img/kaiadmin/logo_light.svg" alt="navbar brand"
+							class="navbar-brand" height="20">
+						</a>
+						<div class="nav-toggle">
+							<button class="btn btn-toggle toggle-sidebar">
+								<i class="gg-menu-right"></i>
+							</button>
+							<button class="btn btn-toggle sidenav-toggler">
+								<i class="gg-menu-left"></i>
+							</button>
+						</div>
+						<button class="topbar-toggler more">
+							<i class="gg-more-vertical-alt"></i>
+						</button>
+
+					</div>
+					<!-- End Logo Header -->
+				</div>
+				<!-- Navbar Header -->
+				<nav
+					class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+
+					<div class="container-fluid">
+						<nav
+							class="navbar navbar-header-left navbar-expand-lg p-0 d-none d-lg-flex">
+							<div class="fw-bold" style="font-size: 24px; color: black;">
+								Bảng Điều Khiển</div>
+						</nav>
+						<ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+							<li class="nav-item topbar-user dropdown hidden-caret"><a
+								class="dropdown-toggle profile-pic" data-bs-toggle="dropdown"
+								href="#" aria-expanded="false"> <span
+									class="profile-username"> <span class="op-7">Xin
+											chào,</span> <span class="fw-bold"> <span
+											th:text="${session.loggedInUser}">Hizrian</span>
+									</span>
+								</span>
+							</a></li>
+						</ul>
+
+					</div>
+				</nav>
+				<!-- End Navbar -->
+			</div>
+		<div class="container">
+			  <h2>Chi Tiết Hóa Đơn</h2>
+
+        <h4>Thông Tin Hóa Đơn</h4>
+        <ul>
+            <li>Mã hóa đơn: <span th:text="${invoice.invoiceId}"></span></li>
+            <li>Khách hàng: <span th:text="${invoice.account.fullName}"></span></li>
+            <li>Ngày đặt: <span th:text="${invoice.bookingDate}"></span></li>
+            <li>Giờ đặt: <span th:text="${invoice.bookingTime}"></span></li>
+            <li>Tổng tiền: <span th:text="${invoice.totalAmount} + ' VND'"></span></li>
+            <li>Trạng thái: <span th:text="${invoice.status}"></span></li>
+        </ul>
+
+        <h4>Thông Tin Chi Tiết</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ghế</th>
+                    <th>Phim</th>
+                    <th>Ngày Chiếu</th>
+                    <th>Giờ Bắt Đầu</th>
+                    <th>Giờ Kết Thúc</th>
+                    <th>Phòng</th>
+                    <th>Rạp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ticket : ${ticketDetails}">
+                    <td th:text="${ticket.seatName}"></td>
+                    <td th:text="${ticket.movieName}"></td>
+                    <td th:text="${ticket.showDate}"></td>
+                    <td th:text="${ticket.startTime}"></td>
+                    <td th:text="${ticket.endTime}"></td>
+                    <td th:text="${ticket.roomName}"></td>
+                    <td th:text="${ticket.cinemaName}"></td>
+                </tr>
+            </tbody>
+        </table>
+  <p th:text="${errorMessage}"></p>
+        <a href="/invoices"><button>Quay lại danh sách hóa đơn</button></a>
+    </div>
+			
+		
+</div>
+	</div>
+</div>
+<!--   Core JS Files   -->
+<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="../assets/js/core/popper.min.js"></script>
+<script src="../assets/js/core/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<!-- Bootstrap Notify -->
+<script
+		src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+<!-- jQuery Scrollbar -->
+<script
+		src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<!-- Kaiadmin JS -->
+<script src="../assets/js/kaiadmin.min.js"></script>
+<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+<script src="../assets/js/setting-demo2.js"></script>
+
+<script>
+    function viewInvoiceDetail(invoiceId) {
+        // Chuyển hướng đến trang chi tiết hóa đơn, và truyền invoiceId qua URL
+        window.location.href = '/invoice/detail/' + invoiceId;
+    }
+</script>
+<script>
+	$(document).ready(function () {
+		$('#myTable').DataTable();
+	});
+	$('#displayNotif')
+			.on(
+					'click',
+					function () {
+						var placementFrom = $(
+								'#notify_placement_from option:selected')
+								.val();
+						var placementAlign = $(
+								'#notify_placement_align option:selected')
+								.val();
+						var state = $('#notify_state option:selected')
+								.val();
+						var style = $('#notify_style option:selected')
+								.val();
+						var content = {};
+
+						content.message = 'Turning standard Bootstrap alerts into "notify" like notifications';
+						content.title = 'Bootstrap notify';
+						if (style == "withicon") {
+							content.icon = 'fa fa-bell';
+						} else {
+							content.icon = 'none';
+						}
+						content.url = 'index.html';
+						content.target = '_blank';
+
+						$.notify(content, {
+							type: state,
+							placement: {
+								from: placementFrom,
+								align: placementAlign
+							},
+							time: 1000,
+							delay: 0,
+						});
+					});
+</script>
+
+</body>
+</html>

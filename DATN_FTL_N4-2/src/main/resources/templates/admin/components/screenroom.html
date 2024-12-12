@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Notifications - Kaiadmin Bootstrap 5 Admin Dashboard</title>
+<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+	name='viewport' />
+<link rel="icon" href="../assets/img/kaiadmin/favicon.ico"
+	type="image/x-icon" />
+
+<!-- Fonts and icons -->
+<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+<script>
+	WebFont.load({
+		google : {
+			"families" : [ "Public Sans:300,400,500,600,700" ]
+		},
+		custom : {
+			"families" : [ "Font Awesome 5 Solid", "Font Awesome 5 Regular",
+					"Font Awesome 5 Brands", "simple-line-icons" ],
+			urls : [ '../assets/css/fonts.min.css' ]
+		},
+		active : function() {
+			sessionStorage.fonts = true;
+		}
+	});
+</script>
+
+<!-- CSS Files -->
+<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="../assets/css/plugins.min.css">
+<link rel="stylesheet" href="../assets/css/kaiadmin.min.css">
+<link rel="stylesheet"
+	href="https:/cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<!-- CSS Just for demo purpose, don't include it in your project -->
+<link rel="stylesheet" href="../assets/css/demo.css">
+</head>
+<body>
+	<div class="wrapper">
+		<!-- Sidebar -->
+
+		<div th:replace="~{adminViews/aside:: .sidebar}"></div>
+		<!-- End Sidebar -->
+		<div class="main-panel">
+	
+			<div class="container">
+				<div class="page-inner">
+					<form id="roomid"
+						th:action="@{${roomBean.roomId != null} ? '/update-room' : '/add-room'}"
+						th:object="${roomBean}" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" th:field="*{roomId}" />
+						<div class="row">
+							<div class="col-md-12 form-group">
+								<label for="productName">Tên phòng:</label> <input type="text"
+									th:field="*{roomName}" class="form-control" />
+								<p class="text-danger" th:errors="*{roomName}"></p>
+							</div>
+						</div>
+						<div class="form-group mt-3">
+							<input class="btn btn-warning" type="submit"
+								th:value="${roomBean.roomId != null} ? 'Cập nhật' : 'Thêm'" />
+							<!-- Nút Reset sẽ làm mới trang -->
+							<a class="btn btn-secondary ml-2" th:href="@{/reset-room}">Làm
+								mới</a>
+						</div>
+					</form>
+
+					<!-- Các nút chức năng -->
+					<div class="mb-3">
+						<h3>Danh sách Phòng Chiếu</h3>
+						<div class="table-responsive">
+							<table id="myTable" class="table table-striped custom-table">
+								<thead>
+									<tr>
+										<th>ID Phòng</th>
+										<th>Tên Phòng chiếu</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="room : ${rooms}">
+										<td th:text="${room.roomId}"></td>
+										<td th:text="${room.roomName}"></td>
+										<td><a class="btn btn-primary"
+											th:href="@{'/update-room'(roomId=${room.roomId})}">Sửa</a>
+											<form method="post" th:action="@{'/delete-room'}"
+												style="display: inline;">
+												<input type="hidden" name="roomId" th:value="${room.roomId}" />
+												<button type="submit" class="btn btn-danger">Xoá</button>
+											</form></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- body -->
+
+			<!-- footer -->
+
+			<div th:replace="~{adminViews/footer:: .footer}"></div>
+
+			<!-- footer -->
+		</div>
+
+
+		<!-- Custom template | don't include it in your project! -->
+
+
+		<!-- End Custom template -->
+	</div>
+	<!--   Core JS Files   -->
+	<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+	<script src="../assets/js/core/popper.min.js"></script>
+	<script src="../assets/js/core/bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+	<!-- Bootstrap Notify -->
+	<script
+		src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<!-- jQuery Scrollbar -->
+	<script
+		src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+	<!-- Kaiadmin JS -->
+	<script src="../assets/js/kaiadmin.min.js"></script>
+	<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+	<script src="../assets/js/setting-demo2.js"></script>
+	<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+        });
+    });
+		$('#displayNotif')
+				.on(
+						'click',
+						function() {
+							var placementFrom = $(
+									'#notify_placement_from option:selected')
+									.val();
+							var placementAlign = $(
+									'#notify_placement_align option:selected')
+									.val();
+							var state = $('#notify_state option:selected')
+									.val();
+							var style = $('#notify_style option:selected')
+									.val();
+							var content = {};
+
+							content.message = 'Turning standard Bootstrap alerts into "notify" like notifications';
+							content.title = 'Bootstrap notify';
+							if (style == "withicon") {
+								content.icon = 'fa fa-bell';
+							} else {
+								content.icon = 'none';
+							}
+							content.url = 'index.html';
+							content.target = '_blank';
+
+							$.notify(content, {
+								type : state,
+								placement : {
+									from : placementFrom,
+									align : placementAlign
+								},
+								time : 1000,
+								delay : 0,
+							});
+						});
+	</script>
+</body>
+</html>

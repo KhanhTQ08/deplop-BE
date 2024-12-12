@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Admin - Phòng Chiếu</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+          name='viewport'/>
+    <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+        WebFont.load({
+            google: {"families": ["Public Sans:300,400,500,600,700"]},
+            custom: {
+                "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+                urls: ['../assets/css/fonts.min.css']
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/plugins.min.css">
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css">
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="../assets/css/demo.css">
+
+    <style>
+        .modal-title-custom {
+            font-size: 45px;
+            font-weight: 700;
+            color: #ff4971;
+        }
+
+        form label {
+            font-size: 25px;
+            color: black;
+            font-weight: 500;
+        }
+
+        .customAdd {
+            background-color: #58ba45;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 15px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customTitleListMovie {
+            font-weight: 900;
+            font-size: 30px;
+            color: #ff4971;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .customBtnDelete {
+            background-color: #dd103a;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate {
+            background-color: #66ba4b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate:focus, .customUpdate:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div th:replace="~{adminViews/aside:: .sidebar}"></div>
+
+    <div class="main-panel">
+   
+        <div class="container">
+            <div class="page-inner">
+                <div class="w-100 text-center">
+                    <!-- Button để mở Modal -->
+                    <span class="customTitleListMovie text-center">Danh Sách Phòng Chiếu Theo Rạp</span>
+                </div>
+
+                <!-- Form chọn rạp -->
+                <form action="/cinemaWithRoom" method="get">
+                    <div class="form-group formCinemaWithRoom">
+                        <label for="cinemaId" class="title-custom">Chọn rạp chiếu:</label>
+                        <div class="select-wrapper">
+                            <select id="cinemaId" name="cinemaId" class="form-control" onchange="this.form.submit()">
+                                <option value="">Tất cả</option>
+                                <!-- Đổ danh sách rạp -->
+                                <th:block th:each="cinema : ${cinemas}">
+                                    <option th:value="${cinema.cinemaId}"
+                                            th:text="${cinema.cinemaName}"
+                                            th:selected="${cinema.cinemaId == selectedCinemaId}">
+                                    </option>
+                                </th:block>
+                            </select>
+                            <!-- Mũi tên dropdown từ Bootstrap Icons -->
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Bảng danh sách phòng chiếu -->
+                <table th:if="${rooms != null}" border="1" id="myTable" class="table table-striped custom-table mt-5">
+                    <thead>
+                    <tr>
+                        <th class="text-center">STT</th>
+                        <th class="text-center">Tên phòng</th>
+                        <th class="text-center">Số lượng ghế</th>
+                        <th class="text-center">Tên rạp</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="room, stat : ${rooms}">
+                        <td th:text="${stat.index + 1}" class="text-center"></td>
+                        <td class="text-center" th:text="${room.roomName}"></td>
+                        <td class="text-center" th:text="${room.seats.size()}"></td>
+                        <td class="text-center" th:text="${room.cinema.cinemaName}"></td>
+                    </tr>
+                    <!-- Nếu không có phòng -->
+                    <tr th:if="${rooms.isEmpty()}">
+                        <td colspan="4" class="text-center">Không có phòng nào!</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="wrapper">
+    <div th:replace="~{adminViews/aside:: .sidebar}"></div>
+    <div class="main-panel">
+        <div class="container">
+            <div class="page-inner">
+                <!-- Button mở Modal -->
+                <div class="w-100 text-center mb-4">
+                    <button type="button" class="customAdd float-lg-start d-flex" data-bs-toggle="modal"
+                            data-bs-target="#modalRoom">
+                        Thêm phòng
+                    </button>
+                    <span class="customTitleListMovie text-center">Danh Sách Phòng</span>
+
+                    <!-- Button để mở Modal thêm phòng và ghế -->
+                    <button type="button" class="customAdd float-lg-start d-flex" data-bs-toggle="modal"
+                            data-bs-target="#themPhong">
+                        Thêm phòng và ghế
+                    </button>
+                </div>
+
+                <!-- Bảng hiển thị danh sách phòng -->
+                <div class="table-responsive">
+                    <table id="myTable" class="table table-striped custom-table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">STT</th>
+                            <th class="text-center">Tên Phòng</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="room, stat : ${rooms}">
+                            <td th:text="${stat.index + 1}" class="text-center"></td>
+                            <td th:text="${room.roomName}" class="text-center"></td>
+                            <td class="text-center">
+                                <!-- Nút sửa phòng -->
+                                <a class="customUpdate" th:href="@{'/update-room'(roomId=${room.roomId})}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <!-- Nút xóa phòng -->
+                                <form method="post" th:action="@{'/delete-room'}" style="display: inline;">
+                                    <input type="hidden" name="roomId" th:value="${room.roomId}"/>
+                                    <button type="submit" class="customBtnDelete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Modal Thêm Phòng -->
+                <div class="modal fade" id="modalRoom" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="fs-5 modal-title-custom" id="staticBackdropLabel">Thêm Phòng</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body m-0">
+                                <form id="roomForm"
+                                      th:action="@{${roomBean.roomId != null} ? '/update-room' : '/add-room'}"
+                                      th:object="${roomBean}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" th:field="*{roomId}"/>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="roomName">Tên Phòng <span style="color: red">*</span></label>
+                                            <input type="text" class="form-control full-width-input"
+                                                   th:field="*{roomName}" placeholder="Nhập tên phòng">
+                                            <div th:if="${#fields.hasErrors('roomName')}" th:errors="*{roomName}"
+                                                 class="text-danger"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-3 d-flex justify-content-end gap-2 align-items-center">
+                                        <button class="btn btn-success d-flex align-items-center">
+                                            <i class="bi bi-plus-square me-1"></i>
+                                            <span th:text="${roomBean.roomId != null} ? 'Cập nhật' : 'Thêm mới'"></span>
+                                        </button>
+                                        <a class="btn btn-secondary d-flex align-items-center" th:href="@{/reset-room}">
+                                            <i class="bi bi-arrow-clockwise me-1"></i>
+                                            Làm mới
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Thêm Phòng và Ghế -->
+                <div class="modal fade" id="themPhong" tabindex="-1" aria-labelledby="themPhongLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="themPhongLabel">Thêm Phòng và Ghế</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formThemPhong">
+                                    <!-- Combo Box Chọn Cinema -->
+                                    <div class="form-group mb-3">
+                                        <label for="cinema">Rạp Chiếu</label>
+                                        <select id="cinema" class="form-control">
+                                            <option value="">Chọn rạp chiếu</option>
+                                            <option value="1">Rạp 1</option>
+                                            <option value="2">Rạp 2</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Input Tên Phòng -->
+                                    <div class="form-group mb-3">
+                                        <label for="tenPhong">Tên Phòng</label>
+                                        <input type="text" id="tenPhong" class="form-control"
+                                               placeholder="Nhập tên phòng">
+                                    </div>
+
+                                    <!-- Input Số Lượng Ghế -->
+                                    <div class="form-group mb-3">
+                                        <label for="soLuongGhe">Số Lượng Ghế</label>
+                                        <input type="number" id="soLuongGhe" class="form-control"
+                                               placeholder="Nhập số lượng ghế">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="hienModalGhe()">Tiếp Tục</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Hiển Thị Ghế -->
+                <div class="modal fade" id="hienThiGhe" tabindex="-1" aria-labelledby="hienThiGheLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="hienThiGheLabel">Chọn Ghế</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="gheContainer" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success">Xác Nhận</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Thêm SweetAlert2 nếu chưa có -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function hienModalGhe() {
+        // Ẩn modal đang mở nếu có
+        const openModal = bootstrap.Modal.getInstance(document.querySelector('.modal.show'));
+        if (openModal) {
+            openModal.hide();
+        }
+
+        // Lấy số lượng ghế và tên phòng
+        const soLuongGhe = parseInt(document.getElementById('soLuongGhe').value);
+        const tenPhong = document.getElementById('tenPhong').value;
+
+        // Kiểm tra ô số lượng ghế có trống không
+        if (isNaN(soLuongGhe) || soLuongGhe <= 0) {
+            showNotInputCount(); // Nếu trống hoặc không hợp lệ, hiển thị thông báo lỗi
+            return; // Dừng việc thực thi nếu không có số lượng hợp lệ
+        }
+
+        const gheContainer = document.getElementById('gheContainer');
+        gheContainer.innerHTML = ''; // Xóa ghế cũ nếu có.
+
+        let hang = 'A'; // Chữ đại diện cho hàng ghế.
+        let gheHang = document.createElement('div'); // Tạo hàng ghế mới.
+        gheHang.className = 'ghe-row'; // Áp dụng lớp CSS cho layout.
+
+        for (let i = 1; i <= soLuongGhe; i++) {
+            const ghe = document.createElement('button');
+            ghe.className = `btn ${i <= 20 ? 'btn-purple' : 'btn-red'} m-1`; // Màu mặc định của ghế
+            ghe.textContent = `${hang}${(i - 1) % 10 + 1}`; // Ghế được đặt tên như A1, A2...
+
+            // Chọn tất cả ghế mặc định
+            ghe.classList.add('btn-selected'); // Mặc định chọn tất cả ghế
+
+            gheHang.appendChild(ghe);
+
+            // Sau mỗi 10 ghế, tạo một hàng mới.
+            if (i % 10 === 0 || i === soLuongGhe) {
+                gheContainer.appendChild(gheHang); // Thêm hàng ghế vào container.
+                gheHang = document.createElement('div'); // Tạo hàng mới.
+                gheHang.className = 'ghe-row'; // Áp dụng lớp CSS cho layout.
+                hang = String.fromCharCode(hang.charCodeAt(0) + 1); // Chuyển sang hàng tiếp theo.
+            }
+        }
+
+        // Hiển thị modal ghế
+        const modalGhe = new bootstrap.Modal(document.getElementById('hienThiGhe'));
+        modalGhe.show();
+
+        // Gắn sự kiện cho nút "Xác nhận"
+        const btnConfirm = document.querySelector('.modal-footer .btn-success');
+        btnConfirm.onclick = function () {
+            // Lấy các ghế đã chọn
+            const selectedSeats = [];
+            const seats = gheContainer.querySelectorAll('.btn-selected');
+            seats.forEach(seat => {
+                selectedSeats.push(seat.textContent);
+            });
+
+            // Gửi dữ liệu (bạn có thể sử dụng AJAX hoặc form ẩn để POST)
+            if (selectedSeats.length > 0) {
+                // Tạo formData và thêm thông tin phụ
+                const formData = new FormData();
+                formData.append('roomName', tenPhong);
+                formData.append('soLuongGhe', soLuongGhe);
+                formData.append('selectedSeats', JSON.stringify(selectedSeats));
+
+                // Gửi dữ liệu (Yêu cầu AJAX)
+                fetch('/add-room-seats', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        showErrorNotification(); // Hiển thị thông báo thành công
+                    })
+                    .catch(error => {
+                        showSuccessNotification(); // Hiển thị thông báo lỗi nếu có
+                    });
+            } else {
+                showNotInputCount(); // Hiển thị thông báo nếu không có ghế nào được chọn
+            }
+        }
+
+        // Hiển thị thông báo thành công
+        function showSuccessNotification() {
+            Swal.fire({
+                title: 'Thành công!',
+                text: 'Phòng và ghế đã được thêm thành công!',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();  // Tải lại trang sau khi người dùng nhấn "OK"
+                }
+            });
+        }
+
+        // Hiển thị thông báo lỗi (nếu cần)
+        function showErrorNotification() {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm phòng và ghế.',
+                icon: 'error',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Hiển thị thông báo lỗi nếu số lượng ghế không được nhập
+        function showNotInputCount() {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Vui lòng nhập số lượng ghế!',
+                icon: 'error',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+
+    // Lắng nghe sự kiện chọn ghế
+    document.getElementById('gheContainer').addEventListener('click', function (event) {
+        if (event.target && event.target.classList.contains('btn')) {
+            event.target.classList.toggle('btn-selected'); // Chuyển đổi trạng thái chọn của ghế
+        }
+    });
+</script>
+
+
+<style>
+    #gheContainer {
+        display: flex;
+        flex-direction: column; /* Các hàng xếp chồng lên nhau */
+        gap: 10px; /* Khoảng cách giữa các hàng */
+        align-items: center; /* Căn giữa các hàng */
+    }
+
+    .ghe-row {
+        display: flex;
+        justify-content: center; /* Căn giữa các ghế trong hàng */
+        flex-wrap: nowrap; /* Không cho các ghế xuống dòng */
+        gap: 5px; /* Khoảng cách giữa các ghế */
+    }
+
+    .btn-purple {
+        background-color: #6c63ff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        width: 50px;
+        text-align: center;
+    }
+
+    .btn-red {
+        background-color: #e00000;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        width: 50px;
+        text-align: center;
+    }
+
+    /* Hover effect for .btn-red */
+    .btn-red:hover {
+        background-color: #009e08; /* Red color */
+        color: white;
+    }
+
+    /* Hover effect for .btn-purple */
+    .btn-purple:hover {
+        background-color: #009e08; /* Purple color */
+        color: white;
+    }
+
+
+    #hienThiGhe .modal-body {
+        max-height: 500px;
+        overflow-y: auto; /* Cuộn nếu quá nhiều ghế */
+        text-align: center; /* Căn giữa nội dung */
+    }
+</style>
+
+
+<!--   Core JS Files   -->
+<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="../assets/js/core/popper.min.js"></script>
+<script src="../assets/js/core/bootstrap.min.js"></script>
+
+<!-- Sweet Alert -->
+<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<!-- jQuery Scrollbar -->
+<script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+<!-- Kaiadmin JS -->
+<script src="../assets/js/kaiadmin.min.js"></script>
+
+<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+<script src="../assets/js/setting-demo2.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#myTable').DataTable({
+        "language": {
+            "sSearch": "Tìm kiếm:", // "Search"
+            "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+            "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+            "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+            "sInfoFiltered": "(lọc từ _MAX_ mục)",
+            "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+            "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+
+            "sInfoPostFix": "", // Không thay đổi
+            "oPaginate": {
+                "sFirst": "Đầu tiên", // "First"
+                "sPrevious": "Trước", // "Previous"
+                "sNext": "Tiếp theo", // "Next"
+                "sLast": "Cuối cùng" // "Last"
+            },
+            "oAria": {
+                "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+            }
+        }
+    });
+});
+
+    //== Class definition
+    var SweetAlert2Demo = function () {
+
+        //== Demos
+        var initDemos = function () {
+            //== Sweetalert Demo 1
+            $('#alert_demo_1').click(function (e) {
+                swal('Good job!', {
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    },
+                });
+            });
+
+            //== Sweetalert Demo 2
+            $('#alert_demo_2').click(function (e) {
+                swal("Here's the title!", "...and here's the text!", {
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    },
+                });
+            });
+
+            //== Sweetalert Demo 3
+            $('#alert_demo_3_1').click(function (e) {
+                swal("Good job!", "You clicked the button!", {
+                    icon: "warning",
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-warning'
+                        }
+                    },
+                });
+            });
+
+            $('#alert_demo_3_2').click(function (e) {
+                swal("Good job!", "You clicked the button!", {
+                    icon: "error",
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-danger'
+                        }
+                    },
+                });
+            });
+
+            $('#alert_demo_3_3').click(function (e) {
+                swal("Good job!", "You clicked the button!", {
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    },
+                });
+            });
+
+            $('#alert_demo_3_4').click(function (e) {
+                swal("Good job!", "You clicked the button!", {
+                    icon: "info",
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-info'
+                        }
+                    },
+                });
+            });
+
+            //== Sweetalert Demo 4
+            $('#alert_demo_4').click(function (e) {
+                swal({
+                    title: "Good job!",
+                    text: "You clicked the button!",
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "Confirm Me",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-success",
+                            closeModal: true
+                        }
+                    }
+                });
+            });
+
+            $('#alert_demo_5').click(function (e) {
+                swal({
+                    title: 'Input Something',
+                    html: '<br><input class="form-control" placeholder="Input Something" id="input-field">',
+                    content: {
+                        element: "input",
+                        attributes: {
+                            placeholder: "Input Something",
+                            type: "text",
+                            id: "input-field",
+                            className: "form-control"
+                        },
+                    },
+                    buttons: {
+                        cancel: {
+                            visible: true,
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            className: 'btn btn-success'
+                        }
+                    },
+                }).then(
+                    function () {
+                        swal("", "You entered : " + $('#input-field').val(), "success");
+                    }
+                );
+            });
+
+            $('#alert_demo_6').click(function (e) {
+                swal("This modal will disappear soon!", {
+                    buttons: false,
+                    timer: 3000,
+                });
+            });
+
+            $('#alert_demo_7').click(function (e) {
+                swal({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    buttons: {
+                        confirm: {
+                            text: 'Yes, delete it!',
+                            className: 'btn btn-success'
+                        },
+                        cancel: {
+                            visible: true,
+                            className: 'btn btn-danger'
+                        }
+                    }
+                }).then((Delete) => {
+                    if (Delete) {
+                        swal({
+                            title: 'Deleted!',
+                            text: 'Your file has been deleted.',
+                            type: 'success',
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        });
+                    } else {
+                        swal.close();
+                    }
+                });
+            });
+
+            $('#alert_demo_8').click(function (e) {
+                swal({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    buttons: {
+                        cancel: {
+                            visible: true,
+                            text: 'No, cancel!',
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            text: 'Yes, delete it!',
+                            className: 'btn btn-success'
+                        }
+                    }
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        swal("Poof! Your imaginary file has been deleted!", {
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        });
+                    } else {
+                        swal("Your imaginary file is safe!", {
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-success'
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+
+        };
+
+        return {
+            //== Init
+            init: function () {
+                initDemos();
+            },
+        };
+    }();
+
+    //== Class Initialization
+    jQuery(document).ready(function () {
+        SweetAlert2Demo.init();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Admin - Phòng Chiếu</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+    <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+        WebFont.load({
+            google: { "families": ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+                urls: ['../assets/css/fonts.min.css']
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+
+    <!-- Tải CSS của Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Tải CSS của DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+
+    <!-- Tải Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Tải jQuery từ CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Tải JS của Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Tải SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Tải các JS từ thư mục local -->
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="../assets/js/kaiadmin.min.js"></script>
+    <script src="../assets/js/setting-demo2.js"></script>
+
+    <!-- Tải DataTables -->
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/plugins.min.css">
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css">
+    <link rel="stylesheet" href="../assets/css/demo.css">
+
+
+    <style>
+        .modal-title-custom {
+            font-size: 45px;
+            font-weight: 700;
+            color: #ff4971;
+        }
+
+        form label {
+            font-size: 25px;
+            color: black;
+            font-weight: 500;
+        }
+
+        .customAdd {
+            background-color: #58ba45;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customTitleListMovie {
+            font-weight: 900;
+            font-size: 30px;
+            color: #ff4971;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .customBtnDelete {
+            background-color: #dd103a;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate {
+            background-color: #66ba4b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate:focus,
+        .customUpdate:hover {
+            color: #fff;
+        }
+
+        /* Style cho Dropdown */
+        select.form-control {
+            width: 70%;
+            /* Điều chỉnh chiều dài combobox */
+            padding: 7px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            color: #495057;
+            background-color: #f8f9fa;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        /* Custom Dropdown button với mũi tên */
+        .select-wrapper {
+            position: relative;
+        }
+
+        /* Thêm mũi tên xuống vào dropdown */
+        .select-wrapper i {
+            position: absolute;
+            left: 95%;
+            transform: translateY(25%);
+            font-size: 18px;
+            color: #495057;
+        }
+
+        .no-rooms-container {
+            display: flex;
+            /* Sử dụng flexbox */
+            flex-direction: column;
+            /* Sắp xếp nội dung theo cột */
+            justify-content: center;
+            /* Căn giữa theo chiều dọc */
+            align-items: center;
+            /* Căn giữa theo chiều ngang */
+            height: 70vh;
+            /* Chiều cao toàn màn hình */
+            text-align: center;
+            /* Căn giữa văn bản */
+            background-color: #f9f9f9;
+            /* Màu nền nhẹ nhàng */
+            padding: 20px;
+            /* Thêm khoảng cách */
+        }
+
+        .no-rooms-title {
+            font-size: 24px;
+            /* Kích thước chữ tiêu đề */
+            font-weight: bold;
+            /* In đậm tiêu đề */
+            margin-bottom: 10px;
+            /* Khoảng cách dưới tiêu đề */
+            color: #333;
+            /* Màu chữ tiêu đề */
+        }
+
+        .no-rooms-content img {
+            width: 200px;
+            /* Kích thước hình ảnh */
+            height: auto;
+            /* Giữ tỷ lệ hình ảnh */
+            margin-bottom: 15px;
+            /* Khoảng cách dưới hình ảnh */
+        }
+
+        .no-rooms-container span {
+            font-size: 16px;
+            /* Kích thước chữ mô tả */
+            color: #555;
+            /* Màu chữ mô tả */
+            font-weight: 300;
+
+        }
+
+
+        .d-flex.gap-3 {
+            gap: 20px;
+            /* Khoảng cách giữa combobox và nút */
+        }
+
+        .form-select {
+            font-size: 16px;
+            /* Tăng kích thước chữ */
+            padding: 10px;
+        }
+
+        button.btn-primary {
+            height: 38px;
+            /* Đảm bảo chiều cao của nút phù hợp với combobox */
+            padding: 0 20px;
+            /* Khoảng cách trong nút */
+            display: flex;
+            align-items: center;
+            /* Căn giữa icon và chữ trong nút */
+        }
+
+         #gheContainer {
+             display: flex;
+             flex-direction: column;
+             /* Các hàng xếp chồng lên nhau */
+             gap: 10px;
+             /* Khoảng cách giữa các hàng */
+             align-items: center;
+             /* Căn giữa các hàng */
+         }
+
+        .ghe-row {
+            display: flex;
+            justify-content: center;
+            /* Căn giữa các ghế trong hàng */
+            flex-wrap: nowrap;
+            /* Không cho các ghế xuống dòng */
+            gap: 5px;
+            /* Khoảng cách giữa các ghế */
+        }
+
+        .btn-purple {
+            background-color: #6c63ff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .btn-red {
+            background-color: #e00000;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            width: 50px;
+            text-align: center;
+        }
+
+        /* Hover effect for .btn-red */
+        .btn-red:hover {
+            background-color: #009e08;
+            /* Red color */
+            color: white;
+        }
+
+        /* Hover effect for .btn-purple */
+        .btn-purple:hover {
+            background-color: #009e08;
+            /* Purple color */
+            color: white;
+        }
+
+
+        #hienThiGhe .modal-body {
+            max-height: 500px;
+            overflow-y: auto;
+            /* Cuộn nếu quá nhiều ghế */
+            text-align: center;
+            /* Căn giữa nội dung */
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <div th:replace="~{adminViews/aside:: .sidebar}"></div>
+        <div class="main-panel">
+       
+            <div class="mt-0 container">
+                <div class="page-inner">
+                    <div class="w-100 text-center">
+
+                        <!-- Button để mở Modal -->
+                        <span class="text-center customTitleListMovie">Danh Sách Phòng Chiếu Theo Rạp</span>
+                    </div>
+
+                    <div class="d-flex justify-content-center align-items-center gap-3 mt-5">
+                        <!-- Form chọn rạp -->
+                        <form action="/cinemaWithRoom" method="get" class="d-flex align-items-center">
+                            <div class="d-flex flex-column">
+                                <select id="cinemaId" name="cinemaId" class="form-select" style="width: 300px;"
+                                    onchange="this.form.submit()">
+                                    <option value="">Tất cả</option>
+                                    <!-- Đổ danh sách rạp -->
+                                    <th:block th:each="cinema, iterStat : ${cinemas}">
+                                        <option th:value="${cinema.cinemaId}" th:text="${cinema.cinemaName}"
+                                            th:selected="${cinema.cinemaId == selectedCinemaId ? true : (cinema.cinemaId == 1)}">
+                                        </option>
+                                    </th:block>
+                                </select>
+
+                                <script>
+                                    // Khởi tạo Select2 sau khi DOM đã được tải hoàn toàn
+                                    $(document).ready(function() {
+                                        $('#cinemaId').select2();
+                                    });
+                                </script>
+                            </div>
+                        </form>
+                        <!-- Nút thêm phòng -->
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            data-bs-target="#themPhong">
+                            <i class="bi bi-plus-circle me-1"></i> Thêm phòng
+                        </button>
+                    </div>
+
+
+
+                    <!-- Bảng danh sách phòng chiếu -->
+                    <div th:if="${rooms == null || rooms.isEmpty()}" class="no-rooms-container">
+
+                        <div class="no-rooms-content">
+                            <img src="https://homepage.momocdn.net/next-js/_next/static/public/cinema/not-found.svg"
+                                alt="Not Found">
+                        </div>
+                        <h2 class="no-rooms-title">Không có phòng nào để hiển thị!!</h2>
+                        <em>Vui lòng chọn Rạp chiếu!!</em>
+                    </div>
+                    <!-- Bảng danh sách phòng chiếu -->
+                    <table th:if="${rooms != null}" border="1" id="myTable"
+                        class="custom-table mt-5 table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Tên phòng</th>
+                                <th class="text-center">Số lượng ghế</th>
+                                <th class="text-center">Tên rạp</th>
+                                <th class="text-center">Sơ đồ ghế</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="room, stat : ${rooms}">
+                                <td th:text="${stat.index + 1}" class="text-center"></td>
+                                <td class="text-center" th:text="${room.roomName}"></td>
+                                <td class="text-center" th:text="${room.seats.size()}"></td>
+                                <td class="text-center" th:text="${room.cinema.cinemaName}"></td>
+                                <td class="text-center">
+                                    <button type="button" class="customUpdate" data-room-id="${room.id}">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Nếu không có phòng -->
+                            <tr th:if="${rooms.isEmpty()}">
+                                <td colspan="4" class="text-center">Không có phòng nào!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Modal Sơ đồ ghế -->
+                    <!-- Modal Sơ đồ ghế -->
+                    <div th:each="room : ${rooms}">
+                        <div class="modal fade my-5" id="hienThiGhe-${room.id}" tabindex="-1"
+                            aria-labelledby="hienThiGheLabel-${room.id}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="hienThiGheLabel-${room.id}"
+                                            th:text="'Sơ đồ ghế: ' + ${room.roomName}"></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="custom-modal-body">
+                                        <div class="mx-3 py-3 text-center mt-3"
+                                            style="background-color: gray; color: white; font-weight: bold; border-radius: 5px;">
+                                            Màn hình
+                                        </div>
+                                        <br>
+
+                                        <div id="gheContainer-${room.id}"></div> <!-- Container cho các ghế -->
+                                    </div>
+                                    <div class="d-flex justify-content-between modal-footer align-items-center">
+                                        <!-- Thêm id cho phần tử số ghế -->
+                                        <h5 class="m-0" id="tongSoGheRoomId-${room.id}">
+                                            Tổng số ghế: <strong style="color: #ff4971; font-weight: bold;"></strong>
+                                        </h5>
+
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <style>
+                        .custom-modal-body {
+                            max-height: 450px;
+                            /* Hoặc chiều cao mong muốn */
+                            overflow-y: auto;
+                            /* Kích hoạt cuộn dọc */
+                        }
+                    </style>
+                </div>
+
+                <!-- Modal Thêm Phòng và Ghế -->
+                <div class="fade modal" id="themPhong" tabindex="-1" aria-labelledby="themPhongLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="themPhongLabel">Thêm Phòng và Ghế</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formThemPhong">
+                                    <!-- Combo Box Chọn Cinema -->
+                                    <div class="mb-3 form-group">
+                                        <label for="cinema">Rạp Chiếu</label>
+                                        <select id="cinema" class="form-select" style="width: 100%; max-width: 500px;">
+                                            <option value="">Chọn rạp chiếu</option>
+                                            <option th:each="cinema : ${cinemas}" th:value="${cinema.cinemaId}"
+                                                th:text="${cinema.cinemaName}"></option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Input Tên Phòng -->
+                                    <div class="mb-3 form-group">
+                                        <label for="tenPhong">Tên Phòng</label>
+                                        <input type="text" id="tenPhong" class="form-control"
+                                            placeholder="Nhập tên phòng">
+                                    </div>
+
+                                    <!-- Input Số Lượng Ghế -->
+                                    <div class="mb-3 form-group">
+                                        <label for="soLuongGhe">Số Lượng Ghế</label>
+                                        <input type="number" id="soLuongGhe" class="form-control"
+                                            placeholder="Nhập số lượng ghế">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="hienModalGhe()">Xem trước sơ đồ
+                                    ghế
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Hiển Thị Ghế -->
+                <div class="fade modal" id="hienThiGhe" tabindex="-1" aria-labelledby="hienThiGheLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="hienThiGheLabel">Xem trước sơ đồ ghế </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body"> <!-- Thêm thẻ "Màn hình" -->
+                                <div class="py-3 text-center"
+                                    style="background-color: gray; color: white; font-weight: bold; border-radius: 5px;">
+                                    Màn hình
+                                </div>
+                                <br>
+                                <div id="gheContainer" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+                            <div class="d-flex justify-content-between modal-footer align-items-center">
+                                <h5 class="m-0" id="tongSoGhe">Tổng số ghế: 0</h5>
+                                <button type="button" class="btn btn-success">Thêm ghế</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function hienModalGhe() {
+            const cinema = document.getElementById('cinema').value;
+            const tenPhong = document.getElementById('tenPhong').value.trim();
+            const soLuongGhe = parseInt(document.getElementById('soLuongGhe').value);
+
+            // Kiểm tra rạp chiếu
+            if (!cinema) {
+                showValidationError('Vui lòng chọn rạp chiếu!');
+                return;
+            }
+
+            // Kiểm tra tên phòng
+            if (!tenPhong) {
+                showValidationError('Vui lòng nhập tên phòng!');
+                return;
+            }
+
+            // Kiểm tra số lượng ghế
+            if (isNaN(soLuongGhe)) {
+                showValidationError('Vui lòng nhập số lượng ghế hợp lệ!');
+                return;
+            }
+            if (soLuongGhe <= 0) {
+                showValidationError('Số lượng ghế phải lớn hơn 0!');
+                return;
+            }
+
+            if (soLuongGhe > 60) {
+                showValidationError('Số lượng ghế không quá 60!');
+                return;
+            }
+
+            // Ẩn modal đang mở nếu có
+            const openModal = bootstrap.Modal.getInstance(document.querySelector('.modal.show'));
+            if (openModal) {
+                openModal.hide();
+            }
+
+            // In số lượng ghế vào thẻ div có id "tongSoGhe"
+            const tongSoGheDiv = document.getElementById('tongSoGhe');
+            tongSoGheDiv.innerHTML = `Tổng số ghế: <span style="color: #ff4971; font-weight: bold">${soLuongGhe} </span>`;
+
+            const gheContainer = document.getElementById('gheContainer');
+            gheContainer.innerHTML = ''; // Xóa ghế cũ nếu có.
+
+            let hang = 'A'; // Chữ đại diện cho hàng ghế.
+            let gheHang = document.createElement('div'); // Tạo hàng ghế mới.
+            gheHang.className = 'ghe-row'; // Áp dụng lớp CSS cho layout.
+            gheHang.disabled = true;
+
+            for (let i = 1; i <= soLuongGhe; i++) {
+                const ghe = document.createElement('button');
+                ghe.className = `btn ${i <= 20 ? 'btn-purple' : 'btn-red'} m-1`; // Màu mặc định của ghế
+                ghe.textContent = `${hang}${(i - 1) % 10 + 1}`; // Ghế được đặt tên như A1, A2...
+
+                // Chọn tất cả ghế mặc định
+                ghe.classList.add('btn-selected'); // Mặc định chọn tất cả ghế
+
+                gheHang.appendChild(ghe);
+
+                // Sau mỗi 10 ghế, tạo một hàng mới.
+                if (i % 10 === 0 || i === soLuongGhe) {
+                    gheContainer.appendChild(gheHang); // Thêm hàng ghế vào container.
+                    gheHang = document.createElement('div'); // Tạo hàng mới.
+                    gheHang.className = 'ghe-row'; // Áp dụng lớp CSS cho layout.
+                    hang = String.fromCharCode(hang.charCodeAt(0) + 1); // Chuyển sang hàng tiếp theo.
+                }
+            }
+
+            // Hiển thị modal ghế
+            const modalGhe = new bootstrap.Modal(document.getElementById('hienThiGhe'));
+            modalGhe.show();
+
+            // Gắn sự kiện cho nút "Xác nhận"
+            const btnConfirm = document.querySelector('.modal-footer .btn-success');
+            btnConfirm.onclick = function () {
+                // Lấy các ghế đã chọn
+                const selectedSeats = [];
+                const seats = gheContainer.querySelectorAll('.btn-selected');
+                seats.forEach(seat => {
+                    selectedSeats.push(seat.textContent);
+                });
+
+                // Gửi dữ liệu (bạn có thể sử dụng AJAX hoặc form ẩn để POST)
+                if (selectedSeats.length > 0) {
+                    // Tạo formData và thêm thông tin phụ
+                    const formData = new FormData();
+                    formData.append('roomName', tenPhong);
+                    formData.append('soLuongGhe', soLuongGhe);
+                    formData.append('cinemaId', cinema); // Thêm cinemaId vào formData
+                    formData.append('selectedSeats', JSON.stringify(selectedSeats));
+
+                    // Gửi dữ liệu (Yêu cầu AJAX)
+                    fetch('/add-room-seats', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            showErrorNotification();  // Hiển thị thông báo thành công
+                        })
+                        .catch(error => {
+                            // Gọi hàm showSuccessAndRedirect ở nơi cần thiết
+                            showSuccessAndRedirect(cinema);
+                        });
+                } else {
+                    showNotInputCount(); // Hiển thị thông báo nếu không có ghế nào được chọn
+                }
+
+            }
+        }
+
+        // Hàm load danh sách phòng cho combobox (ví dụ)
+        function loadCinemaCombobox() {
+            // Gửi request lấy danh sách phòng (ví dụ với fetch API)
+            fetch('/api/getCinemaRooms')
+                .then(response => response.json())
+                .then(data => {
+                    const combobox = document.querySelector('#cinemaRoomSelect');
+                    if (combobox) {
+                        // Xóa các tùy chọn cũ
+                        combobox.innerHTML = '';
+
+                        // Thêm tùy chọn mặc định
+                        combobox.insertAdjacentHTML('beforeend', '<option value="">Chọn phòng</option>');
+
+                        // Thêm các tùy chọn mới
+                        data.forEach(room => {
+                            combobox.insertAdjacentHTML(
+                                'beforeend',
+                                `<option value="${room.id}">${room.name}</option>`
+                            );
+                        });
+                    }
+                })
+                .catch(error => console.error('Lỗi khi tải combobox:', error));
+        }
+
+
+        function showValidationError(message) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: message,
+                icon: 'error',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        function showSuccessAndRedirect(cinema) {
+            Swal.fire({
+                title: 'Thành công!',
+                text: 'Phòng và ghế đã được thêm thành công!',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Chuyển hướng về trang sử dụng cinemaId
+                if (cinema) {
+                    window.location.href = `http://localhost:8080/cinemaWithRoom?cinemaId=${cinema}`;
+                } else {
+                    console.error('cinemaId không hợp lệ');
+                }
+            });
+        }
+
+
+        // Hiển thị thông báo lỗi (nếu cần)
+        function showErrorNotification() {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Có lỗi xảy ra khi thêm phòng và ghế.',
+                icon: 'error',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Hiển thị thông báo lỗi nếu số lượng ghế không được nhập
+        function showNotInputCount() {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Vui lòng nhập số lượng ghế!',
+                icon: 'error',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        }
+    </script>
+
+    <script>
+        // Thêm sự kiện click cho nút "Sơ đồ ghế"
+        document.querySelectorAll('.customUpdate').forEach(button => {
+            button.addEventListener('click', function () {
+                const roomId = this.getAttribute('data-room-id'); // Lấy roomId từ data-room-id
+                const roomName = this.closest('tr').querySelector('td:nth-child(2)').innerText; // Lấy tên phòng
+                const seatCount = parseInt(this.closest('tr').querySelector('td:nth-child(3)').innerText); // Lấy số ghế
+
+                // Gọi hàm để hiển thị sơ đồ ghế
+                showSeatingLayout(roomId, roomName, seatCount); // Hàm hiển thị ghế trong modal
+            });
+        });
+
+        // Hàm hiển thị sơ đồ ghế
+        function showSeatingLayout(roomId, roomName, seatCount) {
+
+            if (seatCount === 0) {
+                Swal.fire({
+                    title: 'Thông báo!',
+                    text: 'Không có ghế để hiển thị!',
+                    icon: 'warning',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+                return; // Kết thúc hàm nếu không có ghế
+            }
+
+            // In ra roomId và các phần tử để kiểm tra
+            console.log(`roomId: ${roomId}`);
+            const gheContainer = document.getElementById('gheContainer-' + roomId);
+            const tongSoGhe = document.getElementById('tongSoGheRoomId-' + roomId).querySelector('strong'); // Lấy thẻ <strong> để cập nhật số ghế
+
+            console.log(gheContainer); // Kiểm tra gheContainer có null không
+
+            if (gheContainer) {
+                gheContainer.innerHTML = ''; // Xóa ghế cũ nếu có
+
+                let hang = 'A'; // Bắt đầu từ hàng A
+                let gheHang = document.createElement('div');
+                gheHang.className = 'ghe-row';
+
+                for (let i = 1; i <= seatCount; i++) {
+                    const ghe = document.createElement('button');
+                    ghe.className = `btn ${i <= 20 ? 'btn-purple' : 'btn-red'} m-1`; // Màu ghế mặc định
+                    ghe.textContent = `${hang}${(i - 1) % 10 + 1}`; // Đặt tên ghế như A1, A2...
+
+                    // Mặc định chọn tất cả ghế (nếu cần)
+                    ghe.classList.add('btn-selected');
+
+                    gheHang.appendChild(ghe);
+
+                    // Sau 10 ghế, tạo hàng mới
+                    if (i % 10 === 0 || i === seatCount) {
+                        gheContainer.appendChild(gheHang); // Thêm hàng ghế vào container
+                        gheHang = document.createElement('div');
+                        gheHang.className = 'ghe-row';
+                        hang = String.fromCharCode(hang.charCodeAt(0) + 1); // Chuyển sang hàng tiếp theo (A -> B -> C...)
+                    }
+                }
+
+                // Cập nhật số ghế vào footer modal
+                if (tongSoGhe) {
+                    tongSoGhe.textContent = seatCount; // Cập nhật số ghế vào thẻ <strong>
+                }
+
+                // Hiển thị modal
+                const modalGhe = new bootstrap.Modal(document.getElementById('hienThiGhe-' + roomId));
+                modalGhe.show();
+            } else {
+                console.error('Không tìm thấy container gheContainer-' + roomId);
+            }
+        }
+
+    </script>
+
+
+
+    <script>
+	$(document).ready(function () {
+		$('#myTable').DataTable({
+		    "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+		});
+	});
+    </script>
+</body>
+</html>

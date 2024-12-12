@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Admin - Danh sách ghế</title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+          name='viewport'/>
+    <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Fonts and icons -->
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: {
+                "families": ["Public Sans:300,400,500,600,700"]
+            },
+            custom: {
+                "families": ["Font Awesome 5 Solid", "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands", "simple-line-icons"],
+                urls: ['../assets/css/fonts.min.css']
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy reference đến bảng và div chứa bảng
+            const seatTable = document.getElementById('seatTable');
+            const tableContainer = seatTable.parentElement;
+
+            // Hàm để điều chỉnh chiều cao của bảng
+            function adjustTableHeight() {
+                const canAddSeat = document.getElementById('seatTable');
+                if (canAddSeat) {
+                    tableContainer.style.maxHeight = "calc(100vh - 300px)"; // Tùy chỉnh chiều cao tối đa của bảng
+                } else {
+                    tableContainer.style.maxHeight = "calc(100vh - 150px)"; // Tùy chỉnh chiều cao tối đa của bảng khi không thể thêm ghế
+                }
+            }
+
+            // Gọi hàm để điều chỉnh chiều cao khi trang tải
+            adjustTableHeight();
+        });
+
+        // Hàm ẩn form ghế khi không bấm sửa
+        function showUpdateForm(button) {
+            var seatId = button.getAttribute("data-seatId");
+            var seatPrice = button.getAttribute("data-seatPrice");
+
+            // Lấy form sửa ghế
+            var updateForm = document.getElementById("updateForm");
+
+            // Hiển thị form
+            updateForm.style.display = 'block';
+
+            // Cập nhật dữ liệu vào form
+            document.querySelector("input[name='seatId']").value = seatId;
+            document.querySelector("input[name='seatPrice']").value = seatPrice;
+        }
+    </script>
+
+
+    <script>
+        // Hàm ẩn form thêm khi form sửa hiển thị
+        function toggleForms() {
+            const formAdd = document.querySelector("#seatForm");
+            const formEdit = document.querySelector("#editForm"); // Thêm id cho form sửa
+
+            if (formEdit && formEdit.style.display !== "none") {
+                formAdd.style.display = "none";
+            } else {
+                formAdd.style.display = "block";
+            }
+        }
+
+        // Gọi hàm khi trang load
+        document.addEventListener("DOMContentLoaded", toggleForms);
+    </script>
+
+    <style>
+        .customUpdate {
+            background-color: #66ba4b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .customUpdate:focus, .customUpdate:hover {
+            color: white;
+        }
+
+        .customTitleListMovie {
+            font-weight: 900;
+            font-size: 30px;
+            color: #ff4971;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .modal-title-custom {
+            font-size: 45px;
+            font-weight: 700;
+            color: #ff4971;
+        }
+
+        .notNull {
+            color: red;
+            font-size: 20px;
+        }
+    </style>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/plugins.min.css">
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="../assets/css/demo.css">
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="~{adminViews/aside:: .sidebar}"></div>
+    <div class="main-panel">
+  
+        <div class="container mt-4">
+            <div class="w-100 text-center mt-3">
+                <span class="customTitleListMovie text-center">Danh sách ghế</span>
+            </div>
+            <form action="/seat" method="get" class="mb-4" id="roomForm">
+                <div class="form-group">
+                    <label for="room">Chọn phòng:</label>
+                    <select name="roomId" id="room" class="form-control w-50"
+                            onchange="document.getElementById('roomForm').submit()">
+                        <th:block th:each="room : ${rooms}">
+                            <option th:value="${room.roomId}" th:text="${room.roomName}"
+                                    th:selected="${room.roomId} == ${selectedRoomId}">
+                            </option>
+                        </th:block>
+                    </select>
+                </div>
+            </form>
+            <!-- Kiểm tra điều kiện để hiển thị form sửa ghế -->
+            <div id="editForm" th:if="${seatToEdit != null}">
+                <h3>Cập nhật giá ghế</h3>
+                <form action="/seat/update-price" method="post">
+                    <input type="hidden" name="seatId" th:value="${seatToEdit.seatId}"/>
+                    <input type="hidden" name="roomId" th:value="${selectedRoomId}"/> <!-- Đảm bảo gửi id phòng -->
+                    <div class="form-group">
+                        <label>Tên ghế:</label>
+                        <input type="text" name="seatName" th:value="${seatToEdit.seatName}" class="form-control"
+                               readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label>Giá ghế:</label>
+                        <input type="number" name="seatPrice" th:value="${seatToEdit.seatPrice}" class="form-control"/>
+                        <div id="seatPriceUpdateError" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <!-- Modal -->
+            <div class="modal fade" id="modalDetailsSeat"
+                 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="staticBackdropLabel" aria-hidden="true"
+                 th:if="${seatToEdit == null and canAddSeat}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="fs-5 modal-title-custom" id="staticBackdropLabel">Thêm Ghế</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="seatForm" action="/seat/add" method="post">
+                                <input type="hidden" name="roomId" th:value="${selectedRoomId}"/>
+                                <div class="form-group">
+                                    <label>Tên ghế: <span class="notNull">*</span></label>
+                                    <input type="text" name="seatName" class="form-control"
+                                           placeholder="Vui lòng nhập tên ghế"/>
+                                    <div id="seatNameError" class="text-danger"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Loại ghế: <span class="notNull">*</span></label>
+                                    <select name="status" id="status" class="form-control" required>
+                                        <option value="Thường">Thường</option>
+                                        <option value="VIP">VIP</option>
+                                    </select>
+                                    <div id="seatStatusError" class="text-danger"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Giá ghế: <span class="notNull">*</span></label>
+                                    <input type="number" name="seatPrice" class="form-control"
+                                           placeholder="Vui lòng nhập giá ghế"/>
+                                    <div id="seatPriceError" class="text-danger"></div>
+                                </div>
+                                <div class="form-group m-0 mt-3 d-flex justify-content-end align-items-center gap-2">
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-plus-square me-1"></i>
+                                        Lưu lại
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary"><i
+                                            class="bi bi-arrow-clockwise me-1"></i> Làm mới
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="table-container">
+                    <!-- Modal -->
+                    <table id="myTable" class="table table-striped custom-table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">STT</th>
+                            <th class="text-center">Tên ghế</th>
+                            <th class="text-center">Loại ghế</th>
+                            <th class="text-center">Giá</th>
+                            <th class="text-center">Chức năng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="seat, stat : ${seats}">
+                            <td th:text="${stat.index + 1}" class="text-center"></td>
+                            <td th:text="${seat.seatName}" class="text-center"></td>
+                            <td th:text="${seat.status}" class="text-center"></td>
+                            <td class="text-center seat-price" th:data-price="${seat.seatPrice}"></td>
+                            <!-- Thay thế data-price bằng th:data-price -->
+                            <td class="text-center">
+                                <a th:href="@{/seat?roomId={roomId}&seatId={seatId}(roomId=${selectedRoomId}, seatId=${seat.seatId})}"
+                                   class="customUpdate"
+                                   data-bs-toggle="modal" data-bs-target="#modalDetailsSeat">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!--   Core JS Files   -->
+<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+<script src="../assets/js/core/popper.min.js"></script>
+<script src="../assets/js/core/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<!-- jQuery Scrollbar -->
+<script
+        src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<!-- Moment JS -->
+<script src="../assets/js/plugin/moment/moment.min.js"></script>
+
+<!-- Chart JS -->
+<script src="../assets/js/plugin/chart.js/chart.min.js"></script>
+
+<!-- jQuery Sparkline -->
+<script
+        src="../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+<!-- Chart Circle -->
+<script src="../assets/js/plugin/chart-circle/circles.min.js"></script>
+
+<!-- Datatables -->
+<script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+
+<!-- Bootstrap Notify -->
+<script
+        src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+<!-- jQuery Vector Maps -->
+<script src="../assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+<script src="../assets/js/plugin/jsvectormap/world.js"></script>
+
+<!-- Sweet Alert -->
+<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+<!-- Kaiadmin JS -->
+<script src="../assets/js/kaiadmin.min.js"></script>
+
+<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+<script src="../assets/js/setting-demo2.js"></script>
+
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#myTable').DataTable({
+        "language": {
+            "sSearch": "Tìm kiếm:", // "Search"
+            "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+            "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+            "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+            "sInfoFiltered": "(lọc từ _MAX_ mục)",
+            "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+            "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
+
+            "sInfoPostFix": "", // Không thay đổi
+            "oPaginate": {
+                "sFirst": "Đầu tiên", // "First"
+                "sPrevious": "Trước", // "Previous"
+                "sNext": "Tiếp theo", // "Next"
+                "sLast": "Cuối cùng" // "Last"
+            },
+            "oAria": {
+                "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+            }
+        }
+    });
+});
+
+    /*JS FORTMAT PRICE SEAT*/
+    document.addEventListener("DOMContentLoaded", function () {
+        // Lấy tất cả các thẻ có class 'seat-price'
+        const priceElements = document.querySelectorAll('.seat-price');
+
+        // Lặp qua từng thẻ và định dạng giá trị
+        priceElements.forEach(el => {
+            const price = el.getAttribute('data-price'); // Lấy giá trị từ thuộc tính data-price
+            if (price) {
+                // Định dạng giá trị thành VND
+                const formattedPrice = new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(price);
+
+                // Hiển thị giá trị đã định dạng
+                el.textContent = formattedPrice;
+            }
+        });
+    });
+
+
+    /*JS MODAL ADD SEAT*/
+    document.addEventListener("DOMContentLoaded", function () {
+        // Tự động mở modal nếu modal tồn tại trong DOM
+        const modalElement = document.getElementById('modalDetailsSeat');
+        if (modalElement) {
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+    });
+
+
+    /*JS FOTMAT SEAT PRICE*/
+    document.addEventListener('DOMContentLoaded', function () {
+        const priceElements = document.querySelectorAll('.seat-price');
+
+        priceElements.forEach(function (element) {
+            // Kiểm tra giá trị data-price đã được Thymeleaf thay thế
+            const dataPrice = element.getAttribute('data-price');
+            console.log("Data Price:", dataPrice); // Debugging giá trị data-price
+
+            let price = parseFloat(dataPrice);
+
+            if (!isNaN(price)) {
+                // Nếu giá hợp lệ, định dạng lại
+                element.textContent = formatPrice(price);
+            } else {
+                // Nếu không hợp lệ, hiển thị thông báo lỗi hoặc giá mặc định
+                element.textContent = 'Giá không hợp lệ';
+            }
+        });
+    });
+
+    function formatPrice(price) {
+        return price.toLocaleString('vi-VN') + ' VND';
+    }
+</script>
+
+
+<script>
+    // Danh sách ghế hiện tại trong phòng (cần nhận từ backend)
+    //  const existingSeats = []; // Thay thế bằng dữ liệu thực tế từ backend
+
+    document.getElementById("seatForm").addEventListener("submit", function (event) {
+        let isValid = true;
+
+        // Lấy giá trị của các input
+        const seatName = document.querySelector("input[name='seatName']").value.trim();
+        const seatPrice = document.querySelector("input[name='seatPrice']").value.trim();
+        const seatType = document.querySelector("select[name='status']").value;
+
+        // Xóa thông báo lỗi cũ
+        document.getElementById("seatNameError").textContent = "";
+        document.getElementById("seatPriceError").textContent = "";
+        document.getElementById("seatStatusError").textContent = "";
+
+
+        // Kiểm tra tên ghế không để trống
+        if (seatName === "") {
+            document.getElementById("seatNameError").textContent = "Tên ghế không được để trống.";
+            isValid = false;
+        }
+
+        // Kiểm tra tên ghế phải thuộc dãy từ A đến E và chỉ có 10 ghế mỗi dãy
+        const regex = /^[A-E][1-9]$|^[A-E]10$/; // Tên ghế hợp lệ: A1-A10, B1-B10, ..., E1-E10
+        if (!regex.test(seatName)) {
+            document.getElementById("seatNameError").textContent = "Tên ghế phải thuộc dãy A đến E và từ 1 đến 10.";
+            isValid = false;
+        }
+
+        // Kiểm tra từ dãy C, D, E phải là ghế VIP
+        if (/^[CDE]/.test(seatName) && seatType !== "VIP") {
+            document.getElementById("seatStatusError").textContent = "Tên ghế bắt đầu bằng C, D, hoặc E phải là VIP.";
+            isValid = false;
+        }
+
+        // Kiểm tra giá ghế phải từ 1000 đến 1000000
+        const priceValue = parseFloat(seatPrice);
+        if (isNaN(priceValue) || priceValue < 1000 || priceValue > 1000000) {
+            document.getElementById("seatPriceError").textContent = "Giá ghế phải từ 1000 đến 1000000.";
+            isValid = false;
+        }
+
+        // Ngăn gửi form nếu có lỗi
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+
+</script>
+
+
+<script>
+    // Scrip bắt lỗi giá cập nhật
+    document.addEventListener("DOMContentLoaded", function () {
+        const updateForm = document.querySelector("form[action='/seat/update-price']");
+
+        if (updateForm) {
+            updateForm.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                // Lấy giá trị của input giá ghế
+                const seatPrice = document.querySelector("input[name='seatPrice']").value.trim();
+
+                // Xóa thông báo lỗi cũ
+                const priceErrorElement = document.getElementById("seatPriceUpdateError");
+                if (priceErrorElement) {
+                    priceErrorElement.textContent = "";
+                }
+
+                // Kiểm tra giá ghế phải từ 1000 đến 1000000
+                const priceValue = parseFloat(seatPrice);
+                if (isNaN(priceValue) || priceValue < 1000 || priceValue > 1000000) {
+                    if (!priceErrorElement) {
+                        // Tạo phần tử hiển thị lỗi nếu chưa có
+                        const errorDiv = document.createElement("div");
+                        errorDiv.id = "seatPriceUpdateError";
+                        errorDiv.className = "text-danger";
+                        errorDiv.textContent = "Giá ghế phải từ 1000 đến 1000000.";
+                        updateForm.querySelector("input[name='seatPrice']").after(errorDiv);
+                    } else {
+                        priceErrorElement.textContent = "Giá ghế phải từ 1000 đến 1000000.";
+                    }
+                    isValid = false;
+                }
+
+                // Ngăn gửi form nếu có lỗi
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

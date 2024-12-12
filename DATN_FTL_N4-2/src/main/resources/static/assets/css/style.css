@@ -1,0 +1,153 @@
+.short-text .content {
+  display: inline;
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  max-width: 200px; /* Giới hạn chiều rộng để tạo hiệu ứng cắt nội dung */
+}
+
+.short-text.expanded .content {
+  white-space: normal;
+  max-width: none;
+}
+
+.ellipsis {
+  display: none;
+}
+
+.short-text:not(.expanded) .ellipsis {
+  display: inline;
+}
+
+.short-text:not(.expanded) .view-more {
+  display: inline;
+}
+
+.short-text.expanded .view-more {
+  display: none;
+}
+.table-content {
+  display: inline-block;
+  max-width: 300px; /* Độ rộng giới hạn */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.view-more {
+  color: blue;
+  cursor: pointer;
+}
+
+table {
+    
+   
+width: 100%; /* Hoặc chiều rộng cụ thể nếu bạn muốn */
+    table-layout: fixed; /* Bảng có chiều rộng cố định */
+}
+th, td {
+    
+ 
+border: 1px solid #000; /* Đường viền cho các ô */
+    width: 8.33%; /* Chiều rộng cho mỗi cột */
+    
+  
+text-align: center; /* Căn giữa nội dung */
+    padding: 10px; /* Khoảng cách bên trong ô */
+    
+
+word-wrap: break-word; /* Ngắt từ nếu không đủ chỗ */
+    
+  
+overflow-wrap: break-word; /* Tương tự như word-wrap */
+    
+   
+white-space: normal; /* Đảm bảo nội dung xuống dòng */
+
+overflow: hidden; /* Ẩn phần nội dung vượt quá */
+}
+
+.collapse:not(.show) {
+    display: none;
+}
+
+.collapse.show {
+    display: block;
+}
+
+		.customBtnDelete {
+			background-color: #dd103a;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customUpdate {
+			background-color: #66ba4b;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customUpdate:focus {
+			color: #ffff;
+		}
+		.customUpdate:hover {
+			color: #fff;
+		}
+		.modal-title-custom {
+			font-size: 45px;
+			font-weight: 700;
+			color: #ff4971;
+		}
+		.notNull {
+			color: red;
+			font-size: 20px;
+		}
+		form label {
+			font-size: 25px;
+			color: black;
+			font-weight: 500;
+		}
+		.customTitleListMovie {
+			font-weight: 900;
+			font-size: 30px;
+			color: #ff4971;
+			font-family: "Roboto", sans-serif;
+		}
+		.customAdd {
+			background-color: #58ba45;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 15px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		.customBtnDelete:focus, .customBtnDelete:hover {
+			color: #ffff;
+		}
+	
+
+
+
+
