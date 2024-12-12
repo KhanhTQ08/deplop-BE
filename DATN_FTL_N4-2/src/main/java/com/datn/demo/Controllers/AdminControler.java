@@ -1203,8 +1203,6 @@ public class AdminControler {
 		return "redirect:/seatWithRoomAndCinema?cinemaId=" + cinemaId + "&roomId=" + roomId;
 	}
 
-	// QKhanh push code 28/11/24,,, all code admin
-	// QKhanh push code 28/11/24,,, all code admin
-	// QKhanh push code 28/11/24,,, all code admin
-	// QKhanh push code 28/11/24,,, all code admin
+	// QKhanh push code 12/12/24,,, all code admin....
+
 }
