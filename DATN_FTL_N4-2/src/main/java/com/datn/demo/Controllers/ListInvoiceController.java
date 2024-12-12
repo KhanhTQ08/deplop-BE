@@ -10,6 +10,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,7 @@ public class ListInvoiceController {
     private AccountService accountService;
 
     @GetMapping("/list")
-    public String showListInvoice(Model model, HttpSession session) {
+    public String showListInvoice(HttpServletRequest request, Model model, HttpSession session) {
         AccountEntity acc = (AccountEntity) session.getAttribute("acc");
 
 	    // Kiểm tra nếu đã đăng nhập và là admin
@@ -54,8 +55,11 @@ public class ListInvoiceController {
             Map<Integer, String> qrCodeMap = new HashMap<>();
 
             for (InvoiceEntity invoice : invoices) {
+
+                String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+
                 String encryptedInvoiceId = encryptMD5(invoice.getInvoiceId().toString());
-                String qrCodeUrl = "http://localhost:8080/print/" + encryptedInvoiceId;
+                String qrCodeUrl = baseUrl + "/print/" + encryptedInvoiceId;
 
                 // Tạo mã QR cho URL và lưu vào Map
                 String qrCodeBase64 = generateQRCodeBase64(qrCodeUrl);
