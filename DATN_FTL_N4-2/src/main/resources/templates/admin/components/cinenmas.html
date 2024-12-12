@@ -14,7 +14,7 @@
 		  href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
 	<script
 			src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
-			<script src="../assets/js/aside.js"></script>
+	<script src="../assets/js/aside.js"></script>
 
 	<script>
 		WebFont.load({
@@ -131,46 +131,45 @@
 	<div class="main-panel">
 		<div class="container">
 			<div class="page-inner">
-			
-			<!-- Modal Thùng Rác -->
-<div class="modal fade" id="trashModal" tabindex="-1" aria-labelledby="trashModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="trashModalLabel">Thùng Rác</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Tên Rạp</th>
-                            <th>Địa Chỉ</th>
-                            <th>Email</th>
-                            <th>Thao Tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="cinema : ${trashCinemas}">
-                            <td th:text="${cinema.cinemaName}"></td>
-                            <td th:text="${cinema.address}"></td>
-                            <td th:text="${cinema.email}"></td>
-                            <td>
-                                <a th:href="@{/cinema/restore/{id}(id=${cinema.cinemaId})}" class="btn btn-success btn-sm">
-                                   <i class="bi bi-arrow-clockwise"></i>
-                                </a>
-                                 
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
+				<!-- Modal Thùng Rác -->
+				<div class="modal fade" id="trashModal" tabindex="-1" aria-labelledby="trashModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="trashModalLabel">Thùng Rác</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<table class="table">
+									<thead>
+									<tr>
+										<th>Tên Rạp</th>
+										<th>Địa Chỉ</th>
+										<th>Email</th>
+										<th>Thao Tác</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr th:each="cinema : ${trashCinemas}">
+										<td th:text="${cinema.cinemaName}"></td>
+										<td th:text="${cinema.address}"></td>
+										<td th:text="${cinema.email}"></td>
+										<td>
+											<a th:href="@{/cinema/restore/{id}(id=${cinema.cinemaId})}" class="btn btn-success btn-sm">
+												<i class="bi bi-arrow-clockwise"></i>
+											</a>
+
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+							</div>
+						</div>
+					</div>
+				</div>
 				<!-- Modal Cập Nhật Rạp Chiếu -->
 				<div class="modal fade" id="modalUpdateCinema"
 					 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -180,7 +179,7 @@
 							<div class="modal-header">
 								<!-- Tiêu đề thay đổi dựa trên context (Thêm hay Cập Nhật) -->
 								<span class="fs-5 modal-title-custom" id="staticBackdropLabel"
-									  >Cập Nhật Rạp</span>
+								>Cập Nhật Rạp</span>
 								<button type="button" class="btn-close" data-bs-dismiss="modal"
 										aria-label="Close"></button>
 							</div>
@@ -197,7 +196,7 @@
 												</label> <input type="text" id="cinemaName"
 																th:field="*{cinemaName}" class="form-control"
 																placeholder="Nhập tên rạp" />
- <span id="errorMessage" class="text-danger mt-1 d-none">Tên rạp đã tồn tại. Vui lòng nhập tên khác!</span>
+												<span id="errorMessage" class="text-danger mt-1 d-none">Tên rạp đã tồn tại. Vui lòng nhập tên khác!</span>
 											</div>
 
 											<!-- Số Điện Thoại -->
@@ -341,10 +340,9 @@
 					<button type="button" class="customAdd float-lg-start d-flex"
 							data-bs-toggle="modal" data-bs-target="#modalAddCinema"
 							onclick="clearFields()">Thêm Rạp Chiếu</button>
-							
-							<button type="button" class="customAdd float-lg-start d-flex" style="background-color: blue" data-bs-toggle="modal" data-bs-target="#trashModal">
-    Khôi phục
-</button>
+					<button type="button" class="customAdd float-lg-start d-flex" style="background-color: blue" data-bs-toggle="modal" data-bs-target="#trashModal">
+						Khôi phục
+					</button>
 					<span class="customTitleListMovie text-center">Danh Sách
 							Rạp Chiếu</span>
 				</div>
@@ -420,9 +418,7 @@
 								});
 							});
 						</script>
-
 					</table>
-				
 				</div>
 			</div>
 		</div>
@@ -482,32 +478,32 @@
 </script>
 
 <th:block th:if="${successMessage}">
-			<script>
-				Swal.fire({
-					icon: 'success',
-					title: 'Thêm mới thành công!',
-					text: /*[${successMessage}]*/ 'Thành công!',
-				});
-			</script>
-		</th:block>
-			<th:block th:if="${cinemaMessage}">
-			<script>
-				Swal.fire({
-					icon: 'success',
-					title: 'Cập nhật thành công!',
-					text: /*[${successMessage}]*/ 'Cập nhật đã thành công!',
-				});
-			</script>
-		</th:block>
-		<th:block th:if="${successUMessage}">
-			<script>
-				Swal.fire({
-					icon: 'warning',
-					title: 'Xóa thành công!',
-					text: /*[${successMessage}]*/ 'Đã xóa rạp thành công!',
-				});
-			</script>
-		</th:block>
+	<script>
+		Swal.fire({
+			icon: 'success',
+			title: 'Thêm mới thành công!',
+			text: /*[${successMessage}]*/ 'Thành công!',
+		});
+	</script>
+</th:block>
+<th:block th:if="${cinemaMessage}">
+	<script>
+		Swal.fire({
+			icon: 'success',
+			title: 'Cập nhật thành công!',
+			text: /*[${successMessage}]*/ 'Cập nhật đã thành công!',
+		});
+	</script>
+</th:block>
+<th:block th:if="${successUMessage}">
+	<script>
+		Swal.fire({
+			icon: 'warning',
+			title: 'Xóa thành công!',
+			text: /*[${successMessage}]*/ 'Đã xóa rạp thành công!',
+		});
+	</script>
+</th:block>
 <th:block th:if="${errorMessage}">
 	<script>
 		// Hiển thị thông báo lỗi sử dụng SweetAlert
@@ -530,7 +526,7 @@
 			icon: 'error',
 			title: 'Xóa thất bại!',
 			text: 'Không thể xóa vì còn phòng tồn tại trong rạp!'  // Thông báo lỗi
-		
+
 		});
 	</script>
 </th:block>
@@ -541,7 +537,7 @@
 			icon: 'error',
 			title: 'Cập nhật thất bại!',
 			text: 'Nội dung cập nhật sẽ không có hiệu lực!'  // Thông báo lỗi
-		
+
 		});
 	</script>
 </th:block>
@@ -594,47 +590,47 @@
 	});
 </script>
 <script>
-document.getElementById("cinemaName").addEventListener("input", function () {
-    const cinemaId = document.getElementById("cinemaId").value.trim(); // ID của rạp
-    const cinemaName = this.value.trim(); // Tên rạp mới
-    const errorMessage = document.getElementById("errorMessage");
+	document.getElementById("cinemaName").addEventListener("input", function () {
+		const cinemaId = document.getElementById("cinemaId").value.trim(); // ID của rạp
+		const cinemaName = this.value.trim(); // Tên rạp mới
+		const errorMessage = document.getElementById("errorMessage");
 
-   
 
-    if (cinemaId && cinemaName) {
-        // Gọi API kiểm tra trùng tên rạp
-        fetch(`/cinema/check-duplicate?cinemaName=${encodeURIComponent(cinemaName)}&cinemaId=${cinemaId}`)
-            .then(response => response.json())
-            .then(isDuplicate => {
-                if (isDuplicate) {
-                    errorMessage.textContent = "Tên rạp đã tồn tại. Vui lòng nhập tên khác!";
-                    errorMessage.classList.remove("d-none");
-                } else {
-                    errorMessage.classList.add("d-none");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                errorMessage.textContent = "Có lỗi xảy ra khi kiểm tra tên rạp.";
-                errorMessage.classList.remove("d-none");
-            });
-    } else {
-        errorMessage.classList.add("d-none"); // Ẩn thông báo nếu không cần kiểm tra
-    }
-});
 
-// Ngăn việc gửi form nếu có lỗi
-document.getElementById("updateForm").addEventListener("submit", function (e) {
-    const errorMessage = document.getElementById("errorMessage");
-    if (!errorMessage.classList.contains("d-none")) {
-        e.preventDefault(); // Dừng việc gửi form
-        Swal.fire({
-            icon: 'error',
-            title: 'Cập nhật thất bại',
-            text: 'Có lỗi xảy ra khi kiểm tra tên rạp. Vui lòng thử lại sau!',
-        }); // Hiển thị thông báo
-    }
-});
+		if (cinemaId && cinemaName) {
+			// Gọi API kiểm tra trùng tên rạp
+			fetch(`/cinema/check-duplicate?cinemaName=${encodeURIComponent(cinemaName)}&cinemaId=${cinemaId}`)
+					.then(response => response.json())
+					.then(isDuplicate => {
+						if (isDuplicate) {
+							errorMessage.textContent = "Tên rạp đã tồn tại. Vui lòng nhập tên khác!";
+							errorMessage.classList.remove("d-none");
+						} else {
+							errorMessage.classList.add("d-none");
+						}
+					})
+					.catch(error => {
+						console.error("Error:", error);
+						errorMessage.textContent = "Có lỗi xảy ra khi kiểm tra tên rạp.";
+						errorMessage.classList.remove("d-none");
+					});
+		} else {
+			errorMessage.classList.add("d-none"); // Ẩn thông báo nếu không cần kiểm tra
+		}
+	});
+
+	// Ngăn việc gửi form nếu có lỗi
+	document.getElementById("updateForm").addEventListener("submit", function (e) {
+		const errorMessage = document.getElementById("errorMessage");
+		if (!errorMessage.classList.contains("d-none")) {
+			e.preventDefault(); // Dừng việc gửi form
+			Swal.fire({
+				icon: 'error',
+				title: 'Cập nhật thất bại',
+				text: 'Có lỗi xảy ra khi kiểm tra tên rạp. Vui lòng thử lại sau!',
+			}); // Hiển thị thông báo
+		}
+	});
 </script>
 <script>
 	$('#displayNotif')
