@@ -264,47 +264,7 @@
     });
 
 
-    let selectedSeats = [];
 
-    function selectSeat(seat) {
-        const seatId = seat.getAttribute('data-seat-id');
-        const seatName = seat.textContent.trim();
-        if (seat.classList.contains('selected')) {
-            seat.classList.remove('selected');
-            selectedSeats = selectedSeats.filter(s => s.id !== seatId);
-        } else {
-            seat.classList.add('selected');
-            selectedSeats.push({ id: seatId, name: seatName });
-        }
-        updateSelectedSeatsDisplay();
-    }
-
-    function clearAllSeats() {
-        // Deselect all selected seats
-        const selectedSeatsElements = document.querySelectorAll('.seat.selected');
-        selectedSeatsElements.forEach(seat => {
-            seat.classList.remove('selected');
-        });
-
-        // Clear the selected seats array
-        selectedSeats = [];
-
-        // Clear the selected seats display
-        document.getElementById('selectedSeatsDisplay').textContent = 'Tất cả ghế được chọn!';
-
-        // Reset total amount
-        document.getElementById('totalAmount').textContent = '0 VND';
-    }
-
-    function updateSelectedSeatsDisplay() {
-        const displayElement = document.getElementById('selectedSeatsDisplay');
-        if (selectedSeats.length > 0) {
-            const seatNames = selectedSeats.map(s => s.name).join(', ');
-            displayElement.textContent = `Ghế đã chọn: ${seatNames}`;
-        } else {
-            displayElement.textContent = 'Tất cả ghế được chọn!';
-        }
-    }
 </script>
 <!-- modal -->
 <div th:replace="userViews/footer:: footer"></div>
