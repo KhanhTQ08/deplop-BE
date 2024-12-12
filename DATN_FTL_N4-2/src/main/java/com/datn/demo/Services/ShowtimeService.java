@@ -155,79 +155,70 @@ public class ShowtimeService {
 	}
 
 	public void notifyCustomersForOldShowtime(ShowtimeEntity showtime) {
-	    LocalDate originalShowDate = showtime.getOriginalShowDate();
-	    LocalTime originalStartTime = showtime.getOriginalStartTime();
-	    LocalTime originalEndTime = showtime.getOriginalEndTime();
+		// Truyền vào tham số LocalDate và LocalTime trực tiếp
+		LocalDate originalShowDate = showtime.getOriginalShowDate();
+		LocalTime originalStartTime = showtime.getOriginalStartTime();
+		LocalTime originalEndTime = showtime.getOriginalEndTime();
 
-	    // Tìm các hóa đơn có suất chiếu gốc
-	    List<InvoiceEntity> invoices = invoiceRepository.findByOriginalShowtimeDetails(originalShowDate,
-	            originalStartTime, originalEndTime);
+		// Không cần kiểm tra phòng chiếu cũ nữa, bỏ qua phần phòng chiếu
+		List<InvoiceEntity> invoices = invoiceRepository.findByOriginalShowtimeDetails(originalShowDate,
+				originalStartTime, originalEndTime);
 
-	    // Duyệt qua các hóa đơn và gửi email thông báo
-	    for (InvoiceEntity invoice : invoices) {
-	        // Kiểm tra xem hóa đơn có phải là khách hàng mua vé cho ngày chiếu cũ không
-	        if (invoice.getShowtime().getOriginalShowDate().isEqual(originalShowDate)) {
-	            String emailContent = buildShowtimeChangeEmailContent(showtime);
-	            emailService.sendEmail(invoice.getAccount().getEmail(), "Thông báo dời lịch chiếu", emailContent);
-	        }
-	    }
+		// Duyệt qua các hóa đơn và gửi email thông báo
+		for (InvoiceEntity invoice : invoices) {
+			String emailContent = buildShowtimeChangeEmailContent(showtime);
+			emailService.sendEmail(invoice.getAccount().getEmail(), "Thông báo dời lịch chiếu", emailContent);
+		}
 	}
-
 
 	private String buildShowtimeChangeEmailContent(ShowtimeEntity showtime) {
-	    StringBuilder htmlContent = new StringBuilder();
-        htmlContent.append("<div style='font-family: Arial, sans-serif; min-width: 100%; background-color: rgba(250, 90, 90, 0.8); padding: 1.5rem; box-sizing: border-box;'>")
-        .append("<div style='max-width: 600px; margin: auto; background-color: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);'>")
+		StringBuilder htmlContent = new StringBuilder();
+		htmlContent.append(
+				"<div style='font-family: sans-serif; min-width: 100%; min-height: 100vh; background-color: rgba(250, 90, 90, 0.8); padding: 2rem;'>")
+				.append("<div style='max-width: 600px; margin: auto;'>")
+				.append("<div style='background-color: white; padding: 2rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);'>")
+				.append("<div style='text-align: center; border-bottom: 1px solid #eaeaea; margin-bottom: 2rem;'>")
+				.append("<img src='https://drive.google.com/uc?id=1nFnGPdWnlFK1XRuZtB-8hJWFEVMp0TSF' alt='Mô tả hình ảnh' style='width: 80px; height: 80px; margin-right: 550px;' >")
+				.append("<h1 style='font-size: 2rem;'>Thông Báo Dời Lịch Chiếu</h1>").append("</div>")
+				.append("<p>Xin chào quý khách,</p>").append("<p>Chúng tôi xin thông báo rằng suất chiếu phim <b>")
+				.append(showtime.getMovie().getMovieName()).append("</b> vào ngày <b>")
+				.append(showtime.getOriginalShowDate()).append("</b> đã được dời sang ngày <b>")
+				.append(showtime.getShowDate()).append("</b>.</p>").append("<p>Thời gian chiếu mới: <b>")
+				.append(showtime.getStartTime()).append(" - ").append(showtime.getEndTime()).append("</b></p>")
+				.append("<p>Lý do dời lịch: <b>").append(showtime.getReason()).append("</b></p>")
+				.append("<p>Rạp chiếu: <b>").append(showtime.getCinemaInformation().getCinemaName()).append("</b></p>")
+				.append("<p>Chúng tôi xin lỗi vì sự bất tiện này và cảm ơn quý khách đã thông cảm.</p>")
+				.append("<p>Thông tin ghế ngồi đã đặt:</p>");
 
-	            // Logo và tiêu đề, căn giữa hình ảnh
-        .append("<div style='text-align: center; margin-bottom: 2rem;'>")
-        .append("<img src='https://drive.google.com/uc?id=1nFnGPdWnlFK1XRuZtB-8hJWFEVMp0TSF' alt='Logo' style='width: 100px; height: 100px;'>")
-	            .append("<h1 style='font-size: 2rem;'>Thông Báo Dời Lịch Chiếu</h1>").append("</div>")
-	            
-	            // Nội dung thông báo dời lịch
-	            .append("<p>Xin chào quý khách,</p>")
-	            .append("<p>Chúng tôi xin thông báo rằng suất chiếu phim <b>")
-	            .append(showtime.getMovie().getMovieName()).append("</b> vào ngày <b>")
-	            .append(showtime.getOriginalShowDate()).append("</b> đã được dời sang ngày <b>")
-	            .append(showtime.getShowDate()).append("</b>.</p>")
-	            .append("<p>Thời gian chiếu mới: <b>")
-	            .append(showtime.getStartTime()).append(" - ").append(showtime.getEndTime()).append("</b></p>")
-	            .append("<p>Lý do dời lịch: <b>").append(showtime.getReason()).append("</b></p>")
-	            .append("<p>Rạp chiếu: <b>").append(showtime.getCinemaInformation().getCinemaName()).append("</b></p>")
-	            .append("<p>Chúng tôi xin lỗi vì sự bất tiện này và cảm ơn quý khách đã thông cảm.</p>")
-	            .append("<p>Thông tin ghế ngồi đã đặt:</p>");
+		// Danh sách ghế ngồi
+		List<TicketEntity> tickets = ticketRepository.findTicketsByShowtimeId(showtime.getShowtimeId());
+		StringBuilder seats = new StringBuilder();
+		seats.setLength(0);
+		for (TicketEntity ticket : tickets) {
+			if (ticket.getSeat().getRoom().getRoomId() == showtime.getRoom().getRoomId()) {
+				if (seats.length() > 0)
+					seats.append(", ");
+				seats.append(ticket.getSeat().getSeatName());
+			}
+		}
+		htmlContent.append("<ul>");
+		htmlContent.append("<li><b>Phòng chiếu - ").append(showtime.getRoom().getRoomName()).append("</b>: ")
+				.append(seats.toString()).append("</li>");
+		htmlContent.append("</ul>");
 
-	    // Danh sách ghế ngồi
-	    List<TicketEntity> tickets = ticketRepository.findTicketsByShowtimeId(showtime.getShowtimeId());
-	    StringBuilder seats = new StringBuilder();
-	    seats.setLength(0);
-	    for (TicketEntity ticket : tickets) {
-	        if (ticket.getSeat().getRoom().getRoomId() == showtime.getRoom().getRoomId()) {
-	            if (seats.length() > 0)
-	                seats.append(", ");
-	            seats.append(ticket.getSeat().getSeatName());
-	        }
-	    }
-	    htmlContent.append("<ul>");
-	    htmlContent.append("<li><b>Phòng chiếu - ").append(showtime.getRoom().getRoomName()).append("</b>: ")
-	            .append(seats.toString()).append("</li>");
-	    htmlContent.append("</ul>");
-
-	    // Di chuyển phần cảm ơn vào bên trong form
-	    htmlContent.append(
-	            "<p style='margin-top: 1rem;text-align: center;'>Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ chúng tôi.</p>")
-	            .append("<div style='text-align: center; color: #555;'>")
-	            .append("<h3>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</h3>").append("</div>").append("</div>") // Đóng
-	                                                                                                               // khung
-	                                                                                                               // thông
-	                                                                                                               // báo
-	                                                                                                               // chính
-	            .append("</div>") // Đóng khung giới hạn
-	            .append("</div>"); // Đóng nền ngoài
-	    return htmlContent.toString();
+		// Di chuyển phần cảm ơn vào bên trong form
+		htmlContent.append(
+				"<p style='margin-top: 1rem;text-align: center;'>Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ chúng tôi.</p>")
+				.append("<div style='text-align: center; color: #555;'>")
+				.append("<h3>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</h3>").append("</div>").append("</div>") // Đóng
+																													// khung
+																													// thông
+																													// báo
+																													// chính
+				.append("</div>") // Đóng khung giới hạn
+				.append("</div>"); // Đóng nền ngoài
+		return htmlContent.toString();
 	}
-
-
 
 	public List<ShowtimeEntity> getShowtimesForDate(LocalDate selectedDate) {
 		// Giả sử bạn có một phương thức trong repository để lấy dữ liệu theo ngày

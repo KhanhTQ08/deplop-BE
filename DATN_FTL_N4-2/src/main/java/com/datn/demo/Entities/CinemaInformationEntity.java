@@ -23,12 +23,12 @@ public class CinemaInformationEntity {
     private Integer cinemaId;
 
     @NotBlank(message = "Tên rạp không được để trống")
-    @Size(min = 2, max = 100, message = "Tên rạp phải có độ dài từ 2 đến 100 ký tự")
+    @Size(min = 3, max = 100, message = "Tên rạp phải có độ dài từ 3 đến 100 ký tự")
     @Column(name = "CINEMA_NAME")
     private String cinemaName;
 
+    @Size(min = 3, max = 255, message = "Tên rạp phải có độ dài từ 3 đến 100 ký tự")
     @NotBlank(message = "Địa chỉ không được để trống")
-    @Size(min = 2, max = 255, message = "địa chỉ phải có độ dài từ 2 đến 255 ký tự")
     @Column(name = "ADDRESS")
     private String address;
 
@@ -46,4 +46,7 @@ public class CinemaInformationEntity {
 
     @Transient // Không lưu trữ vào cơ sở dữ liệu
     private List<MovieEntity> movies; // Danh sách phim đã được nhóm theo suất chiếu
+    
+    @Column(name = "STATUS", nullable = false)
+    private Boolean status = true;
 }

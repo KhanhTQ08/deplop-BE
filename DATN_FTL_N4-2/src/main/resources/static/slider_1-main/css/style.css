@@ -9,10 +9,6 @@ body {
     font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 12px;
 }
-.custom-img {
-    width: 65px;
-    height: 60px;
-}
 
 .alert-container {
     min-height: 60px;
@@ -119,16 +115,7 @@ body {
 .pagination-btn.first-last {
     background: #ff3d49;
 }
-@keyframes slideFadeIn {
-    0% {
-        opacity: 0; /* Bắt đầu từ trong suốt */
-        transform: translateY(20px); /* Trượt từ dưới lên */
-    }
-    100% {
-        opacity: 1; /* Hiện rõ */
-        transform: translateY(0); /* Về vị trí ban đầu */
-    }
-}
+
 .suggestion-box {
     border: 1px solid #ccc; /* Đặt border cho hộp gợi ý */
     background: white;
@@ -141,9 +128,7 @@ body {
     width: 400px; /* Chiều rộng của gợi ý */
     display: none; /* Ẩn thanh gợi ý mặc định */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Thêm bóng cho gợi ý */
-    animation: slideFadeIn 0.4s ease-out; /* Kết hợp fade-in và slide */
-        animation-fill-mode: forwards; /* Giữ trạng thái cuối sau khi animation hoàn thành */
-    
+    animation: fadeIn 0.3s ease-out; /* Thêm hiệu ứng fade-in */
 }
 .suggestion-box::-webkit-scrollbar {
     width: 12px; /* Độ rộng của thanh cuộn */

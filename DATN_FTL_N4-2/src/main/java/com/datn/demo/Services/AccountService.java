@@ -208,7 +208,7 @@ public class AccountService {
                 .append("</div>")
 
                 // Phần thông báo OTP
-                .append("<div style='padding-bottom: 1.5rem; margin-bottom: 1.5rem;'>")
+                .append("<div style='border-bottom: 1px solid #eaeaea; padding-bottom: 1.5rem; margin-bottom: 1.5rem;'>")
                 .append("<p>Xin chào bạn,</p>")
                 .append("<p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu từ bạn. Để hoàn tất, vui lòng sử dụng mã OTP dưới đây:</p>")
                 .append("<div style='text-align: center; margin: 2rem 0;'>")
@@ -216,7 +216,16 @@ public class AccountService {
                 .append(otp)
                 .append("</span>")
                 .append("</div>")
-                .append("<p style='text-align: center;'>Hãy nhập mã này vào ô xác nhận để tiếp tục. Mã sẽ hết hạn sau <strong>3 phút</strong>.</p>")
+                .append("<p style='text-align: center;'>Hãy nhập mã này vào ô xác nhận để tiếp tục. Mã sẽ hết hạn sau <strong>5 phút</strong>.</p>")
+                .append("</div>")
+
+                // Phần hướng dẫn
+                .append("<div style='margin-bottom: 2rem;'>")
+                .append("<h2 style='font-size: 1.4rem; color: #555;'>Hướng dẫn</h2>")
+                .append("<ul style='padding-left: 20px;'>")
+                .append("<li>Không chia sẻ mã OTP với bất kỳ ai.</li>")
+                .append("<li>Nếu không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</li>")
+                .append("</ul>")
                 .append("</div>")
 
                 // Cảm ơn và liên hệ
@@ -230,7 +239,6 @@ public class AccountService {
 
         return htmlContent.toString();
     }
-
 
 
 

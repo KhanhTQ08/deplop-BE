@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class InvoiceDetailsAllUserController {
         model.addAttribute("accountEntities", accountsWithInvoices);
 
         // Thêm danh sách hóa đơn vào model
+        Collections.reverse(listInvoiceAllUser);
         model.addAttribute("listInvoiceAllUser", listInvoiceAllUser);
 
         System.out.println("Accounts with invoices: " + accountsWithInvoices.size());

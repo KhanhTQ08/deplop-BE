@@ -80,17 +80,10 @@ public class SchuduleController {
 
         // Kiểm tra nếu ngày chiếu mới (newShowDate) nhỏ hơn ngày chiếu hiện tại (currentShowtime.getShowDate())
         if (newShowDate.isBefore(currentShowtime.getShowDate())) {
-        	  List<FullMovieShowtimeDTO> fullMovieShowtimes = showtimeService.getAllShowtimeDetails();
-              model.addAttribute("fullMovieShowtimes", fullMovieShowtimes);
-        	model.addAttribute("errorMessage", "Ngày chiếu mới không thể nhỏ hơn ngày chiếu hiện tại.");
-            return "showtime/form";
+            redirectAttributes.addFlashAttribute("errorMessage", "Ngày chiếu mới không thể nhỏ hơn ngày chiếu hiện tại.");
+            return "redirect:/showtime/form";
         }
-        if (newEndTime.isBefore(newStartTime)) {
-            List<FullMovieShowtimeDTO> fullMovieShowtimes = showtimeService.getAllShowtimeDetails();
-            model.addAttribute("fullMovieShowtimes", fullMovieShowtimes);
-            model.addAttribute("errorsMessage", "Giờ kết thúc không thể nhỏ hơn giờ bắt đầu.");
-            return "showtime/form";
-        }
+
         // Nếu không có lỗi, tiến hành dời lịch
         showtimeService.rescheduleShowtime(showtimeId, newShowDate, newStartTime, newEndTime, reason);
 

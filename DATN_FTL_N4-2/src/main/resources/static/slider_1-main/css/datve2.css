@@ -112,7 +112,8 @@
 #selectedSeatsDisplay {
     padding: 10px;
     border-radius: 15px; /* Tạo bo góc */
-    border: 2px solid #ff4971; /* Tạo viền với màu sắc nổi bật */
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
     background-color: rgba(255, 255, 255, 0.1); /* Tạo màu nền mờ */
 }
 
@@ -355,4 +356,15 @@
 }
 .list-unstyled li span {
     color: #f4caca;
+}
+
+.customRemoveAllSeat {
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #fff;
+    color: black;
 }

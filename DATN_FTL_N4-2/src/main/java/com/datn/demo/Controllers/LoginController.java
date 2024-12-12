@@ -5,7 +5,6 @@ import com.datn.demo.DTO.ShowtimeNotificationDTO;
 import com.datn.demo.Entities.AccountEntity;
 import com.datn.demo.Entities.InvoiceEntity;
 import com.datn.demo.Entities.RoleEntity;
-import com.datn.demo.Entities.ShowtimeEntity;
 import com.datn.demo.Entities.TicketEntity;
 import com.datn.demo.Repositories.AccountRepository;
 import com.datn.demo.Repositories.InvoiceRepository;
@@ -86,20 +85,17 @@ public class LoginController {
 	    if (currentUser != null) {
 	        boolean hasError = false;
 
-	        // Kiểm tra số điện thoại nếu người dùng không phải tài khoản Google
+	        // Kiểm tra số điện thoại
+	     // Kiểm tra số điện thoại
 	        String phoneNumber = accountEntity.getPhoneNumber();
-
-	     // Kiểm tra nếu người dùng có nhập số điện thoại mới
 	        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-	            // Nếu số điện thoại trống, hiển thị thông báo lỗi
-	            redirectAttributes.addFlashAttribute("phoneError", "Số điện thoại không được bỏ trống!");
-	            hasError = true;
-	        } else {
-	            // Kiểm tra số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số
-	            if (!phoneNumber.matches("0\\d{9}")) {
-	                redirectAttributes.addFlashAttribute("phoneError", "Số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số!");
+	            if (currentUser.getPhoneNumber() != null && !currentUser.getPhoneNumber().trim().isEmpty()) {
+	                redirectAttributes.addFlashAttribute("phoneError", "Số điện thoại không được để trống!");
 	                hasError = true;
 	            }
+	        } else if (!phoneNumber.matches("0\\d{9}")) {
+	            redirectAttributes.addFlashAttribute("phoneError", "Số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số!");
+	            hasError = true;
 	        }
 
 
@@ -117,19 +113,16 @@ public class LoginController {
 	            }
 	        }
 
+
 	        // Nếu có lỗi, quay lại trang profile
 	        if (hasError) {
 	            return "redirect:/profile";
 	        }
 
-	        // Cập nhật thông tin không có lỗi
+	        // Không có lỗi: cập nhật thông tin
 	        currentUser.setFullName(accountEntity.getFullName());
 	        currentUser.setEmail(accountEntity.getEmail());
-
-	        // Nếu người dùng cung cấp số điện thoại, thì cập nhật
-	        if (phoneNumber != null) {
-	            currentUser.setPhoneNumber(phoneNumber);
-	        }
+	        currentUser.setPhoneNumber(accountEntity.getPhoneNumber());
 
 	        // Lưu thông tin cập nhật vào database
 	        accountRepository.save(currentUser);
@@ -167,7 +160,7 @@ public class LoginController {
 		// Kiểm tra thông tin tài khoản từ cơ sở dữ liệu
 		AccountEntity acc = accountRepository.findByUsername(username);
 		if (acc == null || !acc.isDeleted()) { // Kiểm tra nếu tài khoản không tồn tại hoặc bị khóa
-		    model.addAttribute("errorss", "Tài khoản đã bị khóa!");
+		    model.addAttribute("errorss", "Tài khoản không tồn tại hoặc đã bị khóa!");
 		    return "main/user/user-login"; // Trả về trang đăng nhập
 		}
 		// Kiểm tra tài khoản và mật khẩu
@@ -175,7 +168,7 @@ public class LoginController {
 			model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
 			return "main/user/user-login";
 		}
-
+	
 		// Tạo cookie và lưu vào session
 		Cookie name = new Cookie("username", username);
 		response.addCookie(name);
@@ -289,7 +282,7 @@ public class LoginController {
 	    // Kiểm tra xem tài khoản đã tồn tại trong cơ sở dữ liệu chưa
 	    AccountEntity existingAccount = accountRepository.findByEmail(email);
 	    AccountEntity newAccount = null;
-
+	    
 	    // Nếu tài khoản chưa tồn tại, tạo tài khoản mới
 	    if (existingAccount == null) {
 	        RoleEntity userRole = roleRepository.findByRoleName("user");
@@ -308,75 +301,73 @@ public class LoginController {
 
 	        accountRepository.save(newAccount);
 	        existingAccount = newAccount; // Gán tài khoản mới vừa tạo
-	    } else {
-	        // Kiểm tra tài khoản đã bị khóa hay chưa
-	        if (!existingAccount.isDeleted()) {
-	        	redirectAttributes.addFlashAttribute("errorss", "Tài khoản đã bị khóa!");
-	            return "redirect:/login"; // Quay lại trang đăng nhập với thông báo lỗi
-	        }
 	    }
-	    List<InvoiceEntity> invoices = invoiceRepository.findByAccount(existingAccount); // Lấy tất cả hóa đơn của người dùng
-	    List<ShowtimeNotificationDTO> showtimeNotifications = new ArrayList<>();
-	    LocalDate currentDate = LocalDate.now(); // Lấy ngày hiện tại
+		List<InvoiceEntity> invoices = invoiceRepository.findByAccount(existingAccount); // Lấy tất cả hóa đơn của người dùng
+		List<ShowtimeNotificationDTO> showtimeNotifications = new ArrayList<>();
+		LocalDate currentDate = LocalDate.now(); // Lấy ngày hiện tại
 
-	    for (InvoiceEntity invoice : invoices) {
-	        ShowtimeEntity showtime = invoice.getShowtime();
-	        if (showtime != null && showtime.getShowDate() != null && showtime.getOriginalShowDate() != null) {
-	            LocalDate originalDate = showtime.getOriginalShowDate();
-	            LocalDate currentDateInInvoice = showtime.getShowDate();
+		for (InvoiceEntity invoice : invoices) {
+		    if (invoice.getShowtime() != null && invoice.getShowtime().getShowDate() != null) {
+		        LocalDate originalDate = invoice.getShowtime().getOriginalShowDate(); // Ngày chiếu gốc
+		        LocalDate currentDateInInvoice = invoice.getShowtime().getShowDate(); // Ngày chiếu hiện tại (đã dời)
 
-	            // Chỉ xử lý nếu ngày chiếu gốc và ngày chiếu hiện tại khác nhau
-	            if (!originalDate.isEqual(currentDateInInvoice)) {
-	                // Kiểm tra nếu khách hàng mua vé trước khi suất chiếu bị dời
-	                if (invoice.getBookingDate().isBefore(originalDate)) { // Ngày đặt vé < Ngày chiếu gốc
-	                    String movieName = (showtime.getMovie() != null) ? showtime.getMovie().getMovieName() : "Tên phim không xác định";
+		        LocalTime originalStartTime = invoice.getShowtime().getOriginalStartTime(); // Giờ bắt đầu gốc
+		        LocalTime originalEndTime = invoice.getShowtime().getOriginalEndTime(); // Giờ kết thúc gốc
+		        LocalTime startTime = invoice.getShowtime().getStartTime(); // Giờ bắt đầu hiện tại
+		        LocalTime endTime = invoice.getShowtime().getEndTime(); // Giờ kết thúc hiện tại
 
-	                    // Thông tin suất chiếu
-	                    LocalTime originalStartTime = showtime.getOriginalStartTime();
-	                    LocalTime originalEndTime = showtime.getOriginalEndTime();
-	                    LocalTime startTime = showtime.getStartTime();
-	                    LocalTime endTime = showtime.getEndTime();
+		        // Thông tin phòng chiếu
+		        String roomName = (invoice.getShowtime().getRoom() != null)
+		                ? invoice.getShowtime().getRoom().getRoomName()
+		                : "Phòng không xác định";
 
-	                    // Thông tin phòng chiếu
-	                    String roomName = (showtime.getRoom() != null) ? showtime.getRoom().getRoomName() : "Phòng không xác định";
+		        // Danh sách ghế đã đặt (ví dụ: "A1, A2, A3")
+		        StringBuilder seats = new StringBuilder();
+		        if (invoice.getTickets() != null && !invoice.getTickets().isEmpty()) {
+		            for (int i = 0; i < invoice.getTickets().size(); i++) {
+		                TicketEntity ticket = invoice.getTickets().get(i);
+		                seats.append(ticket.getSeat().getSeatName()); // Thêm tên ghế
+		                if (i < invoice.getTickets().size() - 1) {
+		                    seats.append(", "); // Thêm dấu phẩy nếu không phải ghế cuối
+		                }
+		            }
+		        } else {
+		            seats.append("Chưa có ghế nào được đặt.");
+		        }
 
-	                    // Danh sách ghế đã đặt
-	                    StringBuilder seats = new StringBuilder();
-	                    if (invoice.getTickets() != null && !invoice.getTickets().isEmpty()) {
-	                        for (int i = 0; i < invoice.getTickets().size(); i++) {
-	                            TicketEntity ticket = invoice.getTickets().get(i);
-	                            seats.append(ticket.getSeat().getSeatName());
-	                            if (i < invoice.getTickets().size() - 1) {
-	                                seats.append(", ");
-	                            }
-	                        }
-	                    } else {
-	                        seats.append("Chưa có ghế nào được đặt.");
-	                    }
+		        // Lý do dời lịch
+		        String reason = (invoice.getShowtime().getReason() != null)
+		                ? invoice.getShowtime().getReason()
+		                : "Không rõ lý do";
 
-	                    // Lý do dời lịch
-	                    String reason = (showtime.getReason() != null) ? showtime.getReason() : "Không rõ lý do";
+		        // Kiểm tra nếu ngày chiếu gốc và ngày chiếu hiện tại khác nhau
+		        if (originalDate != null && !originalDate.isEqual(currentDateInInvoice)) {
+		            String movieName = (invoice.getShowtime().getMovie() != null)
+		                    ? invoice.getShowtime().getMovie().getMovieName()
+		                    : "Tên phim không xác định";
 
-	                    // Tạo thông báo
-	                    ShowtimeNotificationDTO notification = new ShowtimeNotificationDTO(
-	                            movieName,
-	                            originalDate,
-	                            originalStartTime,
-	                            originalEndTime,
-	                            currentDateInInvoice,
-	                            startTime,
-	                            endTime,
-	                            reason,
-	                            seats.toString(),
-	                            roomName
-	                    );
+		            // Kiểm tra nếu ngày chiếu mới chưa tới, sẽ hiển thị thông báo
+		            if (currentDate.isBefore(currentDateInInvoice)) {
+		                // Tạo đối tượng ShowtimeNotificationDTO
+		                ShowtimeNotificationDTO notification = new ShowtimeNotificationDTO(
+		                		 movieName,
+		                		    originalDate,
+		                		    originalStartTime,
+		                		    originalEndTime,
+		                		    currentDateInInvoice,
+		                		    startTime,
+		                		    endTime,
+		                		    reason,          // Lý do dời lịch
+		                		    seats.toString(), // Ghế đã đặt, ví dụ "A1, A2, A3"
+		                		    roomName         // Phòng chiếu
+		                );
 
-	                    showtimeNotifications.add(notification);
-	                }
-	            }
-	        }
-	    }
-
+		                // Thêm đối tượng vào danh sách thông báo
+		                showtimeNotifications.add(notification);
+		            }
+		        }
+		    }
+		}
 
 		// Thêm danh sách đối tượng DTO vào model
 		if (!showtimeNotifications.isEmpty()) {

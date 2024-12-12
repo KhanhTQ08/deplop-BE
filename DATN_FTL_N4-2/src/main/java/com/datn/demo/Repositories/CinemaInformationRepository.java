@@ -49,4 +49,9 @@ public interface CinemaInformationRepository extends JpaRepository<CinemaInforma
     boolean existsByCinemaName(String cinemaName);
     
     boolean existsByCinemaNameAndCinemaIdNot(String cinemaName, Integer cinemaId);
+    
+    //Tìm các rạp có dữ liệu status là true
+    List<CinemaInformationEntity> findByStatusTrue();
+    //Tìm các rạp có dữ liệu status là false
+    List<CinemaInformationEntity> findByStatusFalse();
 }

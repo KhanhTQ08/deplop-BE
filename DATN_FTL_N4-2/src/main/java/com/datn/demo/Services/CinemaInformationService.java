@@ -20,8 +20,13 @@ public class CinemaInformationService {
         this.cinemaInformationRepository = cinemaInformationRepository;
     }
 
+//    public List<CinemaInformationEntity> getAllCinemas() {
+//        return cinemaInformationRepository.findAll();
+//    }
+//    
     public List<CinemaInformationEntity> getAllCinemas() {
-        return cinemaInformationRepository.findAll();
+        // Chỉ lấy các bản ghi có status = true
+        return cinemaInformationRepository.findByStatusTrue();
     }
 
     // Phương thức để lấy rạp chiếu với các suất chiếu chỉ thuộc phim được chọn
@@ -56,6 +61,9 @@ public class CinemaInformationService {
     }
     // Thêm mới rạp
     public CinemaInformationEntity addCinema(CinemaInformationEntity cinema) {
+        if (cinema.getStatus() == null) {
+            cinema.setStatus(true); // Đặt mặc định status = true
+        }
         return cinemaInformationRepository.save(cinema);
     }
 
@@ -73,13 +81,37 @@ public class CinemaInformationService {
         });
     }
 
-    // Xóa rạp theo ID
-    public boolean deleteCinema(int id) {
+  //   Xóa rạp theo ID
+    public boolean DELETEcinema(int id) {
         if (cinemaInformationRepository.existsById(id)) {
             cinemaInformationRepository.deleteById(id);
             return true;
         }
         return false;
     }
+    public void deleteCinema(int id) throws Exception {
+        CinemaInformationEntity cinema = cinemaInformationRepository.findById(id)
+                .orElseThrow(() -> new Exception("Rạp không tồn tại với ID: " + id));
+        
+        // Cập nhật trạng thái thành false
+        cinema.setStatus(false);
+        
+        // Lưu lại thay đổi
+        cinemaInformationRepository.save(cinema);
+    }
+    
+    public List<CinemaInformationEntity> getTrashCinemas() {
+        return cinemaInformationRepository.findByStatusFalse();
+    }
+  
+
+    // Khôi phục rạp từ thùng rác
+    public void restoreCinema(int id) throws Exception {
+        CinemaInformationEntity cinema = cinemaInformationRepository.findById(id)
+                .orElseThrow(() -> new Exception("Rạp không tồn tại với ID: " + id));
+        cinema.setStatus(true); // Đặt lại trạng thái là true
+        cinemaInformationRepository.save(cinema); // Lưu lại thay đổi
+    }
+    
 
 }

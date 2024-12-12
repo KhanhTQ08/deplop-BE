@@ -9,7 +9,7 @@
           href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
-
+ <script src="../assets/js/aside.js"></script>
 	<script>
 		WebFont.load({
 			google : {
@@ -40,11 +40,11 @@
 	/* Tổng quan */
 	/* Tổng quan */
 	body {
-			font-family: 'Arial', sans-serif;
-			background-color: #f9f9f9;
-			margin: 0;
-			padding: 0;
-		}
+		font-family: 'Public Sans', sans-serif;
+		background-color: #f8f9fa;
+		margin: 0;
+		padding: 0;
+	}
 
 	/* Tiêu đề */
 	h4, h5, h6 {
@@ -57,7 +57,7 @@
 	h4.text-center {
 		margin-top: 30px;
 	}
-    
+
 	/* Info Boxes */
 	.info-box {
 		background-color: #fff;
@@ -99,6 +99,9 @@
 		margin-bottom: 5px;
 	}
 
+	.btn {
+		min-width: 100px;
+	}
 
 	.btn-success i {
 		margin-right: 5px;
@@ -184,10 +187,11 @@
 		}
 	}
 
-button,
-		.info-box {
-			transition: all 0.3s ease;
-		}
+	/* Hiệu ứng chuyển động */
+	button, .info-box {
+		transition: all 0.3s ease;
+	}
+
 	/* Bảng */
 	table {
 		width: 100%;
@@ -336,7 +340,7 @@ button,
 
 				<!-- Danh sách rạp -->
 				<h5 class="mt-4 text-center">Danh Sách Rạp</h5>
-				<table id="myTable" class="table table-striped mt-3">
+				<table class="table table-striped mt-3">
 					<thead>
 					<tr>
 						<th>STT</th>
@@ -433,31 +437,9 @@ button,
 
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 <script type="text/javascript">
-$(document).ready(function () {
-	   $('#myTable').DataTable({
-	        "language": {
-	            "sSearch": "Tìm kiếm:", // "Search"
-	            "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
-	            "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
-	            "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
-	            "sInfoFiltered": "(lọc từ _MAX_ mục)",
-	            "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
-	            "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
-
-	            "sInfoPostFix": "", // Không thay đổi
-	            "oPaginate": {
-	                "sFirst": "Đầu tiên", // "First"
-	                "sPrevious": "Trước", // "Previous"
-	                "sNext": "Tiếp theo", // "Next"
-	                "sLast": "Cuối cùng" // "Last"
-	            },
-	            "oAria": {
-	                "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
-	                "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
-	            }
-	        }
-	    });		   
-	   });
+	$(document).ready(function() {
+		$('#myTable').DataTable();
+	});
 </script>
 
 <script>

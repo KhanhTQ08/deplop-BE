@@ -44,11 +44,8 @@ public class MovieController {
 	@GetMapping("/search")
 	public String searchMovieByKeyword(@RequestParam("keyword") String keyword, Model model) {
 	    try {
-	        // Tìm kiếm phim theo từ khóa và lọc chỉ những phim chưa bị xóa
-	        List<MovieEntity> movies = movieService.findMoviesByKeyword(keyword)
-	                                               .stream()
-	                                               .filter(movie -> movie.isDeleted()) // Lọc phim chưa bị xóa
-	                                               .collect(Collectors.toList());
+	        // Tìm kiếm phim theo từ khóa
+	        List<MovieEntity> movies = movieService.findMoviesByKeyword(keyword);
 
 	        // Truyền từ khóa và danh sách phim vào model
 	        model.addAttribute("searchKeyword", keyword);
@@ -68,17 +65,11 @@ public class MovieController {
 	    }
 	}
 
-
 	@GetMapping("/api/searchMovies")
 	@ResponseBody
 	public List<MovieEntity> searchMoviesByKeyword(@RequestParam("query") String query) {
-	    // Tìm kiếm phim theo từ khóa và lọc chỉ những phim chưa bị xóa
-	    return movieService.findMoviesByKeyword(query)
-	                       .stream()
-	                       .filter(movie -> movie.isDeleted()) // Lọc phim chưa bị xóa
-	                       .collect(Collectors.toList());
+	    return movieService.findMoviesByKeyword(query);
 	}
-
 
 	// Hiển thị danh sách phim
 	@GetMapping
@@ -241,7 +232,7 @@ public class MovieController {
 
 			     // Tạo Map chỉ chứa các ngày dự kiến đặt vé > hôm nay
 			     Map<LocalDate, List<String>> bookingDatesWithCinemas = showtimes.stream()
-			    		    .filter(showtime -> showtime.getBookingStartDate() != null && showtime.isDeleted()) // Chỉ lấy các suất chiếu chưa bị xóa mềm (isDeleted = true)
+			         .filter(showtime -> showtime.getBookingStartDate() != null)
 			         .collect(Collectors.groupingBy(
 			             ShowtimeEntity::getBookingStartDate, // Nhóm theo ngày mở bán
 			             Collectors.mapping(
@@ -365,7 +356,6 @@ public class MovieController {
 	    List<ShowtimeEntity> showtimes = showtimeService.getShowtimesByCinemaAndDate(cinemaId, showDate);
 	    return showtimes.stream()
 	            .map(ShowtimeEntity::getMovie)
-	            .filter(movie -> movie.isDeleted()) // Lọc các phim chưa bị xóa mềm (isDeleted == true)
 	            .distinct()
 	            .collect(Collectors.toList());
 	}
@@ -391,11 +381,6 @@ public class MovieController {
 	    // Lọc suất chiếu hợp lệ dựa trên thời gian hiện tại và thời gian đặt vé
 	    showtimes = showtimes.stream()
 	        .filter(showtime -> {
-	        	if (showtime.isDeleted() == false) {
-	        	    return false; // Nếu suất chiếu đã bị xóa mềm (isDeleted = false), ẩn nó đi
-	        	}
-
-
 	            // Kiểm tra nếu ngày bắt đầu đặt vé có tồn tại và nếu thời gian hiện tại chưa qua ngày bắt đầu đặt vé
 	            LocalDate bookingStartDateForShowtime = showtime.getBookingStartDate();
 	            if (bookingStartDateForShowtime != null && showDate.isEqual(bookingStartDateForShowtime) && currentTime.toLocalDate().isBefore(bookingStartDateForShowtime)) {

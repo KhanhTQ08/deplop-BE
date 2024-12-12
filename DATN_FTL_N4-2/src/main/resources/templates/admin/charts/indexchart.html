@@ -10,7 +10,7 @@
           href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/assets/js/plugin/webfont/webfont.min.js"></script>
-
+ <script src="../assets/js/aside.js"></script>
     <script>
         WebFont.load({
             google: {
@@ -26,183 +26,203 @@
             }
         });
     </script>
-  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/assets/css/plugins.min.css">
-	<link rel="stylesheet" href="/assets/css/kaiadmin.min.css">
-	<link rel="stylesheet" href="/assets/css/demo.css">
-	<!-- Giữ nguyên nếu bạn cần -->
-	<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+            rel="stylesheet">
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/plugins.min.css">
+    <link rel="stylesheet" href="/assets/css/kaiadmin.min.css">
+    <link rel="stylesheet" href="/assets/css/demo.css">
+    <!-- Giữ nguyên nếu bạn cần -->
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 </head>
 <body>
-	<style>
-		body {
-			font-family: 'Arial', sans-serif;
-			background-color: #f9f9f9;
-			margin: 0;
-			padding: 0;
-		}
+<style>
+    /* Tổng quan */
+    body {
+        font-family: 'Public Sans', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
 
-		.d-flex {
-			gap: 15px;
-			/* Thêm khoảng cách giữa các thành phần */
-		}
+    /* Header và tiêu đề */
+    h4, h6 {
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 15px;
+    }
 
-		label {
-			font-weight: bold;
-		}
 
-		input.form-control {
-			width: 200px;
-			/* Đặt chiều rộng cố định */
-		}
+    h4.text-center {
+        margin-top: 30px;
+    }
 
-		button.btn-primary {
-			background-color: #007bff;
-			border: none;
-			padding: 8px 20px;
-		}
+    /* Info Boxes */
+    .info-box {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-		a.btn-success {
-			background-color: #28a745;
-			border: none;
-			padding: 8px 20px;
-			color: #fff;
-			text-decoration: none;
-		}
+    .info-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
 
-		button.btn,
-		a.btn {
-			border-radius: 5px;
-			font-weight: bold;
-		}
+    .info-box h6 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+        margin-bottom: 10px;
+    }
 
-		.alert-success {
-			margin-top: 10px;
-			text-align: center;
-		}
+    .info-box p {
+        font-size: 22px;
+        font-weight: bold;
+        color: #007bff;
+    }
 
-		.alert {
-			margin-top: 15px;
-		}
+    .info-box small {
+        color: #666;
+        font-size: 14px;
+    }
 
-		.info-box {
-			background-color: #ffffff;
-			border: 1px solid #ddd;
-			border-radius: 10px;
-			padding: 15px;
-			text-align: center;
-			box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-			margin-bottom: 20px;
-		}
+    .info-box i {
+        font-size: 24px;
+        color: #007bff;
+        margin-bottom: 10px;
+    }
 
-		.info-box h6 {
-			font-size: 16px;
-			color: #333;
-			margin-bottom: 10px;
-			font-weight: bold;
-		}
+    /* Bảng */
+    table {
+        width: 100%;
+        background-color: #fff;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-		.info-box p {
-			font-size: 18px;
-			color: #007bff;
-			font-weight: bold;
-			margin: 0;
-		}
+    thead {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
 
-		.info-box i {
-			font-size: 24px;
-			color: #007bff;
-			margin-bottom: 10px;
-		}
+    thead th {
+        padding: 15px;
+        text-align: center;
+        font-size: 16px;
+    }
 
-		h3,
-		h4 {
-			font-weight: bold;
-			color: #333;
-		}
+    tbody tr {
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.2s ease;
+    }
 
-		.table {
-			margin-top: 20px;
-			background-color: #fff;
-			border-radius: 10px;
-			box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-			overflow: hidden;
-		}
+    tbody tr:last-child {
+        border-bottom: none;
+    }
 
-		.table thead {
-			background-color: #007bff;
-			color: #fff;
-		}
+    tbody tr:hover {
+        background-color: #f1f1f1;
+    }
 
-		.table th,
-		.table td {
-			text-align: center;
-			padding: 10px;
-			vertical-align: middle;
-		}
+    tbody td {
+        padding: 15px;
+        text-align: center;
+        font-size: 14px;
+        color: #555;
+    }
 
-		.table-striped tbody tr:nth-of-type(odd) {
-			background-color: #f4f6f9;
-		}
+    tbody td:last-child {
+        font-weight: bold;
+        color: #007bff;
+    }
 
-		.form-inline .input-group {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-		}
+    /* Responsive */
+    @media (max-width: 768px) {
+        .info-box {
+            padding: 15px;
+        }
 
-		.form-inline .btn-primary {
-			background-color: #007bff;
-			border-color: #007bff;
-		}
+        table thead {
+            display: none;
+        }
 
-		.btn-success {
-			margin-left: 10px;
-			font-weight: bold;
-			color: #fff;
-			background-color: #28a745;
-			border: none;
-			border-radius: 5px;
-			padding: 8px 16px;
-		}
+        table tbody tr {
+            display: block;
+            margin-bottom: 15px;
+        }
 
-		.btn-success:hover {
-			background-color: #218838;
-		}
+        table tbody td {
+            display: block;
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
 
-		.alert {
-			margin-top: 20px;
-			padding: 15px;
-			border-radius: 5px;
-			background-color: #d4edda;
-			color: #155724;
-			border: 1px solid #c3e6cb;
-		}
+        table tbody td:before {
+            content: attr(data-label);
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+    }
 
-		.alert-success {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-		}
+    /* Transitions */
+    button, .info-box {
+        transition: all 0.3s ease;
+    }
 
-		.alert-success span {
-			font-weight: bold;
-		}
+    button:hover {
+        background-color: #0056b3;
+    }
 
-		/* Hiệu ứng chuyển động */
-		button,
-		.info-box {
-			transition: all 0.3s ease;
-		}
-	</style>
+    /* Nút bấm */
+    button {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button.btn-primary {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    button.btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+</style>
 <div class="wrapper">
     <div th:replace="~{adminViews/aside:: .sidebar}"></div>
         <div class="main-panel">
-   
             <div class="container m-0">
                 <div class="page-inner m-0">
-                <div class="row">
+                <div class="row mt-4" style="margin-top: 100px">
                     <!-- Tổng Số Vé Bán Ra -->
                     <div class="col-md-4">
                         <div class="info-box">
@@ -248,7 +268,7 @@
                 <div class="row">
                     <div class="col-md-12 ps-3 pe-3">
                         <h4 class="text-center">Tất Cả Phim Bán Ra Hôm Nay</h4>
-                        <table id="myTableAllPhim" class="table table-striped custom-table">
+                        <table class="table table-striped custom-table">
                             <thead>
                             <tr>
                                 <th>STT</th>
@@ -313,31 +333,9 @@
 
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 <script type="text/javascript">
-$(document).ready(function () {
-	$('#myTableAllPhim').DataTable({
-        "language": {
-            "sSearch": "Tìm kiếm:", // "Search"
-            "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
-            "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
-            "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
-            "sInfoFiltered": "(lọc từ _MAX_ mục)",
-            "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
-            "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
-
-            "sInfoPostFix": "", // Không thay đổi
-            "oPaginate": {
-                "sFirst": "Đầu tiên", // "First"
-                "sPrevious": "Trước", // "Previous"
-                "sNext": "Tiếp theo", // "Next"
-                "sLast": "Cuối cùng" // "Last"
-            },
-            "oAria": {
-                "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
-                "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
-            }
-        }
-    });	
-});
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
 </script>
 
 <script>
