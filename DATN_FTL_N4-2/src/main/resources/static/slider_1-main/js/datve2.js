@@ -1,3 +1,50 @@
+/* Danh sách các ghế đã chọn */
+const selectedSeats = [];
+
+function clearAllSeats() {
+    // Xóa danh sách ghế đã chọn
+    selectedSeats.length = 0;
+
+    // Gỡ bỏ trạng thái 'selected' của tất cả các ghế
+    const allSeats = document.querySelectorAll('.seat.selected');
+    allSeats.forEach(seat => seat.classList.remove('selected'));
+
+    // Cập nhật lại hiển thị
+    updateSelectedSeatsDisplay();
+    updateTotalAmount();
+}
+
+
+/* Chọn hoặc bỏ chọn ghế */
+function selectSeat(seat) {
+    const seatName = seat.innerText; // Lấy tên ghế
+
+    // Kiểm tra nếu ghế đã được chọn
+    if (seat.classList.contains('selected')) {
+        // Bỏ chọn ghế
+        seat.classList.remove('selected');
+        selectedSeats.splice(selectedSeats.indexOf(seatName), 1);
+    } else {
+        // Chọn ghế
+        seat.classList.add('selected');
+        selectedSeats.push(seatName);
+    }
+
+    // Cập nhật hiển thị ghế đã chọn và tổng tiền
+    updateSelectedSeatsDisplay();
+    updateTotalAmount();
+}
+
+function updateSelectedSeatsDisplay() {
+    const display = document.getElementById('selectedSeatsDisplay');
+    if (selectedSeats.length === 0) {
+        display.innerText = 'Chưa có ghế nào được chọn.';
+    } else {
+        display.innerText = selectedSeats.join(', ');
+    }
+}
+
+
 function submitBooking(button) {
     const selectedSeats = [...document.querySelectorAll('.selected')].map(seat => {
         const seatId = seat.getAttribute('data-seat-id'); // Lấy seatId
@@ -142,38 +189,6 @@ products.forEach((productElement) => {
     });
 });
 /*JS MODAL*/
-
-
-/*JS QUA HÓA ĐƠN*/
-const selectedSeats = [];
-
-function selectSeat(seat) {
-    const seatName = seat.innerText; // Lấy tên ghế
-
-    // Kiểm tra xem ghế đã được chọn chưa
-    if (seat.classList.contains('selected')) {
-        // Bỏ chọn ghế
-        seat.classList.remove('selected');
-        selectedSeats.splice(selectedSeats.indexOf(seatName), 1);
-    } else {
-        // Chọn ghế
-        seat.classList.add('selected');
-        selectedSeats.push(seatName);
-    }
-
-    // Cập nhật hiển thị ghế đã chọn và tổng số tiền
-    updateSelectedSeatsDisplay();
-    updateTotalAmount();
-}
-
-function updateSelectedSeatsDisplay() {
-    const display = document.getElementById('selectedSeatsDisplay');
-    if (selectedSeats.length === 0) {
-        display.innerText = 'Chưa có ghế nào được chọn.';
-    } else {
-        display.innerText = selectedSeats.join(', ');
-    }
-}
 
 function updateTotalAmount() {
     const totalAmountDisplay = document.getElementById('totalAmount');
