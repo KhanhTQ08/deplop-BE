@@ -17,16 +17,11 @@ function showSuggestions(suggestions) {
     const suggestionBox = document.getElementById('suggestionBox');
     suggestionBox.innerHTML = '';
 
-   if (!Array.isArray(suggestions) || suggestions.length === 0) {
-    suggestionBox.innerHTML = `
-        <div style="text-align: center; margin-top: 50px;">
-            <img src="https://homepage.momocdn.net/next-js/_next/static/public/cinema/not-found.svg" alt="Không tìm thấy gợi ý" style="width: 150px; height: 150px; margin-bottom: 20px;">
-            <p style="font-weight: bold; font-size: 22px; text-align: center; color: #777;">Không tìm thấy gợi ý nào.</p>
-        </div>
-    `;
-    suggestionBox.style.display = 'block';
-    return;
-}
+    if (!Array.isArray(suggestions) || suggestions.length === 0) {
+        suggestionBox.innerHTML = '<p style="font-weight: bold; font-size: 22px; text-align: center; margin-top: 130px;">Không tìm thấy gợi ý nào.</p>';
+        suggestionBox.style.display = 'block';
+        return;
+    }
 
     suggestionBox.style.display = 'block';
 

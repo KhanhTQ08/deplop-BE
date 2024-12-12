@@ -12,7 +12,7 @@
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+ <script src="../assets/js/aside.js"></script>
 
 <!-- Fonts and icons -->
 <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
@@ -35,10 +35,7 @@
 
 <!-- Favicon -->
 <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
-<!-- DataTables CSS -->
-<link
-	href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"
-	rel="stylesheet">
+
 <!-- Tải CSS của Select2 -->
 <link
 	href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
@@ -139,7 +136,6 @@ form label {
 	font-family: "Roboto", sans-serif;
 }
 
-
 .customAdd {
 	background-color: #58ba45;
 	color: white;
@@ -161,44 +157,42 @@ form label {
 		<div th:replace="~{adminViews/aside:: .sidebar}"></div>
 
 		<div class="main-panel">
-
 			<div class="container m-0">
-				<div class="page-inner m-0">
+					<div class="page-inner m-0">
+			
+				<div class="container mt-5">
+					
+					<div class="modal fade" id="addShowtimeModal" tabindex="-1"
+						aria-labelledby="addShowtimeModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="addShowtimeModalLabel">Thêm
+										Suất Chiếu</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<form th:action="@{/add-showtime}" method="post">
+										<!-- Tạo một row cho form -->
+										<div class="row">
+											<!-- Chọn Tên Phim -->
+											<div class="col-12 col-sm-6 col-md-4 mb-3">
+												<label for="movieName" class="form-label">Tên Phim<span
+													class="text-danger"> *</span></label> <select class="form-select"
+													id="movieName" name="movieId"
+													onchange="toggleBookingStartDate()"
+													th:value="${showtimeBean.movieId}">
+													<option value="" disabled selected>Chọn Phim</option>
+													<option th:each="movie : ${movies}"
+														th:value="${movie.movieId}" th:data-image="${movie.image}"
+														th:data-content="${movie.content}"
+														th:text="${movie.movieName}"></option>
+												</select>
+												<p class="text-danger" th:errors="*{showtimeBean.movieId}"></p>
 
-					<div class="container mt-5">
 
-						<div class="modal fade" id="addShowtimeModal" tabindex="-1"
-							aria-labelledby="addShowtimeModalLabel" aria-hidden="true">
-							<div class="modal-dialog modal-lg">
-								<div class="modal-content">
-									<div class="modal-header">
-											<span class="fs-5 modal-title-custom" id="staticBackdropLabel">Thêm
-										Ca Chiếu</span>
-										<button type="button" class="btn-close"
-											data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<form th:action="@{/add-showtime}" method="post">
-											<!-- Tạo một row cho form -->
-											<div class="row">
-												<!-- Chọn Tên Phim -->
-												<div class="col-12 col-sm-6 col-md-4 mb-3">
-													<label for="movieName" class="form-label">Tên Phim<span
-														class="text-danger"> *</span></label> <select class="form-select"
-														id="movieName" name="movieId"
-														onchange="toggleBookingStartDate()"
-														th:value="${showtimeBean.movieId}">
-														<option value="" disabled selected>Chọn Phim</option>
-														<option th:each="movie : ${movies}"
-															th:value="${movie.movieId}"
-															th:data-image="${movie.image}"
-															th:data-content="${movie.content}"
-															th:text="${movie.movieName}"></option>
-													</select>
-													<p class="text-danger" th:errors="*{showtimeBean.movieId}"></p>
-
-
-													<style>
+												<style>
 /* Đảm bảo modal không bị che */
 .modal-content {
 	overflow: visible;
@@ -224,7 +218,7 @@ form label {
 }
 </style>
 
-													<script>
+												<script>
                                                 $(document).ready(function () {
                                                     $('#movieName').select2({
                                                         templateResult: formatMovieOption, // Hiển thị hình ảnh và tên phim trong danh sách
@@ -281,227 +275,214 @@ form label {
 
                                             </script>
 
-												</div>
-
-												<div class="col-12 col-sm-6 col-md-4 mb-3">
-													<label for="cinemaName" class="form-label">Rạp
-														Chiếu <span class="text-danger">*</span>
-													</label> <select class="form-select" id="cinemaName"
-														name="cinemaId" onchange="loadRooms()">
-														<option value="" disabled selected>Chọn Rạp</option>
-														<option th:each="cinema : ${cinemas}"
-															th:value="${cinema.cinemaId}"
-															th:text="${cinema.cinemaName}"></option>
-													</select>
-													<p class="text-danger" th:errors="*{showtimeBean.cinemaId}"></p>
-												</div>
-												<!-- Chọn Phòng -->
-												<div class="col-12 col-sm-6 col-md-4 mb-3">
-													<label for="roomName" class="form-label">Phòng <span
-														class="text-danger">*</span></label> <select class="form-select"
-														id="roomName" name="roomId">
-														<option value="" disabled selected>Chọn Phòng</option>
-													</select>
-													<p class="text-danger" th:errors="*{showtimeBean.roomId}"></p>
-												</div>
-												<div class="col-12 col-sm-6 col-md-4 mb-3">
-													<label for="showDate" class="form-label">Ngày Chiếu
-														<span class="text-danger">*</span>
-													</label> <input type="date" class="form-control" id="showDate"
-														name="showDate" th:value="${showtimeBean.showDate}" />
-													<p class="text-danger"
-														th:if="${#fields.hasErrors('showtimeBean.showDate')}"
-														th:errors="*{showtimeBean.showDate}"></p>
-
-												</div>
-
-												<!-- Chọn Thời Gian Bắt Đầu -->
-												<div class="col-12 col-sm-6 col-md-4 mb-3">
-													<label for="startTime" class="form-label">Thời Gian
-														Bắt Đầu <span class="text-danger">*</span>
-													</label> <input type="time" class="form-control" id="startTime"
-														name="startTime" th:value="${showtimeBean.startTime}" />
-													<p class="text-danger"
-														th:if="${#fields.hasErrors('showtimeBean.startTime')}"
-														th:errors="*{showtimeBean.startTime}"></p>
-
-												</div>
-
-												<!-- Chọn Thời Gian Kết Thúc -->
-												<div class="col-12 col-sm-6 col-md-4 mb-3">
-													<label for="endTime" class="form-label">Thời Gian
-														Kết Thúc <span class="text-danger">*</span>
-													</label> <input type="time" class="form-control" id="endTime"
-														name="endTime" th:value="${showtimeBean.endTime}"
-														step="60" />
-													<p class="text-danger"
-														th:if="${#fields.hasErrors('showtimeBean.endTime')}"
-														th:errors="*{showtimeBean.endTime}"></p>
-
-												</div>
-
-												<!-- Chọn Ngày Đặt Vé -->
-												<div class="col-12 col-sm-6 col-md-4 mb-3"
-													id="bookingStartDateField">
-													<label for="bookingStartDate" class="form-label">Ngày
-														Bắt Đầu Đặt Vé <span class="text-danger">*</span>
-													</label> <input type="date" class="form-control"
-														id="bookingStartDate" name="bookingStartDate"
-														th:value="${showtimeBean.bookingStartDate}" />
-													<p class="text-danger"
-														th:if="${#fields.hasErrors('showtimeBean.bookingStartDate')}"
-														th:errors="*{showtimeBean.bookingStartDate}"></p>
-												</div>
 											</div>
-											<!-- End .row -->
 
-											<!-- Nút Submit -->
-
-											<div
-												style="display: flex; justify-content: flex-end; gap: 10px;">
-												<button type="submit" class="btn"
-													style="background-color: #58ba45; color: white;">
-													<i class="bi bi-plus-square me-1"></i>Thêm Ca Chiếu
-												</button>
-												<button type="button" class="btn"
-													style="background-color: #6861ce; color: white;"
-													onclick="resetFormFields()">
-													<i class="bi bi-arrow-clockwise me-1"></i>Làm Mới
-												</button>
+											<div class="col-12 col-sm-6 col-md-4 mb-3">
+												<label for="cinemaName" class="form-label">Rạp Chiếu
+													<span class="text-danger">*</span>
+												</label> <select class="form-select" id="cinemaName" name="cinemaId"
+													onchange="loadRooms()">
+													<option value="" disabled selected>Chọn Rạp</option>
+													<option th:each="cinema : ${cinemas}"
+														th:value="${cinema.cinemaId}"
+														th:text="${cinema.cinemaName}"></option>
+												</select>
+												<p class="text-danger" th:errors="*{showtimeBean.cinemaId}"></p>
+											</div>
+											<!-- Chọn Phòng -->
+											<div class="col-12 col-sm-6 col-md-4 mb-3">
+												<label for="roomName" class="form-label">Phòng <span
+													class="text-danger">*</span></label> <select class="form-select"
+													id="roomName" name="roomId">
+													<option value="" disabled selected>Chọn Phòng</option>
+												</select>
+												<p class="text-danger" th:errors="*{showtimeBean.roomId}"></p>
+											</div>
+											<div class="col-12 col-sm-6 col-md-4 mb-3">
+												<label for="showDate" class="form-label">Ngày Chiếu
+													<span class="text-danger">*</span>
+												</label> <input type="date" class="form-control" id="showDate"
+													name="showDate" th:value="${showtimeBean.showDate}" />
+												<p class="text-danger"
+													th:if="${#fields.hasErrors('showtimeBean.showDate')}"
+													th:errors="*{showtimeBean.showDate}"></p>
 
 											</div>
 
+											<!-- Chọn Thời Gian Bắt Đầu -->
+											<div class="col-12 col-sm-6 col-md-4 mb-3">
+												<label for="startTime" class="form-label">Thời Gian
+													Bắt Đầu <span class="text-danger">*</span>
+												</label> <input type="time" class="form-control" id="startTime"
+													name="startTime" th:value="${showtimeBean.startTime}" />
+												<p class="text-danger"
+													th:if="${#fields.hasErrors('showtimeBean.startTime')}"
+													th:errors="*{showtimeBean.startTime}"></p>
 
-										</form>
+											</div>
+
+											<!-- Chọn Thời Gian Kết Thúc -->
+											<div class="col-12 col-sm-6 col-md-4 mb-3">
+												<label for="endTime" class="form-label">Thời Gian
+													Kết Thúc <span class="text-danger">*</span>
+												</label> <input type="time" class="form-control" id="endTime"
+													name="endTime" th:value="${showtimeBean.endTime}" step="60" />
+												<p class="text-danger"
+													th:if="${#fields.hasErrors('showtimeBean.endTime')}"
+													th:errors="*{showtimeBean.endTime}"></p>
+
+											</div>
+
+											<!-- Chọn Ngày Đặt Vé -->
+											<div class="col-12 col-sm-6 col-md-4 mb-3"
+												id="bookingStartDateField">
+												<label for="bookingStartDate" class="form-label">Ngày
+													Bắt Đầu Đặt Vé <span class="text-danger">*</span>
+												</label> <input type="date" class="form-control"
+													id="bookingStartDate" name="bookingStartDate"
+													th:value="${showtimeBean.bookingStartDate}" />
+												<p class="text-danger"
+													th:if="${#fields.hasErrors('showtimeBean.bookingStartDate')}"
+													th:errors="*{showtimeBean.bookingStartDate}"></p>
+											</div>
+										</div>
+										<!-- End .row -->
+
+										<!-- Nút Submit -->
+										<button type="submit" class="btn"
+											style="background-color: #58ba45; color: white">Thêm
+											Suất Chiếu</button>
+										<button type="button" class="btn"
+											style="background-color: #6861ce; color: white"
+											onclick="resetFormFields()">Làm Mới</button>
+
+									</form>
 
 
-									</div>
 								</div>
-							</div>
-						</div>
-
-						<div class="modal fade" id="deletedShowtimesModal" tabindex="-1"
-							aria-labelledby="deletedShowtimesModalLabel" aria-hidden="true">
-							<div class="modal-dialog modal-xl">
-								<div class="modal-content">
-									<div class="modal-header">
-											<span class="fs-5 modal-title-custom" id="staticBackdropLabel">Danh sách ca chiếu đã xóa
-										</span>
-										<button type="button" class="btn-close"
-											data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body"
-										style="max-height: 400px; overflow-y: auto;">
-										<!-- Thêm class "dataTable" và "table-striped" để DataTables nhận diện bảng và tạo màu sắc cho dòng chẵn lẻ -->
-										<table id="deletedShowtimesTable"
-											class="table table-bordered table-striped">
-											<thead>
-												<tr>
-													<th class="text-center">STT</th>
-													<th class="text-center">Phòng</th>
-													<th class="text-center">Tên Phim</th>
-													<th class="text-center">Ngày Chiếu</th>
-													<th class="text-center">Rạp Chiếu</th>
-													<th class="text-center">Khung giờ</th>
-													<th>Hành động</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr th:each="showtime, stat : ${deletedShowtimes}">
-													<td th:text="${stat.index + 1}" class="text-center"></td>
-													<!-- Hiển thị số thứ tự -->
-													<td th:text="${showtime.room.roomName}" class="text-center"></td>
-													<td th:text="${showtime.movie.movieName}" class="text-center"></td>
-													<td class="text-center"
-														th:text="${#temporals.format(showtime.showDate, 'dd-MM-yyyy')}"></td>
-													<td th:text="${showtime.cinemaInformation.cinemaName}" class="text-center"></td>
-													<!-- Hiển thị tên rạp -->
-													<td
-														th:text="${showtime.startTime} + ' - ' + ${showtime.endTime}" class="text-center"></td>
-													<td class="text-center">
-														<form
-															th:action="@{/restore-showtime/{showtimeId}(showtimeId=${showtime.showtimeId})}"
-															method="post">
-															<button type="submit" class="btn btn-success">
-																<i class="bi bi-arrow-repeat"></i>
-															</button>
-														</form>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- Table -->
-						<div class="w-100 text-center">
-							<span class="customTitleListMovie text-center">Danh sách
-								ca chiếu</span>
-						</div>
-						<div class="container">
-
-							<div class="table-responsive">
-								<!-- Modal Trigger Button -->
-
-								<button type="button" class="customAdd float-lg-start d-flex"
-									data-bs-toggle="modal" data-bs-target="#addShowtimeModal">
-									<i class="bi bi-plus-square me-1"></i>Thêm Ca Chiếu
-								</button>
-								<button type="button" class="customAdd float-lg-start d-flex"
-									style="background-color: blue" data-bs-toggle="modal"
-									data-bs-target="#deletedShowtimesModal">
-									<i class="bi bi-arrow-repeat"></i>Khôi phục
-								</button>
-
-
-								<table id="myTable" class="table table-striped custom-table">
-									<thead>
-										<tr>
-											<th class="text-center">STT</th>
-											<th class="text-center">Phòng</th>
-											<th class="text-center">Tên Phim</th>
-											<th class="text-center">Ngày Chiếu</th>
-											<th class="text-center">Rạp Chiếu</th>
-											<th class="text-center">Khung giờ</th>
-											<th class="text-center">Hành động</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="showtime, stat : ${showtimes}">
-											<td th:text="${stat.index + 1}"></td>
-											<!-- Hiển thị số thứ tự -->
-											<td th:text="${showtime.room.roomName}"></td>
-											<td th:text="${showtime.movie.movieName}"></td>
-											<td class="text-center"
-												th:text="${#temporals.format(showtime.showDate, 'dd-MM-yyyy')}"></td>
-											<td th:text="${showtime.cinemaInformation.cinemaName}"></td>
-											<!-- Hiển thị tên rạp -->
-											<td
-												th:text="${showtime.startTime} + ' - ' + ${showtime.endTime}"></td>
-											<td>
-												<div class="d-flex justify-content-center gap-2">
-													<form th:action="@{/delete-showtime}" method="post"
-														class="delete-form">
-														<input type="hidden" name="showtimeId"
-															th:value="${showtime.showtimeId}" />
-														<button type="submit" class="customBtnDelete deleteBtn">
-															<i class="bi bi-trash"></i>
-														</button>
-													</form>
-												</div>
-											</td>
-
-
-										</tr>
-									</tbody>
-
-								</table>
 							</div>
 						</div>
 					</div>
+
+					<div class="modal fade" id="deletedShowtimesModal" tabindex="-1"
+						aria-labelledby="deletedShowtimesModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="deletedShowtimesModalLabel">Danh
+										Sách Suất Chiếu Đã Xóa</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body"
+									style="max-height: 400px; overflow-y: auto;">
+									<!-- Thêm class "dataTable" và "table-striped" để DataTables nhận diện bảng và tạo màu sắc cho dòng chẵn lẻ -->
+									<table id="deletedShowtimesTable"
+										class="table table-bordered table-striped">
+										<thead>
+											<tr>
+												<th class="text-center">STT</th>
+										<th class="text-center">Phòng</th>
+										<th class="text-center">Tên Phim</th>
+										<th class="text-center">Ngày Chiếu</th>
+										<th class="text-center">Rạp Chiếu</th>
+										<th class="text-center">Khung giờ</th>
+												<th>Hành động</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="showtime, stat : ${deletedShowtimes}">
+												<td th:text="${stat.index + 1}"></td>
+										<!-- Hiển thị số thứ tự -->
+										<td th:text="${showtime.room.roomName}"></td>
+										<td th:text="${showtime.movie.movieName}"></td>
+										<td class="text-center"
+											th:text="${#temporals.format(showtime.showDate, 'dd-MM-yyyy')}"></td>
+										<td th:text="${showtime.cinemaInformation.cinemaName}"></td>
+										<!-- Hiển thị tên rạp -->
+										<td
+											th:text="${showtime.startTime} + ' - ' + ${showtime.endTime}"></td>
+												<td>
+													<form
+														th:action="@{/restore-showtime/{showtimeId}(showtimeId=${showtime.showtimeId})}"
+														method="post">
+														<button type="submit" class="btn btn-success">
+															<i class="bi bi-arrow-repeat"></i>
+														</button>
+													</form>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Table -->
+					<div class="w-100 text-center">
+						<span class="customTitleListMovie text-center">Danh sách
+							ca chiếu</span>
+					</div>
+					<div class="container">
+
+						<div class="table-responsive">
+							<!-- Modal Trigger Button -->
+						
+						<button type="button" class="customAdd float-lg-start d-flex"
+							data-bs-toggle="modal" data-bs-target="#addShowtimeModal">
+							Thêm Suất Chiếu</button>
+						<button type="button" class="customAdd float-lg-start d-flex"
+							style="background-color: blue" data-bs-toggle="modal"
+							data-bs-target="#deletedShowtimesModal">Khôi phục</button>
+
+
+							<table id="myTable" class="table table-striped custom-table">
+								<thead>
+									<tr>
+										<th class="text-center">STT</th>
+										<th class="text-center">Phòng</th>
+										<th class="text-center">Tên Phim</th>
+										<th class="text-center">Ngày Chiếu</th>
+										<th class="text-center">Rạp Chiếu</th>
+										<th class="text-center">Khung giờ</th>
+										<th class="text-center">Hành động</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="showtime, stat : ${showtimes}">
+										<td th:text="${stat.index + 1}"></td>
+										<!-- Hiển thị số thứ tự -->
+										<td th:text="${showtime.room.roomName}"></td>
+										<td th:text="${showtime.movie.movieName}"></td>
+										<td class="text-center"
+											th:text="${#temporals.format(showtime.showDate, 'dd-MM-yyyy')}"></td>
+										<td th:text="${showtime.cinemaInformation.cinemaName}"></td>
+										<!-- Hiển thị tên rạp -->
+										<td
+											th:text="${showtime.startTime} + ' - ' + ${showtime.endTime}"></td>
+										<td>
+											<div class="d-flex justify-content-center gap-2">
+												<form th:action="@{/delete-showtime}" method="post"
+													class="delete-form">
+													<input type="hidden" name="showtimeId"
+														th:value="${showtime.showtimeId}" />
+													<button type="submit" class="customBtnDelete deleteBtn">
+														<i class="bi bi-trash"></i>
+													</button>
+												</form>
+											</div>
+										</td>
+
+
+									</tr>
+								</tbody>
+
+							</table>
+						</div>
+					</div>
 				</div>
+			</div>
 			</div>
 		</div>
 	</div>
@@ -661,15 +642,6 @@ form label {
                 icon: 'error',
                 title: 'Cập nhật thất bại!',
                 text: /*[${updatefailMessage}]*/ 'Vui lòng kiểm tra lại các trường đã điền!',  <!-- Hiển thị thông báo lỗi từ controller -->
-            });
-        </script>
-	</th:block>
-	<th:block th:if="${kothexoaMessage}">
-		<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Xóa thất bại!',
-                text: /*[${kothexoaMessage}]*/ 'Không thể xóa suất chiếu đã có vé đã bán!',  <!-- Hiển thị thông báo lỗi từ controller -->
             });
         </script>
 	</th:block>

@@ -59,65 +59,6 @@
     margin: 20px auto; /* Canh giữa trên trang */    
     max-width: 800px;
 }
-/* Hiệu ứng hình ảnh */
-.error-illustration img {
-    animation: bounce 4s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-/* Tiêu đề giữ nguyên */
-.error-title {
-    font-size: 48px;
-    font-weight: bold;
-    color: #ff3d49;
-    margin: 20px 0;
-}
-
-/* Hiệu ứng nút chuyển màu */
-.error-btn {
-    background: #ff3d49;
-    transition: background-color 0.3s ease;
-}
-
-.error-btn:hover {
-    background: #bd081c;
-}
-
-@keyframes gradientMove {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* Hiệu ứng fade-in tổng thể */
-.error-container {
-    animation: fadeIn 1s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 .error-container img {
     width: 100%;
@@ -165,7 +106,7 @@
 }
     
     </style>
-<div style="margin-top:-65px"></div>
+<div style="margin-top:-60px"></div>
 	<div th:replace="userViews/footer:: footer"></div>
 	
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

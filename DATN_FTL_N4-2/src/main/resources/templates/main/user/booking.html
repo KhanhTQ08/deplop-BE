@@ -85,9 +85,18 @@
                     </div>
                     <div class="col-lg-1"></div>
                 </div>
-                <div class="text-center">
-                    <div id="selectedSeatsDisplay" class="ma-1" style="color: #fff">
-                        Tất cả ghế được chọn!
+                <div class="row">
+                    <div class="col-lg-12" style="display: flex; align-items: center;">
+                        <!-- Hiển thị ghế -->
+                        <div id="selectedSeatsDisplay" style="color: #fff;width: 100%;" class="text-center">
+                            Tất cả ghế được chọn!
+                        </div>
+                        <!-- Nút xóa -->
+                        <div>
+                            <button class="customRemoveAllSeat"
+                                    onclick="clearAllSeats()"><i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -136,8 +145,6 @@
                         0<span class="spanVND"> VND</span>
                     </div>
                 </div>
-
-
                 <button class="mt-3 btnDatVe-seat" onclick="confirmBooking()">Đặt
                     vé
                 </button>
@@ -207,9 +214,6 @@
                                 });
 
                             </script>
-
-
-
                             <p class="mb-3" th:text="${product.productDescription}"></p>
 
                             <!-- Quantity buttons -->
@@ -249,12 +253,64 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        // Khi mở modal, reset các giá trị về 0
+        $('#comboModal').on('show.bs.modal', function () {
+            $('.comboQuantity').val(0);
+            $('.comboTotalAmount').text('0 VND');
+            $('#comboTotalAmount1').text('0 VND');
+        });
+    });
 
+
+    let selectedSeats = [];
+
+    function selectSeat(seat) {
+        const seatId = seat.getAttribute('data-seat-id');
+        const seatName = seat.textContent.trim();
+        if (seat.classList.contains('selected')) {
+            seat.classList.remove('selected');
+            selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+        } else {
+            seat.classList.add('selected');
+            selectedSeats.push({ id: seatId, name: seatName });
+        }
+        updateSelectedSeatsDisplay();
+    }
+
+    function clearAllSeats() {
+        // Deselect all selected seats
+        const selectedSeatsElements = document.querySelectorAll('.seat.selected');
+        selectedSeatsElements.forEach(seat => {
+            seat.classList.remove('selected');
+        });
+
+        // Clear the selected seats array
+        selectedSeats = [];
+
+        // Clear the selected seats display
+        document.getElementById('selectedSeatsDisplay').textContent = 'Tất cả ghế được chọn!';
+
+        // Reset total amount
+        document.getElementById('totalAmount').textContent = '0 VND';
+    }
+
+    function updateSelectedSeatsDisplay() {
+        const displayElement = document.getElementById('selectedSeatsDisplay');
+        if (selectedSeats.length > 0) {
+            const seatNames = selectedSeats.map(s => s.name).join(', ');
+            displayElement.textContent = `Ghế đã chọn: ${seatNames}`;
+        } else {
+            displayElement.textContent = 'Tất cả ghế được chọn!';
+        }
+    }
+</script>
 <!-- modal -->
 <div th:replace="userViews/footer:: footer"></div>
 
 <script src="/slider_1-main/js/datve2.js"></script>
-	<script src="/slider_1-main/js/help.js"></script>
+<script src="/slider_1-main/js/help.js"></script>
 
 <!-- Bootstrap JS -->
 <script
