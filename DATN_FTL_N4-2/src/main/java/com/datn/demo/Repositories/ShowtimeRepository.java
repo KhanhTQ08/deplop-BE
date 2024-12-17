@@ -2,6 +2,9 @@ package com.datn.demo.Repositories;
 
 import com.datn.demo.DTO.FullMovieShowtimeDTO;
 import com.datn.demo.DTO.ShowtimeDetailsDTO;
+import com.datn.demo.Entities.CinemaInformationEntity;
+import com.datn.demo.Entities.MovieEntity;
+import com.datn.demo.Entities.RoomEntity;
 import com.datn.demo.Entities.ShowtimeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +22,7 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, Intege
 	@Query("SELECT new com.datn.demo.DTO.ShowtimeDetailsDTO(s.showtimeId, m.movieName, m.ageRestriction, s.startTime, s.endTime, s.showDate, r.roomName, m.movieId, m.genre, m.content, m.image, m.director, m.actor, m.image_bg, m.trailerUrl) "
 			+ "FROM ShowtimeEntity s " + "JOIN s.movie m " + "JOIN s.room r " + "WHERE s.showDate >= CURRENT_DATE")
 	List<ShowtimeDetailsDTO> findAllShowtimeDetails();
+    List<ShowtimeEntity> findByShowDateAndRoom_RoomIdAndCinemaInformation_CinemaId(LocalDate showDate, Integer roomId, Integer cinemaId);
 
 	@Query("SELECT s FROM ShowtimeEntity s JOIN FETCH s.movie WHERE s.showDate = :date")
 	List<ShowtimeEntity> findByShowDate(@Param("date") LocalDate date);
@@ -50,6 +55,8 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, Intege
 	        "JOIN st.room r " +
 	        "JOIN st.cinemaInformation ci")
 	List<FullMovieShowtimeDTO> findAllShowtimeCineMovieRoom();
+
+	List<ShowtimeEntity> findByRoom_RoomIdAndCinemaInformation_CinemaIdAndShowDate(int roomId, int cinemaId, LocalDate showDate);
 
 	
 	List<ShowtimeEntity> findByCinemaInformation_CinemaId(int cinemaId);

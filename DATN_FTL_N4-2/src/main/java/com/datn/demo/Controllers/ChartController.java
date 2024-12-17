@@ -38,7 +38,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.datn.demo.DTO.CinemaStatisticDTO;
 import com.datn.demo.DTO.MovieStatisticDTO;
+import com.datn.demo.Entities.AccountEntity;
 import com.datn.demo.Services.StatisticService;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -246,10 +249,17 @@ public class ChartController {
 
 
     @GetMapping("/movies")
-    public String showAllMoviesInInvoices(Model model) {
+    public String showAllMoviesInInvoices(Model model,HttpSession session) {
         // Lấy danh sách tất cả các phim trong hóa đơn
         List<MovieStatisticDTO> allMovies = statisticService.getAllMoviesInInvoices();
-
+        AccountEntity acc = (AccountEntity) session.getAttribute("acc");
+        if (acc == null) {
+            return "main/user/user-login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        } 
+// Kiểm tra nếu người dùng là admin
+        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
+ 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+        }
         // Tính tổng số vé bán và tổng doanh thu của tất cả các phim
         long totalTickets = allMovies.stream()
                 .mapToLong(MovieStatisticDTO::getTicketCount)
@@ -310,10 +320,17 @@ public class ChartController {
 
 
     @GetMapping("/movieindex")
-    public String showMovieChart3(Model model) {
+    public String showMovieChart3(Model model,HttpSession session) {
         // Lấy danh sách phim hôm nay
         List<MovieStatisticDTO> todayMovies = statisticService.getMovieStatisticsToday();
-
+        AccountEntity acc = (AccountEntity) session.getAttribute("acc");
+        if (acc == null) {
+            return "main/user/user-login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        } 
+// Kiểm tra nếu người dùng là admin
+        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
+ 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+        }
         // Tính tổng doanh thu và tổng vé bán ra
         long totalTickets = todayMovies.stream().mapToLong(MovieStatisticDTO::getTicketCount).sum();
         BigDecimal totalRevenue = todayMovies.stream()
@@ -343,11 +360,18 @@ public class ChartController {
     }
 
     @GetMapping("/cinemas")
-    public String showCinemaStatistics(Model model) {
+    public String showCinemaStatistics(Model model,HttpSession session) {
         // Tổng doanh thu và vé của tất cả các rạp
         BigDecimal totalRevenue = statisticService.getTotalRevenueForAllCinemas();
         Long totalTickets = statisticService.getTotalTicketsForAllCinemas();
-
+        AccountEntity acc = (AccountEntity) session.getAttribute("acc");
+        if (acc == null) {
+            return "main/user/user-login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        } 
+// Kiểm tra nếu người dùng là admin
+        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
+ 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+        }
         // Định dạng tiền tệ
         String formattedRevenue = NumberFormat.getCurrencyInstance(new Locale("vi", "VN")).format(totalRevenue);
 

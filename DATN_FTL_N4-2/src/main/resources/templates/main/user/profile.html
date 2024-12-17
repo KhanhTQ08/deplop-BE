@@ -78,7 +78,7 @@ img, .col-lg-4 {
 					<div class="alert-container" style="display: none;">
 						<!-- Thông báo hiển thị SweetAlert -->
 						<div th:if="${updateSuccess}" id="successAlert">Cập nhật
-							thành công!</div>
+							thông tin tài khoản thành công!</div>
 						<div th:if="${phoneError}" id="phoneErrorAlert">Số điện
 							thoại không hợp lệ!</div>
 						<div th:if="${nameError}" id="nameErrorAlert">Tên không được
@@ -111,6 +111,8 @@ img, .col-lg-4 {
 						<input type="text" class="form-control" id="phoneNumber"
 							name="phoneNumber" th:value="${account.phoneNumber}">
 					</div>
+				
+
 
 					<button type="submit" class="customBtn disabled">Cập nhật
 						thông tin</button>
@@ -126,6 +128,7 @@ img, .col-lg-4 {
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	
 	<script>
     document.addEventListener("DOMContentLoaded", function () {
         // Lấy các thành phần DOM liên quan đến thông báo

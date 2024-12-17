@@ -3,6 +3,7 @@ package com.datn.demo.Repositories;
 
 import com.datn.demo.DTO.CinemaStatisticDTO;
 import com.datn.demo.Entities.CinemaInformationEntity;
+import com.datn.demo.Entities.ShowtimeEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,7 +29,9 @@ public interface CinemaInformationRepository extends JpaRepository<CinemaInforma
             "GROUP BY c.cinemaName")
     List<CinemaStatisticDTO> findCinemaStatistics();
 
+	List<CinemaInformationEntity> findByStatusTrueOrderByCinemaIdAsc();
 
+    
     @Query("SELECT SUM(i.totalAmount) FROM InvoiceEntity i JOIN i.showtime s JOIN s.cinemaInformation c")
     BigDecimal findTotalRevenueForAllCinemas();
 

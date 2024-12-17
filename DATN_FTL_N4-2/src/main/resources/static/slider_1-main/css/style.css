@@ -130,6 +130,35 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Thêm bóng cho gợi ý */
     animation: fadeIn 0.3s ease-out; /* Thêm hiệu ứng fade-in */
 }
+#loadingIndicator img {
+    animation: spin 1s linear infinite;
+}
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    flex-direction: column;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+   @keyframes bounce {
+        0% { transform: translateY(0); }
+        30% { transform: translateY(-15px); }
+        50% { transform: translateY(0); }
+        70% { transform: translateY(-10px); }
+        100% { transform: translateY(0); }
+    }/* Hiệu ứng xoay cho biểu tượng loading */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 .suggestion-box::-webkit-scrollbar {
     width: 12px; /* Độ rộng của thanh cuộn */
 }
@@ -276,41 +305,42 @@ body {
     margin: 0;
 }
 
-
-/* Đặt màu nền cho menu dropdown */
-/* Cài đặt kiểu cho Dropdown Menu */
-/* Cài đặt chung cho các mục menu có mũi tên */
-.nav-item.dropdown .dropdown-menu {
-    background: linear-gradient(145deg, #e0eafc, #cfdef3); /* Gradient xanh nhạt */
-    border-radius: 12px; /* Bo tròn góc lớn hơn */
-    padding: 0.6rem 0;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Bóng đổ lớn hơn */
-    transition: all 0.3s ease;
+.custom-dropdown .dropdown-menu {
+    background: white;
+    border-radius: 12px; 
+    padding: 0.6rem 0; 
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); 
+    transition: all 0.3s ease; 
+    min-width: 200px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    display: none; 
 }
 
-/* Cài đặt kiểu cho các mục trong dropdown */
-.nav-item.dropdown .dropdown-menu .dropdown-item {
-    color: #2b3a47; /* Màu chữ đậm */
-    padding: 0.6rem 1.2rem;
+.custom-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.custom-dropdown .dropdown-menu .dropdown-item {
+    color: #2b3a47; 
+    padding: 0.6rem 1.2rem; 
     font-weight: 500;
-    border-radius: 8px; /* Bo góc cho mỗi mục */
+    border-radius: 8px; 
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s;
 }
 
-/* Hiệu ứng hover cho dropdown item */
-.nav-item.dropdown .dropdown-menu .dropdown-item:hover {
-    background: linear-gradient(135deg, #ff3d49, #ff3d49); /* Gradient hồng */
-    color: #fff; /* Màu chữ trắng khi hover */
-    transform: translateX(5px) scale(1.05); /* Hiệu ứng di chuyển và phóng to nhẹ */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Bóng đổ khi hover */
+.custom-dropdown .dropdown-menu .dropdown-item:hover {
+    background: linear-gradient(135deg, #ff3d49, #ff3d49); 
+    color: #fff; 
+    transform: translateX(5px) scale(1.05); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
 }
 
-/* Hiệu ứng khi click */
-.nav-item.dropdown .dropdown-menu .dropdown-item:active {
-    background: linear-gradient(135deg, #005c97, #363795); /* Gradient xanh đậm */
+.custom-dropdown .dropdown-menu .dropdown-item:active {
+    background: linear-gradient(135deg, #005c97, #363795); 
     color: #ffffff;
-    transform: scale(0.98); /* Giảm kích thước nhẹ khi click */
-}
+    transform: scale(0.98); 
+} 
 
 
 .voice-modal {
@@ -364,112 +394,6 @@ body {
 .modal-instruction {
     font-size: 24px; /* Tăng kích thước chữ */
     color: white; /* Màu chữ */
-}
-.accordion-container {
-    display: flex;
-    margin-top: 50px;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.accordion-left-column {
-    flex: 1;
-    padding-right: 20px;
-    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
-    border-radius: 8px;
-    padding: 20px;
-    color: #fff;
-}
-
-.accordion-right-column {
-    flex: 2;
-    padding: 20px;
-    background: linear-gradient(135deg, #cfd9df, #e2ebf0);
-    border-radius: 8px;
-}
-
-.accordion-left-column h3 {
-    margin: 0 0 10px;
-    color: #fff;
-    font-weight: bold;
-}
-
-.accordion-right-column h4 {
-    margin: 0 0 10px;
-    font-weight: bold;
-    color: #333;
-}
-
-.accordion-question-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.accordion-question-list li {
-    cursor: pointer;
-    padding: 10px;
-    background: linear-gradient(135deg, #8fd3f4, #84fab0);
-    color: #fff;
-    margin: 5px 0;
-    border-radius: 5px;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.accordion-question-list li:hover {
-    background: linear-gradient(135deg, #84fab0, #8fd3f4);
-    transform: translateY(-2px);
-}
-
-.accordion {
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.accordion-item {
-    border-bottom: 1px solid rgba(200, 200, 200, 0.3);
-}
-
-.accordion-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    cursor: pointer;
-    background: linear-gradient(135deg, #ffecd2, #fcb69f);
-    font-weight: bold;
-    transition: background 0.3s, padding 0.2s;
-    color: #333;
-    position: relative;
-}
-
-.accordion-header:hover {
-    background: linear-gradient(135deg, #fcb69f, #ffecd2);
-    padding-left: 18px;
-}
-
-.accordion-content {
-    padding: 15px;
-    display: none;
-    background: #fff;
-    color: #444;
-    line-height: 1.5;
-    transition: max-height 0.4s ease-in-out;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-/* Toggle icon style */
-.toggle-icon {
-    font-size: 18px;
-    color: #333;
-    transition: transform 0.3s;
-}
-
-.accordion-item.active .toggle-icon {
-    transform: rotate(45deg);
 }
 
 /* carousel */
@@ -9652,79 +9576,4 @@ input {
 .message-items-new ol li {
     font-family: "Roboto", sans-serif;
     font-weight: 600;
-}
-
-
-.nav-item.dropdown .dropdown-menu {
-    background: linear-gradient(145deg, #e0eafc, #cfdef3); /* Gradient xanh nhạt */
-    border-radius: 12px; /* Bo tròn góc lớn hơn */
-    padding: 0.6rem 0;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Bóng đổ lớn hơn */
-    transition: all 0.3s ease;
-}
-
-/* Cài đặt kiểu cho các mục trong dropdown */
-.nav-item.dropdown .dropdown-menu .dropdown-item {
-    color: #2b3a47; /* Màu chữ đậm */
-    padding: 0.6rem 1.2rem;
-    font-weight: 500;
-    border-radius: 8px; /* Bo góc cho mỗi mục */
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s;
-}
-
-/* Hiệu ứng hover cho dropdown item */
-.nav-item.dropdown .dropdown-menu .dropdown-item:hover {
-    background: linear-gradient(135deg, #ff3d49, #ff3d49); /* Gradient hồng */
-    color: #fff; /* Màu chữ trắng khi hover */
-    transform: translateX(5px) scale(1.05); /* Hiệu ứng di chuyển và phóng to nhẹ */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Bóng đổ khi hover */
-}
-
-/* Hiệu ứng khi click */
-.nav-item.dropdown .dropdown-menu .dropdown-item:active {
-    background: linear-gradient(135deg, #005c97, #363795); /* Gradient xanh đậm */
-    color: #ffffff;
-    transform: scale(0.98); /* Giảm kích thước nhẹ khi click */
-}
-/* Tùy chỉnh dropdown */
-/* Tùy chỉnh dropdown */
-.custom-dropdown .dropdown-menu {
-    background: linear-gradient(145deg, #e0eafc, #cfdef3); /* Gradient xanh nhạt */
-    border-radius: 12px; /* Bo góc */
-    padding: 0.6rem 0; /* Khoảng cách bên trong */
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Bóng đổ */
-    transition: all 0.3s ease; /* Hiệu ứng mượt */
-    min-width: 200px; /* Kích thước tối thiểu */
-    left: 50%; /* Căn giữa theo nút */
-    transform: translateX(-50%); /* Giữ menu ở giữa */
-    display: none; /* Ẩn menu mặc định */
-}
-
-/* Hiện menu khi hover */
-.custom-dropdown:hover .dropdown-menu {
-    display: block;
-}
-
-/* Tùy chỉnh từng mục trong dropdown */
-.custom-dropdown .dropdown-menu .dropdown-item {
-    color: #2b3a47; /* Màu chữ */
-    padding: 0.6rem 1.2rem; /* Khoảng cách */
-    font-weight: 500;
-    border-radius: 8px; /* Bo góc từng mục */
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s;
-}
-
-/* Hiệu ứng hover */
-.custom-dropdown .dropdown-menu .dropdown-item:hover {
-    background: linear-gradient(135deg, #ff3d49, #ff3d49); /* Gradient hồng */
-    color: #fff; /* Màu chữ trắng */
-    transform: translateX(5px) scale(1.05); /* Di chuyển và phóng to */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Bóng đổ khi hover */
-}
-
-/* Hiệu ứng click */
-.custom-dropdown .dropdown-menu .dropdown-item:active {
-    background: linear-gradient(135deg, #005c97, #363795); /* Gradient xanh đậm */
-    color: #ffffff;
-    transform: scale(0.98); /* Thu nhỏ nhẹ khi click */
 }

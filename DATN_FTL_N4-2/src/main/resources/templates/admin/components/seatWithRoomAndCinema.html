@@ -3,9 +3,11 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Admin - Phòng Chiếu</title>
+    <title>Admin - Ghế</title>
     <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
     <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+    	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    
     <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -95,7 +97,7 @@
             font-weight: 900;
             font-size: 30px;
             color: #ff4971;
-            font-family: "Roboto", sans-serif;
+    font-family: 'Noto Sans', sans-serif;
         }
 
         .customBtnDelete {
@@ -254,7 +256,7 @@
             <div class="page-inner">
                 <div class="w-100 text-center">
                     <!-- Button để mở Modal -->
-                    <span class="customTitleListMovie text-center">Danh Sách Ghế</span>
+						<span class="modal-title-custom" id="staticBackdropLabel" style="font-size: 30px;">Danh Sách Ghế</span>
                 </div>
 
                 <form action="/seatWithRoomAndCinema" method="get" class="d-flex align-items-center gap-3">
@@ -427,10 +429,33 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        $('#seatTable').DataTable();
-    });
+   
+    $(document).ready(function() {
+        // Khởi tạo DataTables cho bảng có id là "deletedShowtimesTable"
+        $('#seatTable').DataTable({
+            "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
 
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+        });
+    });
     /*js format seatprice*/
     document.addEventListener('DOMContentLoaded', function () {
         const priceElements = document.querySelectorAll('.seat-price');

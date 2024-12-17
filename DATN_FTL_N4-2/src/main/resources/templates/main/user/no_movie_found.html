@@ -19,6 +19,8 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
 	rel="stylesheet">
+	<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -31,7 +33,7 @@
         </div>
         <h1 class="error-title">Ooops!</h1>
         <p class="error-description">Rất tiếc! Chúng tôi không tìm thấy phim mà bạn đang tìm kiếm rồi</p>
-        <a href="/index" class="error-btn">Về trang chủ</a>
+        <a href="/" class="error-btn">Về trang chủ</a>
     </div>
 </div>
 	
@@ -58,6 +60,63 @@
     max-width: 600px; /* Giới hạn chiều rộng */
     margin: 20px auto; /* Canh giữa trên trang */    
     max-width: 800px;
+}
+/* Hiệu ứng hình ảnh */
+
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Tiêu đề giữ nguyên */
+.error-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: #ff3d49;
+    margin: 20px 0;
+}
+
+/* Hiệu ứng nút chuyển màu */
+.error-btn {
+    background: #ff3d49;
+    transition: background-color 0.3s ease;
+}
+
+.error-btn:hover {
+    background: #bd081c;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Hiệu ứng fade-in tổng thể */
+.error-container {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .error-container img {
@@ -106,11 +165,11 @@
 }
     
     </style>
-<div style="margin-top:-60px"></div>
+<div style="margin-top:-65px"></div>
 	<div th:replace="userViews/footer:: footer"></div>
 	
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="/slider_1-main/js/lang.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<script src="/slider_1-main/js/help.js"></script>
 	<script src="/slider_1-main/js/search.js"></script>

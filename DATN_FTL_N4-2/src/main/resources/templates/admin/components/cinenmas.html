@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Admin - Rạp chiếu</title>
-	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
-		  name='viewport' />
-	<link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
-	<link
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-			rel="stylesheet">
-	<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
-	<link rel="stylesheet"
-		  href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
-	<script
-			src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
-	<script src="../assets/js/aside.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Admin - Rạp chiếu</title>
+<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no'
+	name='viewport' />
+<link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
 
-	<script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+	rel="stylesheet">
+<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css">
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
+<script src="../assets/js/aside.js"></script>
+
+<script>
 		WebFont.load({
 			google : {
 				"families" : [ "Public Sans:300,400,500,600,700" ]
@@ -32,367 +34,382 @@
 		});
 	</script>
 
-	<style>
-		.customBtnDelete {
-			background-color: #dd103a;
-			color: white;
-			border: none;
-			padding: 5px 10px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			font-size: 20px;
-			margin: 4px 2px;
-			cursor: pointer;
-			border-radius: 5px;
-		}
+<style>
+.customBtnDelete {
+	background-color: #dd103a;
+	color: white;
+	border: none;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: 5px;
+}
 
-		.customUpdate {
-			background-color: #66ba4b;
-			color: white;
-			border: none;
-			padding: 5px 10px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			font-size: 20px;
-			margin: 4px 2px;
-			cursor: pointer;
-			border-radius: 5px;
-		}
+.customUpdate {
+	background-color: #66ba4b;
+	color: white;
+	border: none;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: 5px;
+}
 
-		.customUpdate:focus {
-			color: #ffff;
-		}
+.customUpdate:focus {
+	color: #ffff;
+}
 
-		.customUpdate:hover {
-			color: #fff;
-		}
+.customUpdate:hover {
+	color: #fff;
+}
 
-		.modal-title-custom {
-			font-size: 45px;
-			font-weight: 700;
-			color: #ff4971;
-		}
+.modal-title-custom {
+	font-size: 45px;
+	font-weight: 700;
+	color: #ff4971;
+}
 
-		.notNull {
-			color: red;
-			font-size: 20px;
-		}
+.notNull {
+	color: red;
+	font-size: 20px;
+}
 
-		form label {
-			font-size: 25px;
-			color: black;
-			font-weight: 500;
-		}
+form label {
+	font-size: 25px;
+	color: black;
+	font-weight: 500;
+}
 
-		.customTitleListMovie {
-			font-weight: 900;
-			font-size: 30px;
-			color: #ff4971;
-			font-family: "Roboto", sans-serif;
-		}
+.customTitleListMovie {
+	font-weight: 900;
+	font-size: 30px;
+	color: #ff4971;
+    font-family: 'Noto Sans', sans-serif;
+}
 
-		.customAdd {
-			background-color: #58ba45;
-			color: white;
-			border: none;
-			padding: 5px 10px;
-			text-align: center;
-			text-decoration: none;
-			display: inline-block;
-			font-size: 15px;
-			margin: 4px 2px;
-			cursor: pointer;
-			border-radius: 5px;
-		}
+.customAdd {
+	background-color: #58ba45;
+	color: white;
+	border: none;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 15px;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: 5px;
+}
 
-		.customBtnDelete:focus, .customBtnDelete:hover {
-			color: #ffff;
-		}
-	</style>
+.customBtnDelete:focus, .customBtnDelete:hover {
+	color: #ffff;
+}
+</style>
 
-	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/assets/css/plugins.min.css">
-	<link rel="stylesheet" href="/assets/css/kaiadmin.min.css">
-	<link rel="stylesheet" href="/assets/css/demo.css">
-	<!-- Giữ nguyên nếu bạn cần -->
-	<link rel="stylesheet"
-		  href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/plugins.min.css">
+<link rel="stylesheet" href="/assets/css/kaiadmin.min.css">
+<link rel="stylesheet" href="/assets/css/demo.css">
+<!-- Giữ nguyên nếu bạn cần -->
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
 </head>
 <body>
-<div class="wrapper">
-	<!-- Sidebar -->
+	<div class="wrapper">
+		<!-- Sidebar -->
 
-	<div th:replace="~{adminViews/aside:: .sidebar}"></div>
+		<div th:replace="~{adminViews/aside:: .sidebar}"></div>
 
-	<!-- End Sidebar -->
+		<!-- End Sidebar -->
 
-	<div class="main-panel">
-		<div class="container">
-			<div class="page-inner">
-				<!-- Modal Thùng Rác -->
-				<div class="modal fade" id="trashModal" tabindex="-1" aria-labelledby="trashModalLabel" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="trashModalLabel">Thùng Rác</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		<div class="main-panel">
+			<div class="container">
+				<div class="page-inner">
+
+					<!-- Modal Thùng Rác -->
+					<div class="modal fade" id="trashModal" tabindex="-1"
+						aria-labelledby="trashModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-xl">
+							<div class="modal-content">
+								<div class="modal-header">
+<span class="fs-5 modal-title-custom" id="staticBackdropLabel">Danh
+											sách rạp đã xóa </span>									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<table class="table table-bordered table-striped"
+										id="deletedProductTable">
+										<thead>
+											<tr>
+												<th class="text-center">STT</th>
+
+												<th class="text-center">Tên Rạp</th>
+												<th class="text-center">Địa Chỉ</th>
+												<th class="text-center">Email</th>
+												<th class="text-center">Số điện thoại</th>
+
+												<th class="text-center">Hành động</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="cinema, stat : ${trashCinemas}">
+												<td th:text="${stat.index + 1}" class="text-center"></td>
+
+												<td th:text="${cinema.cinemaName}" class="text-center"></td>
+												<td th:text="${cinema.address}" class="text-center"></td>
+												<td th:text="${cinema.email}" class="text-center"></td>
+												<td th:text="${cinema.phoneNumber}" class="text-center"></td>
+
+												<td class="text-center"><a
+													th:href="@{/cinema/restore/{id}(id=${cinema.cinemaId})}"
+													class="btn btn-success"> <i class="bi bi-arrow-repeat"></i>
+												</a></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
 							</div>
-							<div class="modal-body">
-								<table class="table">
-									<thead>
-									<tr>
-										<th>Tên Rạp</th>
-										<th>Địa Chỉ</th>
-										<th>Email</th>
-										<th>Thao Tác</th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr th:each="cinema : ${trashCinemas}">
-										<td th:text="${cinema.cinemaName}"></td>
-										<td th:text="${cinema.address}"></td>
-										<td th:text="${cinema.email}"></td>
-										<td>
-											<a th:href="@{/cinema/restore/{id}(id=${cinema.cinemaId})}" class="btn btn-success btn-sm">
-												<i class="bi bi-arrow-clockwise"></i>
-											</a>
+						</div>
+					</div>
+					<!-- Modal Cập Nhật Rạp Chiếu -->
+					<div class="modal fade" id="modalUpdateCinema"
+						data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+						aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-scrollable modal-xl">
+							<div class="modal-content">
+								<div class="modal-header">
+									<!-- Tiêu đề thay đổi dựa trên context (Thêm hay Cập Nhật) -->
+									<span class="fs-5 modal-title-custom" id="staticBackdropLabel">Cập
+										Nhật Rạp</span>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body m-0">
+									<div class="container">
+										<!-- Form sửa rạp chiếu -->
+										<form id="updateForm" method="post" th:object="${newCinema}">
+											<input type="hidden" id="cinemaId" th:field="*{cinemaId}" />
+											<div class="row g-3">
+												<!-- Tên Rạp -->
+												<div class="col-md-6">
+													<label for="cinemaName" class="form-label">Tên Rạp:
+														<span class="notNull">*</span>
+													</label> <input type="text" id="cinemaName"
+														th:field="*{cinemaName}" class="form-control"
+														placeholder="Nhập tên rạp" /> <span id="errorMessage"
+														class="text-danger mt-1 d-none">Tên rạp đã tồn tại.
+														Vui lòng nhập tên khác!</span>
+												</div>
 
+												<!-- Số Điện Thoại -->
+												<div class="col-md-6">
+													<label for="phoneNumber" class="form-label">Số Điện
+														Thoại: <span class="notNull">*</span>
+													</label> <input type="text" id="phoneNumber"
+														th:field="*{phoneNumber}" class="form-control"
+														placeholder="Nhập số điện thoại" />
+												</div>
+											</div>
+
+											<!-- Email -->
+											<div class="row g-3 mt-2">
+												<div class="col-md-12">
+													<label for="email" class="form-label">Email: <span
+														class="notNull">*</span></label> <input type="email" id="email"
+														th:field="*{email}" class="form-control"
+														placeholder="Nhập email" />
+												</div>
+											</div>
+
+											<!-- Địa Chỉ -->
+											<div class="row g-3 mt-2">
+												<div class="col-md-12">
+													<label for="address" class="form-label">Địa Chỉ: <span
+														class="notNull">*</span></label>
+													<textarea id="address" th:field="*{address}"
+														class="form-control" rows="3" placeholder="Nhập địa chỉ"></textarea>
+												</div>
+											</div>
+
+											<!-- Nút Bấm -->
+											<div class="mt-4 text-end">
+												<!-- Nút Cập Nhật -->
+												<button type="submit" class="btn btn-success px-4"
+													id="submitButton">
+													<i class="bi bi-pencil-square me-1"></i> Cập Nhật Rạp
+												</button>
+												<!-- Nút Đóng Modal -->
+
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal fade" id="modalAddCinema"
+						data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+						aria-labelledby="staticBackdropLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-scrollable modal-xl">
+							<!-- Thay modal-xl -->
+							<div class="modal-content">
+								<div class="modal-header">
+									<span class="fs-5 modal-title-custom" id="staticBackdropLabel"
+										th:text="${newCinema.cinemaId != null ? 'Cập Nhật' : 'Thêm Rạp'}"></span>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body m-0">
+									<div class="container">
+										<form action="/cinema/add" method="post"
+											th:object="${newCinema}" id="updateForm">
+											<div class="form-group">
+												<input type="hidden" id="cinemaId" th:field="*{cinemaId}" />
+											</div>
+
+											<div class="row g-3">
+												<!-- Tên Rạp -->
+												<div class="col-md-6">
+													<label for="cinemaName" class="form-label">Tên Rạp:
+														<span class="notNull">*</span>
+													</label> <input type="text" id="cinemaName"
+														th:field="*{cinemaName}" class="form-control"
+														placeholder="Nhập tên rạp" />
+													<div th:if="${#fields.hasErrors('cinemaName')}"
+														th:errors="*{cinemaName}" class="text-danger mt-1"></div>
+													<span id="errorMessage" style="color: red; display: none">Tên
+														rạp đã tồn tại!</span>
+												</div>
+
+												<!-- Số Điện Thoại -->
+												<div class="col-md-6">
+													<label for="phoneNumber" class="form-label">Số Điện
+														Thoại: <span class="notNull">*</span>
+													</label> <input type="text" id="phoneNumber"
+														th:field="*{phoneNumber}" class="form-control"
+														placeholder="Nhập số điện thoại" />
+													<div th:if="${#fields.hasErrors('phoneNumber')}"
+														th:errors="*{phoneNumber}" class="text-danger mt-1"></div>
+												</div>
+											</div>
+
+											<!-- Email -->
+											<div class="row g-3 mt-2">
+												<div class="col-md-12">
+													<label for="email" class="form-label">Email: <span
+														class="notNull">*</span>
+													</label> <input type="text" id="email" th:field="*{email}"
+														class="form-control" placeholder="Nhập email" />
+													<div th:if="${#fields.hasErrors('email')}"
+														th:errors="*{email}" class="text-danger mt-1"></div>
+												</div>
+											</div>
+
+											<!-- Địa Chỉ -->
+											<div class="row g-3 mt-2">
+												<div class="col-md-12">
+													<label for="address" class="form-label">Địa Chỉ: <span
+														class="notNull">*</span>
+													</label>
+													<textarea id="address" th:field="*{address}"
+														class="form-control" rows="3" placeholder="Nhập địa chỉ"></textarea>
+													<div th:if="${#fields.hasErrors('address')}"
+														th:errors="*{address}" class="text-danger mt-1"></div>
+												</div>
+											</div>
+
+											<!-- Nút Bấm -->
+											<div class="mt-4 text-end">
+												<button type="submit" class="btn btn-success px-4"
+													id="submitButton">
+													<i class="bi bi-plus-square me-1"></i> <span
+														th:text="${newCinema.cinemaId != null ? 'Cập Nhật' : 'Thêm Rạp'}"></span>
+												</button>
+												<button type="button" id="resetButton" onclick="resetPage()"
+													class="btn btn-secondary">
+													<i class="bi bi-arrow-clockwise me-1"></i> Làm mới
+												</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="w-100 text-center">
+						<!-- Button để mở Modal -->
+
+						<span class="modal-title-custom" id="staticBackdropLabel" style="font-size: 30px;">Danh Sách Rạp Chiếu</span>
+
+					</div>
+					<div class="container">
+						<button type="button" class="customAdd float-lg-start d-flex"
+							data-bs-toggle="modal" data-bs-target="#modalAddCinema"
+							onclick="clearFields()">
+							<i class="bi bi-plus-square me-1"></i>Thêm Rạp Chiếu
+						</button>
+
+						<button type="button" class="customAdd float-lg-start d-flex"
+							style="background-color: blue" data-bs-toggle="modal"
+							data-bs-target="#trashModal">
+							<i class="bi bi-arrow-clockwise me-1"></i>Khôi phục
+						</button>
+						<div class="table-responsive">
+							<table id="myTable" class="table table-striped custom-table">
+								<thead>
+									<tr>
+										<th class="text-center">STT</th>
+										<th class="text-center">Tên Rạp</th>
+										<th class="text-center">Địa Chỉ</th>
+										<th class="text-center">Số Điện Thoại</th>
+										<th class="text-center">Email</th>
+										<th class="text-center">Hành Động</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="cinema, stat : ${cinemas}">
+										<td th:text="${stat.index + 1}" class="text-center"></td>
+										<td th:text="${cinema.cinemaName}" class="text-center">Tên
+											Rạp</td>
+										<td th:text="${cinema.address}" class="text-center">Địa
+											Chỉ</td>
+										<td th:text="${cinema.phoneNumber}" class="text-center">Số
+											Điện Thoại</td>
+										<td th:text="${cinema.email}" class="text-center">Email</td>
+										<td>
+											<div class="d-flex justify-content-center gap-2">
+												<!-- Sửa Rạp -->
+												<a href="javascript:void(0);" class="customUpdate"
+													th:data-cinema-id="${cinema.cinemaId}"
+													th:data-cinema-name="${cinema.cinemaName}"
+													th:data-phone-number="${cinema.phoneNumber}"
+													th:data-email="${cinema.email}"
+													th:data-address="${cinema.address}"
+													onclick="openUpdateCinemaModal(this)"> <i
+													class="bi bi-pencil-square"></i>
+												</a>
+
+												<!-- Xóa Rạp -->
+												<a href="javascript:void(0);" class="customBtnDelete"
+													th:data-cinema-id="${cinema.cinemaId}"> <i class="bi bi-trash"></i>
+												</a>
+											</div>
 										</td>
 									</tr>
-									</tbody>
-								</table>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Modal Cập Nhật Rạp Chiếu -->
-				<div class="modal fade" id="modalUpdateCinema"
-					 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-					 aria-labelledby="staticBackdropLabel" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-scrollable modal-xl">
-						<div class="modal-content">
-							<div class="modal-header">
-								<!-- Tiêu đề thay đổi dựa trên context (Thêm hay Cập Nhật) -->
-								<span class="fs-5 modal-title-custom" id="staticBackdropLabel"
-								>Cập Nhật Rạp</span>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-										aria-label="Close"></button>
-							</div>
-							<div class="modal-body m-0">
-								<div class="container">
-									<!-- Form sửa rạp chiếu -->
-									<form id="updateForm" method="post" th:object="${newCinema}">
-										<input type="hidden" id="cinemaId" th:field="*{cinemaId}" />
-										<div class="row g-3">
-											<!-- Tên Rạp -->
-											<div class="col-md-6">
-												<label for="cinemaName" class="form-label">Tên Rạp:
-													<span class="notNull">*</span>
-												</label> <input type="text" id="cinemaName"
-																th:field="*{cinemaName}" class="form-control"
-																placeholder="Nhập tên rạp" />
-												<span id="errorMessage" class="text-danger mt-1 d-none">Tên rạp đã tồn tại. Vui lòng nhập tên khác!</span>
-											</div>
+								</tbody>
 
-											<!-- Số Điện Thoại -->
-											<div class="col-md-6">
-												<label for="phoneNumber" class="form-label">Số Điện
-													Thoại: <span class="notNull">*</span>
-												</label> <input type="text" id="phoneNumber"
-																th:field="*{phoneNumber}" class="form-control"
-																placeholder="Nhập số điện thoại" />
-											</div>
-										</div>
-
-										<!-- Email -->
-										<div class="row g-3 mt-2">
-											<div class="col-md-12">
-												<label for="email" class="form-label">Email: <span
-														class="notNull">*</span></label> <input type="email" id="email"
-																								th:field="*{email}" class="form-control"
-																								placeholder="Nhập email" />
-											</div>
-										</div>
-
-										<!-- Địa Chỉ -->
-										<div class="row g-3 mt-2">
-											<div class="col-md-12">
-												<label for="address" class="form-label">Địa Chỉ: <span
-														class="notNull">*</span></label>
-												<textarea id="address" th:field="*{address}"
-														  class="form-control" rows="3" placeholder="Nhập địa chỉ"></textarea>
-											</div>
-										</div>
-
-										<!-- Nút Bấm -->
-										<div class="mt-4 text-end">
-											<!-- Nút Cập Nhật -->
-											<button type="submit" class="btn btn-success px-4"
-													id="submitButton">
-												<i class="bi bi-pencil-square me-1"></i> Cập Nhật Rạp
-											</button>
-											<!-- Nút Đóng Modal -->
-
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal fade" id="modalAddCinema"
-					 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-					 aria-labelledby="staticBackdropLabel" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-scrollable modal-xl">
-						<!-- Thay modal-xl -->
-						<div class="modal-content">
-							<div class="modal-header">
-									<span class="fs-5 modal-title-custom" id="staticBackdropLabel"
-										  th:text="${newCinema.cinemaId != null ? 'Cập Nhật' : 'Thêm Rạp'}"></span>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-										aria-label="Close"></button>
-							</div>
-							<div class="modal-body m-0">
-								<div class="container">
-									<form action="/cinema/add" method="post"
-										  th:object="${newCinema}" id="updateForm">
-										<div class="form-group">
-											<input type="hidden" id="cinemaId" th:field="*{cinemaId}" />
-										</div>
-
-										<div class="row g-3">
-											<!-- Tên Rạp -->
-											<div class="col-md-6">
-												<label for="cinemaName" class="form-label">Tên Rạp:
-													<span class="notNull">*</span>
-												</label> <input type="text" id="cinemaName"
-																th:field="*{cinemaName}" class="form-control"
-																placeholder="Nhập tên rạp" />
-												<div th:if="${#fields.hasErrors('cinemaName')}"
-													 th:errors="*{cinemaName}" class="text-danger mt-1"></div>
-												<span id="errorMessage" style="color: red; display: none">Tên
-														rạp đã tồn tại!</span>
-											</div>
-
-											<!-- Số Điện Thoại -->
-											<div class="col-md-6">
-												<label for="phoneNumber" class="form-label">Số Điện
-													Thoại: <span class="notNull">*</span>
-												</label> <input type="text" id="phoneNumber"
-																th:field="*{phoneNumber}" class="form-control"
-																placeholder="Nhập số điện thoại" />
-												<div th:if="${#fields.hasErrors('phoneNumber')}"
-													 th:errors="*{phoneNumber}" class="text-danger mt-1"></div>
-											</div>
-										</div>
-
-										<!-- Email -->
-										<div class="row g-3 mt-2">
-											<div class="col-md-12">
-												<label for="email" class="form-label">Email: <span
-														class="notNull">*</span>
-												</label> <input type="text" id="email" th:field="*{email}"
-																class="form-control" placeholder="Nhập email" />
-												<div th:if="${#fields.hasErrors('email')}"
-													 th:errors="*{email}" class="text-danger mt-1"></div>
-											</div>
-										</div>
-
-										<!-- Địa Chỉ -->
-										<div class="row g-3 mt-2">
-											<div class="col-md-12">
-												<label for="address" class="form-label">Địa Chỉ: <span
-														class="notNull">*</span>
-												</label>
-												<textarea id="address" th:field="*{address}"
-														  class="form-control" rows="3" placeholder="Nhập địa chỉ"></textarea>
-												<div th:if="${#fields.hasErrors('address')}"
-													 th:errors="*{address}" class="text-danger mt-1"></div>
-											</div>
-										</div>
-
-										<!-- Nút Bấm -->
-										<div class="mt-4 text-end">
-											<button type="submit" class="btn btn-success px-4"
-													id="submitButton">
-												<i class="bi bi-plus-square me-1"></i> <span
-													th:text="${newCinema.cinemaId != null ? 'Cập Nhật' : 'Thêm Rạp'}"></span>
-											</button>
-											<button type="button" id="resetButton" onclick="resetPage()"
-													class="btn btn-secondary">
-												<i class="bi bi-arrow-clockwise me-1"></i> Làm mới
-											</button>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="w-100 text-center">
-					<!-- Button để mở Modal -->
-					<button type="button" class="customAdd float-lg-start d-flex"
-							data-bs-toggle="modal" data-bs-target="#modalAddCinema"
-							onclick="clearFields()">Thêm Rạp Chiếu</button>
-					<button type="button" class="customAdd float-lg-start d-flex" style="background-color: blue" data-bs-toggle="modal" data-bs-target="#trashModal">
-						Khôi phục
-					</button>
-					<span class="customTitleListMovie text-center">Danh Sách
-							Rạp Chiếu</span>
-				</div>
-
-				<div class="table-responsive">
-					<table id="myTable" class="table table-striped custom-table">
-						<thead>
-						<tr>
-							<th class="text-center">STT</th>
-							<th class="text-center">Tên Rạp</th>
-							<th class="text-center">Địa Chỉ</th>
-							<th class="text-center">Số Điện Thoại</th>
-							<th class="text-center">Email</th>
-							<th class="text-center">Hành Động</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr th:each="cinema, stat : ${cinemas}">
-							<td th:text="${stat.index + 1}" class="text-center"></td>
-							<td th:text="${cinema.cinemaName}" class="text-center">Tên
-								Rạp</td>
-							<td th:text="${cinema.address}" class="text-center">Địa
-								Chỉ</td>
-							<td th:text="${cinema.phoneNumber}" class="text-center">Số
-								Điện Thoại</td>
-							<td th:text="${cinema.email}" class="text-center">Email</td>
-							<td>
-								<div class="d-flex justify-content-center gap-2">
-									<!-- Sửa Rạp -->
-									<a href="javascript:void(0);" class="customUpdate"
-									   th:data-cinema-id="${cinema.cinemaId}"
-									   th:data-cinema-name="${cinema.cinemaName}"
-									   th:data-phone-number="${cinema.phoneNumber}"
-									   th:data-email="${cinema.email}"
-									   th:data-address="${cinema.address}"
-									   onclick="openUpdateCinemaModal(this)"> <i
-											class="bi bi-pencil-square"></i>
-									</a>
-
-									<!-- Xóa Rạp -->
-									<a href="javascript:void(0);" class="customBtnDelete"
-									   th:data-cinema-id="${cinema.cinemaId}"> <i class="bi bi-x-circle"></i>
-									</a>
-								</div>
-							</td>
-						</tr>
-						</tbody>
-
-						<!-- JavaScript để sử dụng SweetAlert2 -->
-						<script>
+								<!-- JavaScript để sử dụng SweetAlert2 -->
+								<script>
 							// Xử lý sự kiện click vào nút xóa
 							document.querySelectorAll('.customBtnDelete').forEach(function(deleteButton) {
 								deleteButton.addEventListener('click', function(event) {
@@ -401,14 +418,14 @@
 
 									// Hiển thị SweetAlert2 xác nhận
 									Swal.fire({
-										title: 'Bạn có chắc chắn muốn xóa không?',
-										text: "Hành động này không thể hoàn tác!",
-										icon: 'warning',
-										showCancelButton: true,
-										confirmButtonColor: '#d33',
-										cancelButtonColor: '#3085d6',
-										confirmButtonText: 'Đồng ý',
-										cancelButtonText: 'Hủy'
+									 	 title: 'Xác nhận xóa',
+						                 text: "Bạn có chắc chắn muốn xóa không?",
+						                 icon: 'warning',
+						                 showCancelButton: true,
+						                 confirmButtonColor: '#3085d6',
+						                 cancelButtonColor: '#d33',
+						                 confirmButtonText: 'Xóa',
+						                 cancelButtonText: 'Hủy'
 									}).then((result) => {
 										if (result.isConfirmed) {
 											// Nếu đồng ý, chuyển hướng đến URL xóa
@@ -418,94 +435,106 @@
 								});
 							});
 						</script>
-					</table>
+
+							</table>
+
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-</div>
+	</div>
 
 
 
 
 
-<script src="/assets/js/core/jquery-3.7.1.min.js"></script>
-<script src="/assets/js/core/popper.min.js"></script>
-<script src="/assets/js/core/bootstrap.min.js"></script>
-<!-- Bootstrap Notify -->
-<script
+	<script src="/assets/js/core/jquery-3.7.1.min.js"></script>
+	<script src="/assets/js/core/popper.min.js"></script>
+	<script src="/assets/js/core/bootstrap.min.js"></script>
+	<!-- Bootstrap Notify -->
+	<script
 		src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-<!-- jQuery Scrollbar -->
-<script
+	<!-- jQuery Scrollbar -->
+	<script
 		src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-<!-- Kaiadmin JS -->
-<script src="/assets/js/kaiadmin.min.js"></script>
-<!-- Kaiadmin DEMO methods, don't include it in your project! -->
-<script src="/assets/js/setting-demo2.js"></script>
+	<!-- Kaiadmin JS -->
+	<script src="/assets/js/kaiadmin.min.js"></script>
+	<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+	<script src="/assets/js/setting-demo2.js"></script>
 
 
 
-<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 
 
-<script type="text/javascript">
+	<script type="text/javascript">
+$(document).ready(function() {
+    $('#myTable').DataTable({
+        "language": {
+            "sSearch": "Tìm kiếm:", // "Search"
+            "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+            "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+            "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+            "sInfoFiltered": "(lọc từ _MAX_ mục)",
+            "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+            "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
 
-
-	$(document).ready(function () {
-		$('#myTable').DataTable({
-			"language": {
-				"sSearch": "Tìm kiếm:", // "Search"
-				"sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
-				"sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
-				"sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
-				"sInfoFiltered": "(lọc từ _MAX_ mục)", // "(filtered from _MAX_ total entries)"
-				"sInfoPostFix": "", // Không thay đổi
-				"sSearchPlaceholder": "Nhập từ khóa tìm kiếm", // Placeholder text for search
-				"oPaginate": {
-					"sFirst": "Đầu tiên", // "First"
-					"sPrevious": "Trước", // "Previous"
-					"sNext": "Tiếp theo", // "Next"
-					"sLast": "Cuối cùng" // "Last"
-				},
-				"oAria": {
-					"sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
-					"sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
-				}
-			}
-		});
-	});
+            "sInfoPostFix": "", // Không thay đổi
+            "oPaginate": {
+                "sFirst": "Đầu tiên", // "First"
+                "sPrevious": "Trước", // "Previous"
+                "sNext": "Tiếp theo", // "Next"
+                "sLast": "Cuối cùng" // "Last"
+            },
+            "oAria": {
+                "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+            }
+        }
+    });
+});
 </script>
 
-<th:block th:if="${successMessage}">
-	<script>
+	<th:block th:if="${successMessage}">
+		<script>
 		Swal.fire({
 			icon: 'success',
 			title: 'Thêm mới thành công!',
-			text: /*[${successMessage}]*/ 'Thành công!',
+			text: /*[${successMessage}]*/ 'Thêm rạp chiếu mới thành công!',
 		});
 	</script>
-</th:block>
-<th:block th:if="${cinemaMessage}">
-	<script>
+	</th:block>
+	<th:block th:if="${cinemaMessage}">
+		<script>
 		Swal.fire({
 			icon: 'success',
 			title: 'Cập nhật thành công!',
-			text: /*[${successMessage}]*/ 'Cập nhật đã thành công!',
+			text: /*[${successMessage}]*/ 'Cập nhật rạp chiếu đã thành công!',
 		});
 	</script>
-</th:block>
-<th:block th:if="${successUMessage}">
-	<script>
+	</th:block>
+		<th:block th:if="${successuRMessage}">
+		<script>
 		Swal.fire({
-			icon: 'warning',
-			title: 'Xóa thành công!',
-			text: /*[${successMessage}]*/ 'Đã xóa rạp thành công!',
+			icon: 'success',
+			title: 'Khôi phục thành công!',
+			text: /*[${successMessage}]*/ 'Rạp chiếu đã được khôi phục thành công!',
 		});
 	</script>
-</th:block>
-<th:block th:if="${errorMessage}">
-	<script>
+	</th:block>
+	<th:block th:if="${successUMessage}">
+		<script>
+		Swal.fire({
+			icon: 'success',
+			title: 'Xóa thành công!',
+			text: /*[${successMessage}]*/ 'Rạp chiếu đã được xóa thành công!',
+		});
+	</script>
+	</th:block>
+	<th:block th:if="${errorMessage}">
+		<script>
 		// Hiển thị thông báo lỗi sử dụng SweetAlert
 		Swal.fire({
 			icon: 'error',
@@ -518,9 +547,9 @@
 			}
 		});
 	</script>
-</th:block>
-<th:block th:if="${errorDMessage}">
-	<script>
+	</th:block>
+	<th:block th:if="${errorDMessage}">
+		<script>
 		// Hiển thị thông báo lỗi sử dụng SweetAlert
 		Swal.fire({
 			icon: 'error',
@@ -529,9 +558,9 @@
 
 		});
 	</script>
-</th:block>
-<th:block th:if="${errorUMessage}">
-	<script>
+	</th:block>
+	<th:block th:if="${errorUMessage}">
+		<script>
 		// Hiển thị thông báo lỗi sử dụng SweetAlert
 		Swal.fire({
 			icon: 'error',
@@ -540,8 +569,8 @@
 
 		});
 	</script>
-</th:block>
-<script>
+	</th:block>
+	<script>
 	function openUpdateCinemaModal(button) {
 		const cinemaId = button.getAttribute('data-cinema-id');
 		const cinemaName = button.getAttribute('data-cinema-name');
@@ -565,8 +594,34 @@
 		form.action = '/cinema/save'; // Đảm bảo action gửi tới đúng endpoint cập nhật
 	}
 </script>
+	<script type="text/javascript">
+    $(document).ready(function() {
+        $('#deletedProductTable').DataTable({
+            "language": {
+                "sSearch": "Tìm kiếm:", // "Search"
+                "sLengthMenu": "Hiển thị _MENU_ mục", // "Show _MENU_ entries"
+                "sInfo": "Đang hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục", // "Showing _START_ to _END_ of _TOTAL_ entries"
+                "sInfoEmpty": "Không có mục nào", // "Showing 0 to 0 of 0 entries"
+                "sInfoFiltered": "(lọc từ _MAX_ mục)",
+                "sEmptyTable": "Không có dữ liệu", // Thông báo nếu bảng không có dữ liệu
+                "sZeroRecords": "Không tìm thấy",  // Thông báo tìm kiếm không có kết quả
 
-<script>
+                "sInfoPostFix": "", // Không thay đổi
+                "oPaginate": {
+                    "sFirst": "Đầu tiên", // "First"
+                    "sPrevious": "Trước", // "Previous"
+                    "sNext": "Tiếp theo", // "Next"
+                    "sLast": "Cuối cùng" // "Last"
+                },
+                "oAria": {
+                    "sSortAscending": ": Kích hoạt để sắp xếp theo thứ tự tăng dần", // ": activate to sort column ascending"
+                    "sSortDescending": ": Kích hoạt để sắp xếp theo thứ tự giảm dần" // ": activate to sort column descending"
+                }
+            }
+        });
+    });
+	</script>
+	<script>
 
 
 
@@ -589,7 +644,7 @@
 		});
 	});
 </script>
-<script>
+	<script>
 	document.getElementById("cinemaName").addEventListener("input", function () {
 		const cinemaId = document.getElementById("cinemaId").value.trim(); // ID của rạp
 		const cinemaName = this.value.trim(); // Tên rạp mới
@@ -632,7 +687,7 @@
 		}
 	});
 </script>
-<script>
+	<script>
 	$('#displayNotif')
 			.on(
 					'click',

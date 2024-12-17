@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
 	List<ProductEntity> findByIsDeletedFalseOrderByProductIdDesc();
 	ProductEntity findByProductId(int productId);
+	  boolean existsByProductName(String productName);
 
 	List<ProductEntity> findByIsDeletedTrueOrderByProductIdDesc();
 	// Bạn có thể thêm các phương thức truy vấn tùy chỉnh ở đây nếu cần

@@ -23,9 +23,9 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Integer>
     List<AccountEntity> findAllByOrderByAccountIdDesc();
 	AccountEntity findByAccountId(int accountId);
 	List<AccountEntity> findByIsDeletedFalseOrderByAccountIdDesc();
+	List<AccountEntity> findByRole_RoleIdAndIsDeletedTrue(int roleId);
 
-	List<AccountEntity> findByIsDeletedTrueOrderByAccountIdDesc();
-    // Phương thức tìm các tài khoản có roleId = 2
+	List<AccountEntity> findByIsDeletedTrueOrderByAccountIdDesc();    // Phương thức tìm các tài khoản có roleId = 2
     List<AccountEntity> findByRoleRoleId(int roleId);
 }
 

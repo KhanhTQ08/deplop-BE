@@ -196,6 +196,7 @@ public class AccountService {
             throw new RuntimeException("Gửi email thất bại: " + e.getMessage(), e);
         }
     }
+
     private String buildOtpEmailContent(String otp) {
         StringBuilder htmlContent = new StringBuilder();
         htmlContent.append("<div style='font-family: Arial, sans-serif; min-width: 100%; background-color: rgba(250, 90, 90, 0.8); padding: 1.5rem; box-sizing: border-box;'>")
@@ -231,7 +232,6 @@ public class AccountService {
                 // Cảm ơn và liên hệ
                 .append("<div style='text-align: center; border-top: 1px solid #eaeaea; padding-top: 1.5rem;'>")
                 .append("<p style='font-size: 0.9rem; color: #555;'>Cảm ơn bạn đã tin tưởng và sử dụng For The Love!</p>")
-                .append("<a href='http://localhost:8080/index' style='color: #ff3d49; text-decoration: none; font-weight: bold;'>Truy cập trang chủ</a>")
                 .append("</div>")
 
                 .append("</div>")

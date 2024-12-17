@@ -77,8 +77,8 @@
                                         th:classappend="${#lists.contains(bookedSeatNames, seat.seatId.toString()) ? 'seat-booked' : (seat.status.toLowerCase() == 'vip' ? 'seat-vip' : '')}"
                                         th:disabled="${#lists.contains(bookedSeatNames, seat.seatId.toString()) ? 'true' : 'false'}"
                                         th:value="${seat.seatPrice}"
-                                        th:attr="data-seat-id=${seat.seatId}"
-                                        onclick="selectSeat(this)"> <!-- Gọi hàm selectSeat -->
+                                        th:attr="data-seat-id=${seat.seatId}, data-status=${#lists.contains(bookedSeatNames, seat.seatId.toString()) ? 'booked' : 'available'}"
+                                        onclick="selectSeat(this)">
                                 </button>
                             </div>
                         </div>
@@ -135,7 +135,7 @@
                         <span class="seat disabled seat-small"></span> Đã đặt
                     </div>
                     <div class="d-flex align-items-center">
-                        <span class="seat selected2 seat-small "></span> Ghế bạn đang chọn
+                        <span class="seat2 selected2 seat-small "></span> Ghế bạn đang chọn
                     </div>
                 </div>
 
@@ -271,6 +271,10 @@
 
 <script src="/slider_1-main/js/datve2.js"></script>
 <script src="/slider_1-main/js/help.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+
 
 <!-- Bootstrap JS -->
 <script

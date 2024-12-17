@@ -39,7 +39,7 @@ public class Config {
                 .formLogin(form -> form
                         .loginPage("/login") // Trang đăng nhập custom
                         .loginProcessingUrl("/perform_login") // Đường dẫn để xử lý form
-                        .defaultSuccessUrl("/index", true) // Trang sẽ được chuyển tới sau khi đăng nhập thành công
+                        .defaultSuccessUrl("/", true) // Trang sẽ được chuyển tới sau khi đăng nhập thành công
                         .failureUrl("/login?error=true") // Đường dẫn khi đăng nhập thất bại
                         .permitAll()
                 )

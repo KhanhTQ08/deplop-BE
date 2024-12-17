@@ -33,6 +33,9 @@ public class RoomEntity {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<ShowtimeEntity> showtimes; // Danh sách suất chiếu
 
+    @Column(name = "IS_DELECTED", nullable = true)
+    private boolean isDeleted = true; // Cờ đánh dấu trạng thái xóa mềm
+    
     // Getter cho danh sách ghế
     public List<SeatEntity> getSeats() {
         return seats;

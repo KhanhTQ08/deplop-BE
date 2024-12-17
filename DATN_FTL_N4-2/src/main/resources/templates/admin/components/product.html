@@ -6,6 +6,8 @@
 <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
 	name="viewport" />
 <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
 	rel="stylesheet">
@@ -14,6 +16,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
  <script src="../assets/js/aside.js"></script>
+
 <script>
 		WebFont.load({
 			google : {
@@ -88,7 +91,7 @@ form label {
 	font-weight: 900;
 	font-size: 30px;
 	color: #ff4971;
-	font-family: "Roboto", sans-serif;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 .customAdd {
@@ -120,6 +123,7 @@ form label {
 	<div class="wrapper">
 		<div th:replace="~{adminViews/aside:: .sidebar}"></div>
 		<div class="main-panel">
+
 			<div class="container">
 				<div class="page-inner">
 					<div class="">
@@ -183,7 +187,7 @@ form label {
 												<div class="form-group mt-4 text-end">
 													<!-- Sử dụng phương thức POST khi thêm hoặc cập nhật -->
 													<input class="btn btn-success px-4" type="submit"
-														th:value="${productBean.productId != null} ? 'Cập nhật' : 'Thêm'" />
+														th:value="${productBean.productId != null} ? 'Cập nhật' : 'Thêm sản phẩm'" />
 													<a class="btn btn-secondary px-4 ms-2"
 														th:href="@{/reset-product}"> <i
 														class="bi bi-arrow-clockwise me-1"></i> Làm mới
@@ -199,11 +203,11 @@ form label {
 						</div>
 						<div class="modal fade" id="deletedProductModal" tabindex="-1"
 							aria-labelledby="deletedProductModalLabel" aria-hidden="true">
-							<div class="modal-dialog modal-lg">
+							<div class="modal-dialog modal-xl">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h5 class="modal-title" id="deletedProductModalLabel">Danh
-											Sách Phim Đã Xóa</h5>
+										<span class="fs-5 modal-title-custom" id="staticBackdropLabel">Danh
+											sách sản phẩm đã xóa </span>
 										<button type="button" class="btn-close"
 											data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
@@ -224,14 +228,15 @@ form label {
 											<tbody>
 												<tr th:each="product, stat : ${deletedProduct}">
 													<td class="text-center" th:text="${stat.index + 1}"></td>
-													<td><img th:src="${product.productImage}" alt="Image"
+													<td class="text-center"><img
+														th:src="${product.productImage}" alt="Image"
 														style="width: 100px; height: auto;" /></td>
 													<td class="text-center" th:text="${product.productName}"></td>
 													<td class="text-center"
 														th:text="${product.productDescription}"></td>
 													<td class="text-center"
 														th:data-price="${product.productPrice}"></td>
-													<td>
+													<td class="text-center">
 														<form
 															th:action="@{/restore-product/{productId}(productId=${product.productId})}"
 															method="post">
@@ -248,39 +253,42 @@ form label {
 							</div>
 						</div>
 						<div class="w-100 text-center">
-							<!-- Button để mở Modal -->
-							<button type="button" class="customAdd float-lg-start d-flex"
-								data-bs-toggle="modal" data-bs-target="#modalProducts">
-								Thêm Sản Phẩm</button>
-							<button type="button" class="customAdd float-lg-start d-flex" style="background-color: blue"
-								data-bs-toggle="modal" data-bs-target="#deletedProductModal">
-								Khôi phục</button>
-							<span class="customTitleListMovie text-center">Danh Sách
-								Sản Phẩm</span>
+							<span class="modal-title-custom" id="staticBackdropLabel" style="font-size: 30px;">Danh Sách Sản Phẩm</span>
+
 						</div>
-						<div class="table-responsive">
-							<table id="myTable" class="table table-striped custom-table">
-								<thead>
-									<tr>
-										<th class="text-center">STT</th>
-										<th class="text-center">Hình ảnh</th>
-										<th class="text-center">Tên Sản Phẩm</th>
-										<th class="text-center">Mô Tả Sản Phẩm</th>
-										<th class="text-center">Giá Sản Phẩm</th>
-										<th class="text-center">Hành động</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="product, stat : ${products}">
-										<td class="text-center" th:text="${stat.index + 1}"></td>
-										<td><img th:src="${product.productImage}" alt="Image"
-											style="width: 100px; height: auto;" /></td>
-										<td class="text-center" th:text="${product.productName}"></td>
-										<td class="text-center"
-											th:text="${product.productDescription}"></td>
-										<td class="text-center"
-											th:data-price="${product.productPrice}"></td>
-										<script>
+						<div class="container">
+	<button type="button" class="customAdd float-lg-start d-flex"
+								data-bs-toggle="modal" data-bs-target="#modalProducts">
+								<i class="bi bi-plus-square me-1"></i>Thêm Sản Phẩm
+							</button>
+							<button type="button" class="customAdd float-lg-start d-flex"
+								style="background-color: blue" data-bs-toggle="modal"
+								data-bs-target="#deletedProductModal">
+								<i class="bi bi-arrow-clockwise me-1"></i>Khôi phục
+							</button>
+							<div class="table-responsive">
+								<table id="myTable" class="table table-striped custom-table">
+									<thead>
+										<tr>
+											<th class="text-center">STT</th>
+											<th class="text-center">Hình ảnh</th>
+											<th class="text-center">Tên Sản Phẩm</th>
+											<th class="text-center">Mô Tả Sản Phẩm</th>
+											<th class="text-center">Giá Sản Phẩm</th>
+											<th class="text-center">Hành động</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="product, stat : ${products}">
+											<td class="text-center" th:text="${stat.index + 1}"></td>
+											<td><img th:src="${product.productImage}" alt="Image"
+												style="width: 100px; height: auto;" /></td>
+											<td class="text-center" th:text="${product.productName}"></td>
+											<td class="text-center"
+												th:text="${product.productDescription}"></td>
+											<td class="text-center"
+												th:data-price="${product.productPrice}"></td>
+											<script>
 									// Chỉ chọn các thẻ <td> có thuộc tính data-price
 									document.querySelectorAll('td[data-price]').forEach(td => {
 										const rawPrice = td.getAttribute('data-price'); // Lấy giá trị từ thuộc tính data-price
@@ -299,38 +307,40 @@ form label {
 									});
 								</script>
 
-										<td>
-											<div class="d-flex justify-content-center gap-2">
-												<a class="customUpdate" href="javascript:void(0);"
-													th:data-bs-toggle="modal" data-bs-target="#modalProducts"
-													th:data-product-id="${product.productId}"
-													th:data-product-name="${product.productName}"
-													th:data-product-price="${product.productPrice}"
-													th:data-product-image="${product.productImage}"
-													th:data-product-description="${product.productDescription}">
-													<i class="bi bi-pencil-square"></i>
-												</a>
-												<form th:action="@{/delete-product}" method="post"
-													class="delete-form">
-													<input type="hidden" name="productId"
-														th:value="${product.productId}" />
-													<button type="submit" class="customBtnDelete deleteBtn">
-														<i class="bi bi-trash"></i>
-													</button>
-												</form>
-											</div>
+											<td>
+												<div class="d-flex justify-content-center gap-2">
+													<a class="customUpdate" href="javascript:void(0);"
+														th:data-bs-toggle="modal" data-bs-target="#modalProducts"
+														th:data-product-id="${product.productId}"
+														th:data-product-name="${product.productName}"
+														th:data-product-price="${product.productPrice}"
+														th:data-product-image="${product.productImage}"
+														th:data-product-description="${product.productDescription}">
+														<i class="bi bi-pencil-square"></i>
+													</a>
+													<form th:action="@{/delete-product}" method="post"
+														class="delete-form">
+														<input type="hidden" name="productId"
+															th:value="${product.productId}" />
+														<button type="submit" class="customBtnDelete deleteBtn">
+															<i class="bi bi-trash"></i>
+														</button>
+													</form>
+												</div>
 
-										</td>
-									</tr>
+											</td>
+										</tr>
 
-								</tbody>
-							</table>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<script>
+	</div>
+	<script>
     const modalProduct = document.getElementById('modalProducts');
     modalProduct.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget; // Button that triggered the modal
@@ -364,7 +374,7 @@ form label {
         form.querySelector('textarea[name="productDescription"]').value = productDescription;
     });
 </script>
-		<script>
+	<script>
     document.querySelectorAll(".deleteBtn").forEach(button => {
         button.addEventListener("click", function (event) {
             const form = this.closest("form");
@@ -392,39 +402,39 @@ form label {
         });
     });
 </script>
-		<!--   Core JS Files   -->
-		<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
-		<script src="../assets/js/core/popper.min.js"></script>
-		<script src="../assets/js/core/bootstrap.min.js"></script>
-		<th:block th:if="${successMessage}">
-			<script>
+	<!--   Core JS Files   -->
+	<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+	<script src="../assets/js/core/popper.min.js"></script>
+	<script src="../assets/js/core/bootstrap.min.js"></script>
+	<th:block th:if="${successMessage}">
+		<script>
             Swal.fire({
                 icon: 'success',
                 title: 'Cập nhật thành công!',
                 text: /*[${successMessage}]*/ 'Cập nhật sản phẩm thành công!',
             });
         </script>
-		</th:block>	
-		<th:block th:if="${xoasanphamMessage}">
-			<script>
+	</th:block>
+	<th:block th:if="${xoasanphamMessage}">
+		<script>
             Swal.fire({
                 icon: 'success',
                 title: 'Xóa thành công!',
                 text: /*[${xoasanphamMessage}]*/ 'Sản phẩm đã được xóa thành công!',
             });
         </script>
-		</th:block>
-		<th:block th:if="${khoiphucsanphamMessage}">
-			<script>
+	</th:block>
+	<th:block th:if="${khoiphucsanphamMessage}">
+		<script>
             Swal.fire({
                 icon: 'success',
                 title: 'Khôi phục thành công!',
                 text: /*[${khoiphucsanphamMessage}]*/ 'Sản phẩm đã được khôi phục thành công!',
             });
         </script>
-		</th:block>
-		<th:block th:if="${cnspthatbaiMessage}">
-			<script>
+	</th:block>
+	<th:block th:if="${cnspthatbaiMessage}">
+		<script>
             Swal.fire({
                 icon: 'error',
                 title: 'Cập nhật thất bại!',
@@ -436,18 +446,18 @@ form label {
                 }
             });
         </script>
-		</th:block>
-		<th:block th:if="${sanphamMessage}">
-			<script>
+	</th:block>
+	<th:block th:if="${sanphamMessage}">
+		<script>
             Swal.fire({
                 icon: 'success',
                 title: 'Thêm mới thành công!',
                 text: /*[${sanphamMessage}]*/ 'Sản phẩm được thêm thành công!',
             });
         </script>
-		</th:block>
-		<th:block th:if="${errorMessage}">
-			<script>
+	</th:block>
+	<th:block th:if="${errorMessage}">
+		<script>
             Swal.fire({
                 icon: 'error',
                 title: 'Thêm mới thất bại!',
@@ -459,32 +469,46 @@ form label {
                 }
             });
         </script>
-		</th:block>
-		<!-- jQuery Scrollbar -->
-		<script
-			src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+	</th:block>
+	<th:block th:if="${errorMessages}">
+		<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Thêm mới thất bại!',
+                text: 'Vui lòng kiểm tra lại các trường đã điền!',  <!-- Thông báo lỗi -->
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Hiển thị modal thêm suất chiếu
+                    $('#modalProducts').modal('show');
+                }
+            });
+        </script>
+	</th:block>
+	<!-- jQuery Scrollbar -->
+	<script
+		src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
-		<!-- Chart JS -->
-		<script src="../assets/js/plugin/chart.js/chart.min.js"></script>
+	<!-- Chart JS -->
+	<script src="../assets/js/plugin/chart.js/chart.min.js"></script>
 
-		<!-- jQuery Sparkline -->
-		<script
-			src="../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+	<!-- jQuery Sparkline -->
+	<script
+		src="../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
 
-		<!-- Chart Circle -->
-		<script src="../assets/js/plugin/chart-circle/circles.min.js"></script>
+	<!-- Chart Circle -->
+	<script src="../assets/js/plugin/chart-circle/circles.min.js"></script>
 
-		<!-- Datatables -->
-		<script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+	<!-- Datatables -->
+	<script src="../assets/js/plugin/datatables/datatables.min.js"></script>
 
-		<!-- Bootstrap Notify -->
-		<script
-			src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+	<!-- Bootstrap Notify -->
+	<script
+		src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 
-		<!-- jQuery Vector Maps -->
-		<script src="../assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-		<script src="../assets/js/plugin/jsvectormap/world.js"></script>
-		<script type="text/javascript">
+	<!-- jQuery Vector Maps -->
+	<script src="../assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+	<script src="../assets/js/plugin/jsvectormap/world.js"></script>
+	<script type="text/javascript">
     $(document).ready(function() {
         $('#myTable').DataTable({
             "language": {
@@ -511,7 +535,7 @@ form label {
         });
     });
 	</script>
-		<script type="text/javascript">
+	<script type="text/javascript">
     $(document).ready(function() {
         $('#deletedProductTable').DataTable({
             "language": {
@@ -538,16 +562,16 @@ form label {
         });
     });
 	</script>
-		<!-- Google Maps Plugin -->
-		<script src="../assets/js/plugin/gmaps/gmaps.js"></script>
-		<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-		<!-- Sweet Alert -->
-		<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+	<!-- Google Maps Plugin -->
+	<script src="../assets/js/plugin/gmaps/gmaps.js"></script>
+	<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+	<!-- Sweet Alert -->
+	<script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 
-		<!-- Kaiadmin JS -->
-		<script src="../assets/js/kaiadmin.min.js"></script>
+	<!-- Kaiadmin JS -->
+	<script src="../assets/js/kaiadmin.min.js"></script>
 
-		<!-- Kaiadmin DEMO methods, don't include it in your project! -->
-		<script src="../assets/js/setting-demo2.js"></script>
+	<!-- Kaiadmin DEMO methods, don't include it in your project! -->
+	<script src="../assets/js/setting-demo2.js"></script>
 </body>
 </html>

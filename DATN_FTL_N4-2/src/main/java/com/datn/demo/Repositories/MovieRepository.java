@@ -23,7 +23,7 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Integer> {
 	           "LOWER(m.director) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
 	           "LOWER(m.actor) LIKE LOWER(CONCAT('%', :keyword, '%'))")
 	    List<MovieEntity> findByKeywordContainingIgnoreCase(@Param("keyword") String keyword);
-
+	  boolean existsByMovieName(String movieName);
     Page<MovieEntity> findAll(Pageable pageable);
 	List<MovieEntity> findByIsDeletedFalseOrderByMovieIdDesc();
 

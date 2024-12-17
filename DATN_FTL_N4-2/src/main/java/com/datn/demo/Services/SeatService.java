@@ -40,7 +40,7 @@ public class SeatService {
     public int countSeatsInRoom(int roomId) {
         return seatRepository.countSeatsByRoomId(roomId);
     }
-
+   
     public boolean updateSeatPrice(Integer seatId, Double seatPrice) {
         Optional<SeatEntity> seatOpt = seatRepository.findById(seatId);
         if (seatOpt.isPresent()) {
@@ -111,6 +111,10 @@ public class SeatService {
     public SeatEntity save(SeatEntity seat) {
         return seatRepository.save(seat);
     }
-
+    public void updateSeatStatus(int seatId, String status) {
+        SeatEntity seat = seatRepository.findById(seatId).orElseThrow(() -> new RuntimeException("Ghế không tồn tại"));
+        seat.setStatus(status);
+        seatRepository.save(seat);
+    }
 
 }

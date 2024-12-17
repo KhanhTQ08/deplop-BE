@@ -2,7 +2,7 @@
 	<div class="sidebar-logo">
 		<!-- Logo Header -->
 		<div class="logo-header" data-background-color="dark">
-			<a href="/admin" class="logo mt-5 mb-3 ms-5"> <img
+			<a href="/charts/movieindex" class="logo mt-5 mb-3 ms-5"> <img
 				th:src="@{/assets/img/kaiadmin/ok.png}" alt="brand-navar"
 				class="navbar-brand logo-image" height="100" width="100">
 			</a>
@@ -59,35 +59,15 @@
 									class="sub-item">Hóa đơn</span></a></li>
 							<li><a href="/cinema"> <span class="sub-item">Rạp
 										chiếu</span></a></li>
-						</ul>
-					</div></li>
-
-				<li class="nav-item"><a data-bs-toggle="collapse"
-					href="#sidebarLayouts"> <i class="fas fa-th-list"></i>
-						<p>Tài khoản</p> <span class="caret"></span>
-				</a>
-					<div class="collapse" id="sidebarLayouts">
-						<ul class="nav nav-collapse">
-							<li><a href="/account"> <span class="sub-item">Quản
-										lý tài khoản</span>
+											<li><a href="/product"> <span class="sub-item">
+									 Sản phẩm</span>
 							</a></li>
-
-						</ul>
-					</div></li>
-				<li class="nav-item"><a data-bs-toggle="collapse" href="#forms">
-						<i class="fas fa-pen-square"></i>
-						<p>Sản phẩm</p> <span class="caret"></span>
-				</a>
-					<div class="collapse" id="forms">
-						<ul class="nav nav-collapse">
-							<li><a href="/product"> <span class="sub-item">Quản
-										lý sản phẩm</span>
+								<li><a href="/account"> <span class="sub-item">
+										Tài khoản</span>
 							</a></li>
 						</ul>
 					</div></li>
-
-
-				<li class="nav-item " style="margin-top: 80%"
+				<li class="nav-item "
 					th:if="${session.acc != null}">
 					<div class="justify-content-center align-items-center d-flex mt-5">
 						<form th:action="@{/logout}" method="post" id="logoutForm">

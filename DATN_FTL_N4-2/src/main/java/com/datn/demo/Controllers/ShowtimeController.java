@@ -42,8 +42,8 @@ public class ShowtimeController {
     	 AccountEntity acc = (AccountEntity) session.getAttribute("acc");
 
 		    // Kiểm tra nếu đã đăng nhập và là admin
-		    if (acc != null && acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-		        return "redirect:/printError"; // Trả về trang 404 nếu là admin
+    	 if (acc != null && acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
+		        return "redirect:/printErrorAdmin"; // Trả về trang 404 nếu là admin
 		    }
         Optional<ShowtimeEntity> showtimeOpt = showtimeService.getShowtimeById(showtimeId);
 

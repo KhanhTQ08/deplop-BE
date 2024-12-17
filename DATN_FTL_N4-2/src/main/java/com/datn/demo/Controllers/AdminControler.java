@@ -1,6 +1,7 @@
 package com.datn.demo.Controllers;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.datn.demo.Entities.*;
 import com.datn.demo.Services.*;
@@ -27,6 +28,7 @@ import com.datn.demo.Repositories.ReviewRepository;
 import com.datn.demo.Repositories.RoleRepository;
 import com.datn.demo.Repositories.RoomRepository;
 import com.datn.demo.Repositories.ShowtimeRepository;
+import com.datn.demo.Repositories.TicketRepository;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -45,7 +47,8 @@ public class AdminControler {
 	private ReviewRepository reviewRepository;
 	@Autowired
 	private RoomRepository roomRepository;
-
+	@Autowired
+	private TicketRepository ticketRepository;
 	@Autowired
 	private ShowtimeRepository showtimeRepository;
 	@Autowired
@@ -96,7 +99,8 @@ public class AdminControler {
 	    model.addAttribute("cinemas", cinemas);
 	    model.addAttribute("trashCinemas", trashCinemas); // Truyền danh sách thùng rác vào view
 	    model.addAttribute("newCinema", new CinemaInformationEntity());
-	    return "admin/components/cinenmas"; // Đường dẫn tới file HTML
+		return "admin/components/cinenmas";
+
 	}
 
 	@PostMapping("/cinema/add")
@@ -201,7 +205,7 @@ public class AdminControler {
 	public String restoreCinema(@PathVariable int id, RedirectAttributes redirectAttributes) {
 	    try {
 	        cinemaService.restoreCinema(id); // Gọi service để khôi phục rạp
-	        redirectAttributes.addFlashAttribute("successRMessage", "Đã khôi phục rạp thành công!");
+	        redirectAttributes.addFlashAttribute("successuRMessage", "Đã khôi phục rạp thành công!");
 	    } catch (Exception e) {
 	        redirectAttributes.addFlashAttribute("errorRMessage", "Có lỗi xảy ra: " + e.getMessage());
 	    }
@@ -234,22 +238,23 @@ public class AdminControler {
 	@GetMapping("/showtime")
 	public String listShowtimes(@RequestParam(required = false) Integer cinemaId, Model model,HttpSession session) {
 		model.addAttribute("showtimeBean", new ShowtimeBean());
-		model.addAttribute("movies", movieRepository.findAll());
-		model.addAttribute("cinemas", cinemaInformationRepository.findByStatusTrue());
+		model.addAttribute("movies", movieRepository.findByIsDeletedTrueOrderByMovieIdDesc());
+		model.addAttribute("cinemas", cinemaInformationRepository.findByStatusTrueOrderByCinemaIdAsc());
+
 		 AccountEntity acc = (AccountEntity) session.getAttribute("acc");
 	        if (acc == null) {
 	            return "main/user/user-login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		// Nếu không có cinemaId, trả về tất cả phòng
 		if (cinemaId == null) {
 			model.addAttribute("rooms", roomRepository.findAll());
 		} else {
 			// Lọc danh sách phòng theo cinemaId
-			model.addAttribute("rooms", roomRepository.findByCinema_CinemaId(cinemaId));
+			model.addAttribute("rooms", roomRepository.findByCinema_CinemaIdAndIsDeletedTrue(cinemaId));
 		}
 
 		model.addAttribute("showtimes", showtimeRepository.findByIsDeletedTrueOrderByShowtimeIdDesc());
@@ -271,10 +276,21 @@ public class AdminControler {
 			error.rejectValue("bookingStartDate", "error.bookingStartDate",
 					"Ngày bắt đầu đặt vé phải trước hoặc cùng ngày với ngày chiếu.");
 		}
+		 if (showtimeBean.getRoomId() != null && showtimeBean.getShowDate() != null && showtimeBean.getStartTime() != null) {
+		        List<ShowtimeEntity> existingShowtimes = showtimeRepository.findByRoom_RoomIdAndCinemaInformation_CinemaIdAndShowDate(
+		                showtimeBean.getRoomId(), showtimeBean.getCinemaId(), showtimeBean.getShowDate());
+
+		        // Kiểm tra từng suất chiếu có trùng giờ bắt đầu không
+		        for (ShowtimeEntity existingShowtime : existingShowtimes) {
+		            if (existingShowtime.getStartTime().equals(showtimeBean.getStartTime())) {
+		                error.rejectValue("startTime", "error.startTime", "Suất chiếu với giờ bắt đầu này đã tồn tại.");
+		            }
+		        }
+		    }
 		if (error.hasErrors()) {
 			model.addAttribute("rooms", roomRepository.findAll());
 			model.addAttribute("movies", movieRepository.findAll());
-			model.addAttribute("cinemas", cinemaInformationRepository.findByStatusTrue());
+			model.addAttribute("cinemas", cinemaInformationRepository.findAll());
 			model.addAttribute("showtimes", showtimeRepository.findAll());
 			model.addAttribute("errorMessage", "Vui lòng kiểm tra các trường đã điền.");
 
@@ -287,7 +303,7 @@ public class AdminControler {
 			model.addAttribute("timeError", e.getMessage());
 			model.addAttribute("rooms", roomRepository.findAll());
 			model.addAttribute("movies", movieRepository.findAll());
-			model.addAttribute("cinemas", cinemaInformationRepository.findByStatusTrue());
+			model.addAttribute("cinemas", cinemaInformationRepository.findAll());
 			model.addAttribute("showtimes", showtimeRepository.findAll());
 			model.addAttribute("errorMessage", "Vui lòng kiểm tra các trường đã điền.");
 
@@ -317,7 +333,11 @@ public class AdminControler {
 	@GetMapping("/get-rooms-by-cinema/{cinemaId}")
 	@ResponseBody
 	public List<Map<String, Object>> getRoomsByCinema(@PathVariable Integer cinemaId) {
-		List<RoomEntity> rooms = roomRepository.findByCinema_CinemaId(cinemaId);
+		List<RoomEntity> rooms = roomRepository.findByCinema_CinemaIdAndIsDeletedTrue(cinemaId);
+		List<RoomEntity> filteredRooms = rooms.stream()
+                .filter(room -> room.isDeleted()) // Lọc phòng có isDeleted = true
+                .collect(Collectors.toList());
+
 		List<Map<String, Object>> response = new ArrayList<>();
 
 		for (RoomEntity room : rooms) {
@@ -340,19 +360,25 @@ public class AdminControler {
 
 	@PostMapping("/delete-showtime")
 	public String deleteShowtime(@RequestParam("showtimeId") Integer showtimeId,
-			RedirectAttributes redirectAttributes) {
-		ShowtimeEntity showtime = showtimeRepository.findById(showtimeId)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid Showtime ID"));
+	         RedirectAttributes redirectAttributes) {
+	    ShowtimeEntity showtime = showtimeRepository.findById(showtimeId)
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid Showtime ID"));
+	    
+	    // Kiểm tra xem có vé đã được bán cho suất chiếu này không
+	    List<TicketEntity> tickets = ticketRepository.findTicketsByShowtimeId(showtime.getShowtimeId());
+	    if (!tickets.isEmpty()) {
+	        redirectAttributes.addFlashAttribute("kothexoaMessage", "Không thể xóa suất chiếu đã có vé đã bán!");
+	        return "redirect:/showtime"; // Trả về trang danh sách suất chiếu
+	    }
 
-		// Đánh dấu suất chiếu là đã bị xóa
-		showtime.setDeleted(false);
+	    // Đánh dấu suất chiếu là đã bị xóa
+	    showtime.setDeleted(false);
+	    showtimeRepository.save(showtime);
 
-		// Lưu lại trạng thái mới
-		showtimeRepository.save(showtime);
-
-		redirectAttributes.addFlashAttribute("xoaMessage", "Suất chiếu đã được xóa thành công!");
-		return "redirect:/showtime"; // Đảm bảo rằng sau khi xóa, bạn luôn tải lại danh sách suất chiếu
+	    redirectAttributes.addFlashAttribute("xoaMessage", "Suất chiếu đã được xóa thành công!");
+	    return "redirect:/showtime"; // Đảm bảo rằng sau khi xóa, bạn luôn tải lại danh sách suất chiếu
 	}
+
 
 	@PostMapping("/restore-showtime/{showtimeId}")
 	public String restoreShowtime(@PathVariable Integer showtimeId, RedirectAttributes redirectAttributes) {
@@ -375,34 +401,54 @@ public class AdminControler {
 		// Quay lại trang danh sách suất chiếu
 		return "redirect:/showtime";
 	}
-
 	@GetMapping("/account")
-	public String listAccounts(Model model,HttpSession session) {
-		List<AccountEntity> accounts = accountRepository.findAll();
-		List<RoleEntity> roles = roleRepository.findAll();
-		
-		 AccountEntity acc = (AccountEntity) session.getAttribute("acc");
-	        if (acc == null) {
-	            return "main/user/user-login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
-	        } 
-	// Kiểm tra nếu người dùng là admin
-	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
-	        }
-		
-		model.addAttribute("roles", roles);
-		model.addAttribute("account", new AccountBean()); // Đảm bảo là tài khoản mới
-		model.addAttribute("accounts", accountRepository.findByIsDeletedTrueOrderByAccountIdDesc());
-		model.addAttribute("deletedAccount", accountRepository.findByIsDeletedFalseOrderByAccountIdDesc());
-		// Thiết lập vai trò mặc định là admin khi tạo tài khoản mới
-		AccountBean accountBean = new AccountBean(); // Khởi tạo bean tài khoản mới
-		if (accountBean.getAccountId() == 0) {
-			accountBean.setRoleId(1); // Giả sử '1' là vai trò admin
-		}
-		model.addAttribute("account", accountBean);
+	public String listAccounts(Model model, HttpSession session) {
+	    // Lọc các tài khoản có roleId là 2 và 3 và isDeleted = true
+		List<AccountEntity> accounts = accountRepository.findByIsDeletedTrueOrderByAccountIdDesc();
+	    // Đảo ngược danh sách tài khoản
+	    Collections.reverse(accounts);
 
-		return "admin/components/account";
+	    // Lấy tất cả các vai trò
+	    List<RoleEntity> roles = roleRepository.findAll();
+
+	    // Kiểm tra trạng thái người dùng đăng nhập
+	    AccountEntity acc = (AccountEntity) session.getAttribute("acc");
+	    if (acc == null) {
+	        return "main/user/user-login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+	    }
+
+	    // Kiểm tra nếu người dùng là admin
+	    if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
+			   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	    }
+
+	    // Thêm các vai trò và tài khoản vào model
+	    model.addAttribute("roles", roles);
+	    model.addAttribute("account", new AccountBean());  // Đảm bảo là tài khoản mới
+	    model.addAttribute("accounts", accounts);  // Chỉ hiển thị tài khoản có roleId = 2 và 3 và isDeleted = true
+	    model.addAttribute("deletedAccount", accountRepository.findByIsDeletedFalseOrderByAccountIdDesc());
+
+	    // Thiết lập vai trò mặc định là admin khi tạo tài khoản mới
+	    AccountBean accountBean = new AccountBean(); // Khởi tạo bean tài khoản mới
+	    if (accountBean.getAccountId() == 0) {
+	        accountBean.setRoleId(1); // Mặc định chọn roleId là 2 (hoặc 3 tùy vào yêu cầu)
+	    }
+	    model.addAttribute("account", accountBean);
+
+	    return "admin/components/account";
 	}
+	@GetMapping("/account/filter")
+	@ResponseBody
+	public List<AccountEntity> filterAccountsByRole(@RequestParam int roleId) {
+	    if (roleId == 0) {
+	        // Trả về tất cả tài khoản chưa bị xóa mềm (isDeleted = true)
+	        return accountRepository.findByIsDeletedTrueOrderByAccountIdDesc();
+	    }
+	    // Trả về danh sách tài khoản theo vai trò và chưa bị xóa mềm (isDeleted = true)
+	    return accountRepository.findByRole_RoleIdAndIsDeletedTrue(roleId);
+	}
+
+
 
 	@PostMapping("/add-account")
 	public String saveAccount(@Valid @ModelAttribute("account") AccountBean accountBean, BindingResult result,
@@ -533,7 +579,6 @@ public class AdminControler {
 	public String showTopMoviesPage() {
 		return "admin/index";
 	}
-
 	@GetMapping("/flim")
 	public String movieList(Model model,HttpSession session) {
 		// model.addAttribute("movies", movieRepository.findAllByOrderByMovieIdDesc());
@@ -543,7 +588,7 @@ public class AdminControler {
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		model.addAttribute("movies", movieRepository.findByIsDeletedTrueOrderByMovieIdDesc());
 		model.addAttribute("deletedMovies", movieRepository.findByIsDeletedFalseOrderByMovieIdDesc());
@@ -567,6 +612,13 @@ public class AdminControler {
 			model.addAttribute("errorMessage", "Vui lòng kiểm tra các trường đã điền.");
 			return "admin/components/flim";
 		}
+		
+		if (movieRepository.existsByMovieName(movieBean.getMovieName())) {
+	        error.rejectValue("movieName", "error.movieName", "Tên phim đã tồn tại. Vui lòng chọn tên khác.");
+	        model.addAttribute("movies", movieRepository.findAll());
+	        model.addAttribute("trungphim", "Tên phim đã tồn tại. Vui lòng chọn tên khác.");
+	        return "admin/components/flim";
+	    }
 		MovieEntity movieEntity = new MovieEntity();
 		movieEntity.setMovieName(movieBean.getMovieName());
 		movieEntity.setTrailerUrl(movieBean.getTrailerUrl());
@@ -677,24 +729,6 @@ public class AdminControler {
 		return "redirect:/flim";
 	}
 
-	// API để tìm kiếm đạo diễn
-	@GetMapping("/directors")
-	public List<String> getDirectors(@RequestParam String query) {
-		return movieService.findDirectorsByQuery(query);
-	}
-
-	// API để tìm kiếm diễn viên
-	@GetMapping("/actors")
-	public List<String> getActors(@RequestParam String query) {
-		return movieService.findActorsByQuery(query);
-	}
-
-	// API để tìm kiếm thể loại
-	@GetMapping("/genres")
-	public List<String> getGenres(@RequestParam String query) {
-		return movieService.findGenresByQuery(query);
-	}
-
 	// Danh sách sản phẩm
 	@GetMapping("/product")
 	public String ProductList(Model model,HttpSession session) {
@@ -704,7 +738,7 @@ public class AdminControler {
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		model.addAttribute("products", productRepository.findAll());
 		model.addAttribute("products", productRepository.findByIsDeletedTrueOrderByProductIdDesc());
@@ -721,13 +755,23 @@ public class AdminControler {
 	}
 
 	@PostMapping("/add-product")
-	public String addProductsave(@Valid @ModelAttribute("productBean") ProductBean productBean, BindingResult error,
+	public String addProductsave(@Valid @ModelAttribute("productBean") ProductBean productBean, BindingResult errors,
 			RedirectAttributes redirectAttributes, Model model) {
-		if (error.hasErrors()) {
+		if (errors.hasErrors()) {
 			model.addAttribute("products", productRepository.findAll());
 			model.addAttribute("errorMessage", "Vui lòng kiểm tra các trường đã điền.");
 			return "admin/components/product";
 		}
+		 if (productRepository.existsByProductName(productBean.getProductName())) {
+		        // Thêm lỗi vào BindingResult
+		        errors.rejectValue("productName", "error.productName", "Tên sản phẩm đã tồn tại. Vui lòng chọn tên khác.");
+
+		        // Truyền thông báo lỗi vào model
+		        model.addAttribute("products", productRepository.findAll());
+		        model.addAttribute("errorMessages", "Tên sản phẩm đã tồn tại. Vui lòng chọn tên khác.");
+		        return "admin/components/product";  // Trả về trang với thông báo lỗi
+		    }
+
 		ProductEntity productEntity = new ProductEntity();
 		productEntity.setProductName(productBean.getProductName());
 		productEntity.setProductDescription(productBean.getProductDescription());
@@ -837,7 +881,7 @@ public class AdminControler {
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		model.addAttribute("rooms", roomRepository.findAll());
 		model.addAttribute("roomBean", new RoomBean());
@@ -999,7 +1043,7 @@ public class AdminControler {
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		// Lấy danh sách ghế theo phòng
 		List<SeatEntity> seats = seatService.getSeatsWithRooms();
@@ -1091,7 +1135,7 @@ public class AdminControler {
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		model.addAttribute("invoices", invoices);
 		return "admin/components/hoadon";
@@ -1108,7 +1152,7 @@ public class AdminControler {
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		// Nếu cinemaId không được truyền, đặt mặc định là 1
 		if (cinemaId == null) {
@@ -1116,13 +1160,53 @@ public class AdminControler {
 		}
 
 		// Lấy danh sách phòng theo cinemaId
-		List<RoomEntity> rooms = roomService.getRoomsByCinemaId(cinemaId);
+		List<RoomEntity> rooms = roomService.getRoomsByCinemaId(cinemaId)
+			    .stream()
+			    .filter(room -> room.isDeleted())  // Lọc phòng chưa bị xóa (isDeleted = true)
+			    .collect(Collectors.toList());
 		model.addAttribute("rooms", rooms);
+		model.addAttribute("deletedRooms", roomRepository.findByIsDeletedFalseOrderByRoomIdDesc());
 
 		// Để giữ trạng thái chọn dropdown
 		model.addAttribute("selectedCinemaId", cinemaId);
 
 		return "admin/components/cinemaWithRoom";
+	}
+	@PostMapping("/delete-cinemaWithRoom")
+	public String deletecinemaWithRoom(@RequestParam("roomId") Integer roomId,
+	         RedirectAttributes redirectAttributes) {
+	    RoomEntity room = roomRepository.findById(roomId)
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid Showtime ID"));
+
+	    room.setDeleted(false);
+	    roomRepository.save(room);
+
+	    redirectAttributes.addFlashAttribute("xoaMessage", "Phòng chiếu đã được xóa thành công!");
+		return "redirect:/cinemaWithRoom";
+	}
+
+
+	@PostMapping("/restore-cinemaWithRoom/{roomId}")
+	public String restorecinemaWithRoom(@PathVariable Integer roomId, RedirectAttributes redirectAttributes) {
+		// Tìm suất chiếu theo ID
+		RoomEntity room = roomRepository.findByRoomId(roomId);
+
+		if (room == null) {
+			throw new IllegalArgumentException("Invalid Showtime ID");
+		}
+
+		// Khôi phục suất chiếu (thay đổi isDeleted thành false)
+		room.setDeleted(true);
+
+		// Lưu thay đổi vào cơ sở dữ liệu
+		roomRepository.save(room);
+
+		// Thêm thông báo thành công
+		redirectAttributes.addFlashAttribute("khoiphucMessage", "Phòng chiếu đã được khôi phục!");
+
+		// Quay lại trang danh sách suất chiếu
+		return "redirect:/cinemaWithRoom";
+
 	}
 
 	@GetMapping("/seatWithRoomAndCinema")
@@ -1137,7 +1221,7 @@ public class AdminControler {
 	        } 
 	// Kiểm tra nếu người dùng là admin
 	        if (!acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	            return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
+	 		   return "redirect:/printError"; // Trả về trang 404 nếu không phải admin
 	        }
 		List<CinemaInformationEntity> cinemasAll = cinemaService.getAllCinemas();
 		model.addAttribute("cinemas", cinemasAll);

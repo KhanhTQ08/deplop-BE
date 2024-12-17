@@ -59,12 +59,14 @@
 							<label>Email cần nhập</label>
 						</div>
 						<div class="inputForm">
-							<svg height="20" width="20" viewBox="0 0 24 24"
-								xmlns="http://www.w3.org/2000/svg">
-								<path
-									d="M20.1 4H3.9C2.85 4 2 4.85 2 5.9v12.2C2 19.15 2.85 20 3.9 20h16.2c1.05 0 1.9-.85 1.9-1.9V5.9c0-1.05-.85-1.9-1.9-1.9zm0 2l-8.1 5L3.9 6h16.2zM4 18V7.98l8 4.92 8-4.92V18H4z"
-									fill="none" stroke="#000" stroke-width="2" />
-							</svg>
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+								fill="currentColor" class="bi bi-envelope-check"
+								viewBox="0 0 16 16">
+  <path
+									d="M2 2a2 2 0 0 0-2 2v8.01A2 2 0 0 0 2 14h5.5a.5.5 0 0 0 0-1H2a1 1 0 0 1-.966-.741l5.64-3.471L8 9.583l7-4.2V8.5a.5.5 0 0 0 1 0V4a2 2 0 0 0-2-2zm3.708 6.208L1 11.105V5.383zM1 4.217V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v.217l-7 4.2z" />
+  <path
+									d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0m-1.993-1.679a.5.5 0 0 0-.686.172l-1.17 1.95-.547-.547a.5.5 0 0 0-.708.708l.774.773a.75.75 0 0 0 1.174-.144l1.335-2.226a.5.5 0 0 0-.172-.686" />
+</svg>
 							<input type="text" name="email" id="email" class="input"
 								placeholder="Hãy nhập email của bạn">
 						</div>
@@ -98,8 +100,10 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-				    <div class="otp-timer" id="otp-timer">Thời gian còn lại: 03:00</div> <!-- Hiển thị thời gian -->
-				
+					<div class="otp-timer" id="otp-timer">Thời gian còn lại:
+						03:00</div>
+					<!-- Hiển thị thời gian -->
+
 					<form id="verifyOtpForm">
 						<div class="otp-input-container">
 							<input type="text" class="otp-input" maxlength="1" id="otp1"
@@ -111,9 +115,8 @@
 								maxlength="1" id="otp5" name="otp5" /> <input type="text"
 								class="otp-input" maxlength="1" id="otp6" name="otp6" />
 						</div>
-						<button type="submit" class="btn-custom">Xác nhận
-							OTP</button>
-							
+						<button type="submit" class="btn-custom">Xác nhận OTP</button>
+
 					</form>
 				</div>
 			</div>
@@ -132,7 +135,7 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-				
+
 					<form id="resetPasswordForm">
 						<div class="mb-3">
 							<label for="newPassword" class="form-label">Mật khẩu mới</label>
@@ -157,8 +160,7 @@
 							</div>
 						</div>
 
-						<button type="submit" class="btn-custom">Đặt lại mật
-							khẩu</button>
+						<button type="submit" class="btn-custom">Đặt lại mật khẩu</button>
 					</form>
 				</div>
 			</div>
@@ -181,65 +183,68 @@
 .swal2-title, .swal2-popup {
 	font-weight: normal !important; /* Đảm bảo không bị in đậm */
 }
+
 .btn-custom {
-  background-color: #FF3D49; /* Màu nền đỏ */
-  color: white; /* Chữ trắng */
-  border: none; /* Xóa border */
-  padding: 10px 20px; /* Thêm padding */
-  font-size: 1rem; /* Kích thước chữ */
-  border-radius: 5px; /* Bo góc */
-  transition: background-color 0.3s ease; /* Thêm hiệu ứng chuyển màu nền */
-  margin-left:140px;
+	background-color: #FF3D49; /* Màu nền đỏ */
+	color: white; /* Chữ trắng */
+	border: none; /* Xóa border */
+	padding: 10px 20px; /* Thêm padding */
+	font-size: 1rem; /* Kích thước chữ */
+	border-radius: 5px; /* Bo góc */
+	transition: background-color 0.3s ease;
+	/* Thêm hiệu ứng chuyển màu nền */
+	margin-left: 140px;
 }
 
 .btn-custom:hover {
-  background-color: #D92B3C; /* Màu nền khi hover */
+	background-color: #D92B3C; /* Màu nền khi hover */
 }
 
 .btn-custom:focus {
-  outline: none; /* Xóa viền focus */
+	outline: none; /* Xóa viền focus */
 }
+
 .input-container {
-    position: relative; /* Đặt vị trí tương đối để căn chỉnh phần tử con */
+	position: relative; /* Đặt vị trí tương đối để căn chỉnh phần tử con */
 }
 
 .input-container input {
-    width: 100%; /* Chiếm toàn bộ chiều rộng */
-    padding-right: 40px; /* Chừa khoảng trống bên phải cho biểu tượng */
-    padding-left: 10px; /* Thêm padding bên trái cho input */
-    border-radius: 5px;
-    border: 2px solid #FF3D49;
-    font-size: 16px;
+	width: 100%; /* Chiếm toàn bộ chiều rộng */
+	padding-right: 40px; /* Chừa khoảng trống bên phải cho biểu tượng */
+	padding-left: 10px; /* Thêm padding bên trái cho input */
+	border-radius: 5px;
+	border: 2px solid #FF3D49;
+	font-size: 16px;
 }
 
 .toggle-password {
-    position: absolute; /* Đặt vị trí tuyệt đối trong .input-container */
-    right: 10px; /* Căn cách mép phải 10px */
-    top: 50%; /* Căn giữa theo chiều dọc */
-    transform: translateY(-50%); /* Dịch chuyển để căn chính giữa */
-    cursor: pointer; /* Hiển thị con trỏ khi di chuột qua */
-    font-size: 1.3em; /* Tăng kích thước biểu tượng */
-    user-select: none; /* Vô hiệu hóa chọn text trên biểu tượng */
-    color: #FF3D49; /* Màu biểu tượng */
+	position: absolute; /* Đặt vị trí tuyệt đối trong .input-container */
+	right: 10px; /* Căn cách mép phải 10px */
+	top: 50%; /* Căn giữa theo chiều dọc */
+	transform: translateY(-50%); /* Dịch chuyển để căn chính giữa */
+	cursor: pointer; /* Hiển thị con trỏ khi di chuột qua */
+	font-size: 1.3em; /* Tăng kích thước biểu tượng */
+	user-select: none; /* Vô hiệu hóa chọn text trên biểu tượng */
+	color: #FF3D49; /* Màu biểu tượng */
 }
 
 .toggle-password:hover {
-    opacity: 0.7; /* Hiệu ứng khi hover */
+	opacity: 0.7; /* Hiệu ứng khi hover */
 }
 
 /* Thêm hiệu ứng focus cho input */
 .input-container input:focus {
-    border-color: #FF3D49;
-    outline: none;
-}
-.otp-timer {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #FF3D49;
-    text-align: center;
-    margin-bottom: 15px;
+	border-color: #FF3D49;
+	outline: none;
 }
 
+.otp-timer {
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: #FF3D49;
+	text-align: center;
+	margin-bottom: 15px;
+}
 </style>
 	<script>
 		//Đối với mật khẩu mới
@@ -278,7 +283,7 @@
 					}
 				});
 	</script>
-<script>
+	<script>
 $(document).ready(function () {
     let countdown = 180; // 3 phút (tính bằng giây)
     let timerInterval;

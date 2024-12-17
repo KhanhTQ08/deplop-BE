@@ -45,7 +45,7 @@ public class ListInvoiceController {
 
 	    // Kiểm tra nếu đã đăng nhập và là admin
 	    if (acc != null && acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-	        return "redirect:/printError"; // Trả về trang 404 nếu là admin
+	        return "redirect:/printErrorAdmin"; // Trả về trang 404 nếu là admin
 	    }
         if (acc != null) {
             Integer accountId = acc.getAccountId();
@@ -55,9 +55,7 @@ public class ListInvoiceController {
             Map<Integer, String> qrCodeMap = new HashMap<>();
 
             for (InvoiceEntity invoice : invoices) {
-
                 String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
                 String encryptedInvoiceId = encryptMD5(invoice.getInvoiceId().toString());
                 String qrCodeUrl = baseUrl + "/print/" + encryptedInvoiceId;
 

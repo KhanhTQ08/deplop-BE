@@ -2,6 +2,7 @@ package com.datn.demo.Controllers;
 
 import com.datn.demo.DTO.ShowtimeDetailsDTO;
 import com.datn.demo.Entities.*;
+import com.datn.demo.Repositories.MovieRepository;
 import com.datn.demo.Services.CinemaInformationService;
 import com.datn.demo.Services.MovieService;
 import com.datn.demo.Services.ReviewService;
@@ -27,14 +28,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping("/index")
 public class MovieController {
 	@Autowired
 	private MovieService movieService;
 
 	@Autowired
 	private ShowtimeService showtimeService;
-
+	@Autowired
+	private MovieRepository movieRepository;
 	@Autowired
 	private ReviewService reviewService;
 
@@ -44,8 +45,11 @@ public class MovieController {
 	@GetMapping("/search")
 	public String searchMovieByKeyword(@RequestParam("keyword") String keyword, Model model) {
 	    try {
-	        // Tìm kiếm phim theo từ khóa
-	        List<MovieEntity> movies = movieService.findMoviesByKeyword(keyword);
+	        // Tìm kiếm phim theo từ khóa và lọc chỉ những phim chưa bị xóa
+	        List<MovieEntity> movies = movieService.findMoviesByKeyword(keyword)
+	                                               .stream()
+	                                               .filter(movie -> movie.isDeleted()) // Lọc phim chưa bị xóa
+	                                               .collect(Collectors.toList());
 
 	        // Truyền từ khóa và danh sách phim vào model
 	        model.addAttribute("searchKeyword", keyword);
@@ -65,13 +69,17 @@ public class MovieController {
 	    }
 	}
 
+
 	@GetMapping("/api/searchMovies")
 	@ResponseBody
 	public List<MovieEntity> searchMoviesByKeyword(@RequestParam("query") String query) {
-	    return movieService.findMoviesByKeyword(query);
+	    // Tìm kiếm phim theo từ khóa và lọc chỉ những phim chưa bị xóa
+	    return movieService.findMoviesByKeyword(query)
+	                       .stream()
+	                       .filter(movie -> movie.isDeleted()) // Lọc phim chưa bị xóa
+	                       .collect(Collectors.toList());
 	}
 
-	// Hiển thị danh sách phim
 	@GetMapping
 	public String listMovies(Model model, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, HttpSession session) {
@@ -81,7 +89,7 @@ public class MovieController {
 
 		    // Kiểm tra nếu đã đăng nhập và là admin
 		    if (acc != null && acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-		        return "redirect:/printError"; // Trả về trang 404 nếu là admin
+		        return "redirect:/printErrorAdmin"; // Trả về trang 404 nếu là admin
 		    }
 		List<ShowtimeDetailsDTO> showTimes = showtimeService.getAllShowtime();
 
@@ -89,6 +97,13 @@ public class MovieController {
 		Map<Integer, ShowtimeDetailsDTO> uniqueShowtimesMap = new HashMap<>();
 
 		for (ShowtimeDetailsDTO showtime : showTimes) {
+			 MovieEntity movie = movieRepository.findById(showtime.getMovieId())
+			            .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
+
+			    if (!movie.isDeleted()) {
+			        // Nếu phim bị xóa mềm, bỏ qua
+			        continue;
+			    }
 			if (!uniqueShowtimesMap.containsKey(showtime.getMovieId())) {
 				uniqueShowtimesMap.put(showtime.getMovieId(), showtime);
 			} else {
@@ -191,14 +206,14 @@ public class MovieController {
 	@PostMapping("/add")
 	public String addMovie(@ModelAttribute MovieEntity movie) {
 		movieService.saveMovie(movie);
-		return "redirect:/index"; // Quay lại danh sách phim sau khi thêm
+		return "redirect:/"; // Quay lại danh sách phim sau khi thêm
 	}
 
 	// Xóa phim
 	@GetMapping("/delete/{id}")
 	public String deleteMovie(@PathVariable int id) {
 		movieService.deleteMovie(id);
-		return "redirect:/index"; // Quay lại danh sách phim sau khi xóa
+		return "redirect:/"; // Quay lại danh sách phim sau khi xóa
 	}
 
 	@GetMapping("/details/{id}")
@@ -208,7 +223,7 @@ public class MovieController {
 
 		    // Kiểm tra nếu đã đăng nhập và là admin
 		    if (acc != null && acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-		        return "redirect:/printError"; // Trả về trang 404 nếu là admin
+		        return "redirect:/printErrorAdmin"; // Trả về trang 404 nếu là admin
 		    }
 		if (movieOpt.isPresent()) {
 			// Lấy danh sách ca chiếu theo movieId
@@ -232,7 +247,7 @@ public class MovieController {
 
 			     // Tạo Map chỉ chứa các ngày dự kiến đặt vé > hôm nay
 			     Map<LocalDate, List<String>> bookingDatesWithCinemas = showtimes.stream()
-			         .filter(showtime -> showtime.getBookingStartDate() != null)
+			    		    .filter(showtime -> showtime.getBookingStartDate() != null && showtime.isDeleted()) // Chỉ lấy các suất chiếu chưa bị xóa mềm (isDeleted = true)
 			         .collect(Collectors.groupingBy(
 			             ShowtimeEntity::getBookingStartDate, // Nhóm theo ngày mở bán
 			             Collectors.mapping(
@@ -265,6 +280,13 @@ public class MovieController {
 			Map<Integer, ShowtimeDetailsDTO> uniqueShowtimesMap = new HashMap<>();
 
 			for (ShowtimeDetailsDTO showtime : showTimes) {
+				 MovieEntity movie = movieRepository.findById(showtime.getMovieId())
+				            .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
+
+				    if (!movie.isDeleted()) {
+				        // Nếu phim bị xóa mềm, bỏ qua
+				        continue;
+				    }
 				if (!uniqueShowtimesMap.containsKey(showtime.getMovieId())) {
 					uniqueShowtimesMap.put(showtime.getMovieId(), showtime);
 				} else {
@@ -294,7 +316,7 @@ public class MovieController {
 			model.addAttribute("cinemaAll", cinemaAll);
 			return "main/user/chi_tiet_phim";
 		} else {
-			return "redirect:/index";
+			return "redirect:/";
 		}
 	}
 	@GetMapping("/{cinemaId}/next7days")
@@ -356,6 +378,7 @@ public class MovieController {
 	    List<ShowtimeEntity> showtimes = showtimeService.getShowtimesByCinemaAndDate(cinemaId, showDate);
 	    return showtimes.stream()
 	            .map(ShowtimeEntity::getMovie)
+	            .filter(movie -> movie.isDeleted()) // Lọc các phim chưa bị xóa mềm (isDeleted == true)
 	            .distinct()
 	            .collect(Collectors.toList());
 	}
@@ -381,6 +404,11 @@ public class MovieController {
 	    // Lọc suất chiếu hợp lệ dựa trên thời gian hiện tại và thời gian đặt vé
 	    showtimes = showtimes.stream()
 	        .filter(showtime -> {
+	        	if (showtime.isDeleted() == false) {
+	        	    return false; // Nếu suất chiếu đã bị xóa mềm (isDeleted = false), ẩn nó đi
+	        	}
+
+
 	            // Kiểm tra nếu ngày bắt đầu đặt vé có tồn tại và nếu thời gian hiện tại chưa qua ngày bắt đầu đặt vé
 	            LocalDate bookingStartDateForShowtime = showtime.getBookingStartDate();
 	            if (bookingStartDateForShowtime != null && showDate.isEqual(bookingStartDateForShowtime) && currentTime.toLocalDate().isBefore(bookingStartDateForShowtime)) {
@@ -418,6 +446,7 @@ public class MovieController {
 	        })
 	        .collect(Collectors.toList());
 	}
+
 
 	public String formatText(String text) {
 		// Thêm thẻ <br> sau mỗi dấu chấm

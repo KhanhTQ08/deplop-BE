@@ -113,7 +113,7 @@
 									<path style="fill:#F14336;" d="M419.404,58.936l-82.933,67.896c-23.335-14.586-50.919-23.012-80.471-23.012
                                       c-66.729,0-123.429,42.957-143.965,102.724l-83.397-68.276h-0.014C71.23,56.123,157.06,0,256,0
                                       C318.115,0,375.068,22.126,419.404,58.936z"></path>
-								</svg> Google
+								</svg> Đăng nhập bằng Google
 							</a>
 						</div>
 					</form>
@@ -125,7 +125,17 @@
 	<!-- FOOTER -->
 	<div style="margin-top:-48px"></div>
 	<div th:replace="~{userViews/footer:: footer}"></div>
+<style>
+  .btn.google {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  }
 
+  .btn.google:hover {
+    border-color: #2b6cb0; /* Màu viền khi hover */
+    background-color: #e8f0fe; /* Màu nền khi hover */
+    box-shadow: 0px 4px 15px rgba(66, 133, 244, 0.3); /* Bóng đổ */
+  }
+</style>
 	<script src="/slider_1-main/js/password.js"></script>
 	<script src="/slider_1-main/js/help.js"></script>
 	<script src="/slider_1-main/js/search.js"></script>
@@ -163,7 +173,7 @@
 		<script>
 			Toast.fire({
 				icon: "error",
-				text: /*[[${errorss}]]*/ 'Tài khoản không tồn tại hoặc đã bị khóa!'  <!-- Thay vì text động, bạn có thể để text tĩnh như thế này nếu không có biến -->
+				text: /*[[${errorss}]]*/ 'Tài khoản bạn đã bị vô hiệu hóa!'  <!-- Thay vì text động, bạn có thể để text tĩnh như thế này nếu không có biến -->
 			});
 		</script>
 	</th:block>
