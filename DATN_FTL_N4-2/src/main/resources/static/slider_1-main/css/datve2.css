@@ -41,20 +41,6 @@
     outline: none;
 }
 
-.seat2 {
-    width: 50px;
-    height: 50px;
-    background-color: #00c40a;;
-    border-radius: 5px;
-    text-align: center;
-    line-height: 50px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border: none;
-    outline: none;
-}
-
 .seat-small {
     width: 20px;
     height: 20px;
@@ -67,7 +53,10 @@
     background-color: #00c40a;
     color: #fff;
 }
-
+.seat.selected2 {
+    background-color: #00c40a;
+    color: #fff;
+}
 .seat.vip {
     background-color: #e00000;
 }
@@ -101,7 +90,7 @@
 }
 
 .seat-booked {
-    background-color: gray;
+    background-color: #bbbbbb; /* Màu hover khi disabled */
     color: white;
     cursor: not-allowed;
 }
@@ -381,4 +370,73 @@
     background-color: rgba(255, 255, 255, 0.1);
     background-color: #fff;
     color: black;
+}
+
+.seat {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/*.seat.selected {*/
+/*    background-color: #4caf50; !* Màu xanh lá cho ghế đã chọn *!*/
+/*    color: white;*/
+/*}*/
+
+/* Ghế đã chọn */
+.seat.selected {
+    background-color: #4caf50; /* Màu xanh lá */
+    color: white;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.5); /* Hiệu ứng phát sáng */
+    transform: scale(1.05); /* Phóng to nhẹ */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+}
+
+/* Ghế đang bị nhấn */
+.seat.selected:active {
+    background-color: #388e3c; /* Màu xanh đậm hơn */
+    transform: scale(0.95); /* Nhỏ lại khi nhấn */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Giảm độ sáng khi nhấn */
+}
+
+/* Hiệu ứng khi bỏ chọn ghế */
+.seat.removing {
+    animation: deselectEffect 0.3s ease;
+}
+
+/* Keyframes cho hiệu ứng rung nhẹ khi hủy chọn */
+@keyframes deselectEffect {
+    0% { transform: scale(1); }
+    25% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+    75% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+
+/* Ghế đã được chọn bởi tab khác */
+.seat.disabled {
+    background-color: #bbbbbb; /* Màu hover khi disabled */
+    cursor: default;      /* Hiển thị chuột dạng "x" */
+    pointer-events: none;     /* Vô hiệu hóa tất cả các sự kiện chuột */
+    opacity: 0.4;             /* Làm mờ ghế */
+    color: #fff;
+}
+
+.seat.disabled:hover {
+    background-color: #bbbbbb; /* Màu hover khi disabled */
+    cursor: not-allowed;      /* Hiển thị chuột dạng "x" */
+}
+
+
+.seat.seat-booked {
+    color: white;
+    pointer-events: none; /* Ngừng sự kiện click trên ghế đã bị khóa */
+    opacity: 0.4; /* Làm mờ ghế để dễ dàng nhận diện */
+    background-color: #bbbbbb; /* Màu hover khi disabled */
+    cursor: not-allowed; /* Hiển thị chuột dạng "x" */
+}
+.seat.locked {
+    background-color: #b5c632; /* Màu đỏ hoặc bất kỳ màu nào bạn muốn */
+    cursor: not-allowed;
+    opacity: 0.6; /* Tùy chọn: Làm ghế mờ đi để chỉ ra rằng nó bị khóa */
 }

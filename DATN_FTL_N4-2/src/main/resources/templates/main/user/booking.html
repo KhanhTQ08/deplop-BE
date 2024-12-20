@@ -8,6 +8,7 @@
     <link rel="icon" href="/slider_1-main/image/ok.png" type="image/png">
 
     <link rel="stylesheet" href="/slider_1-main/css/style.css">
+
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -77,24 +78,23 @@
                                         th:classappend="${#lists.contains(bookedSeatNames, seat.seatId.toString()) ? 'seat-booked' : (seat.status.toLowerCase() == 'vip' ? 'seat-vip' : '')}"
                                         th:disabled="${#lists.contains(bookedSeatNames, seat.seatId.toString()) ? 'true' : 'false'}"
                                         th:value="${seat.seatPrice}"
-                                        th:attr="data-seat-id=${seat.seatId}, data-status=${#lists.contains(bookedSeatNames, seat.seatId.toString()) ? 'booked' : 'available'}"
+                                        th:attr="data-seat-id=${seat.seatId}"
                                         onclick="selectSeat(this)">
                                 </button>
                             </div>
+
                         </div>
                     </div>
                     <div class="col-lg-1"></div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12" style="display: flex; align-items: center;">
-                        <!-- Hiển thị ghế -->
                         <div id="selectedSeatsDisplay" style="color: #fff;width: 100%;" class="text-center">
                             Tất cả ghế được chọn!
                         </div>
-                        <!-- Nút xóa -->
                         <div>
-                            <button class="customRemoveAllSeat"
-                                    onclick="clearAllSeats()"><i class="bi bi-x-lg"></i>
+                            <button id="cancelAllSeatsButton" class="customRemoveAllSeat">
+                                <i class="bi bi-x-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -122,31 +122,50 @@
 
                 </ul>
 
-
                 <h4 class="mt-4 datVeFont">Chú thích</h4>
                 <div class="legend-container">
                     <div class="d-flex align-items-center">
-                        <span class="seat seat-small"></span>Ghế thường
+                        <span class="seat regular seat-small" th:data-price="${regularPrice}"></span>
+                        Giá ghế thường - <span id="regularPrice" class="mx-1"></span>
                     </div>
                     <div class="d-flex align-items-center">
-                        <span class="seat vip seat-small"></span> Ghế VIP
+                        <span class="seat vip seat-small" th:data-price="${vipPrice}"></span>
+                        Giá ghế VIP - <span id="vipPrice" class="mx-1"></span>
                     </div>
+
+                    <script>
+                        // Lấy giá trị từ thuộc tính data-price
+                        const regularPrice = parseInt(document.querySelector('.seat.regular').getAttribute('data-price'));
+                        const vipPrice = parseInt(document.querySelector('.seat.vip').getAttribute('data-price'));
+
+                        // Sử dụng Intl.NumberFormat để định dạng tiền tệ với đơn vị "VND"
+                        const formatCurrency = (amount) => {
+                            const formattedAmount = new Intl.NumberFormat('vi-VN').format(amount); // Định dạng số
+                            return formattedAmount + ' VND'; // Thêm "VND" vào cuối giá trị
+                        };
+
+                        // Đưa giá đã được định dạng lên thẻ span tương ứng
+                        document.getElementById('regularPrice').textContent = formatCurrency(regularPrice);
+                        document.getElementById('vipPrice').textContent = formatCurrency(vipPrice);
+                    </script>
+
+
                     <div class="d-flex align-items-center">
                         <span class="seat disabled seat-small"></span> Đã đặt
                     </div>
                     <div class="d-flex align-items-center">
-                        <span class="seat2 selected2 seat-small "></span> Ghế bạn đang chọn
+                        <span class="seat selected2 seat-small"></span> Ghế bạn đang chọn
                     </div>
                 </div>
 
                 <div class="datveSpanVND">
-                    <h4 class="mt-3 datVeFont">Tổng số tiền:</h4>
+                    <h4 class="mt-3 datVeFont"></h4>
                     <div id="totalAmount">
                         0<span class="spanVND"> VND</span>
                     </div>
                 </div>
                 <button class="mt-3 btnDatVe-seat" onclick="confirmBooking()">Đặt
-                    vé
+                        vé
                 </button>
             </div>
         </div>
@@ -166,7 +185,8 @@
                 <div class="draggable-content" th:each="product : ${products}">
                     <div class="row mb-4">
                         <div class="col-md-5 mb-3 mb-md-0">
-                            <img th:src="${product.productImage}" class="img-fluid rounded" alt="Hình ảnh Combo Bắp Nước">
+                            <img th:src="${product.productImage}" class="img-fluid rounded"
+                                 alt="Hình ảnh Combo Bắp Nước">
                         </div>
                         <div class="col-md-7">
                             <h5 class="mb-3 mt-3 customProduct_title" th:text="${product.productName}"></h5>
@@ -185,12 +205,8 @@
                                     priceElements.forEach(priceElement => {
                                         const priceValue = priceElement.textContent.trim();
 
-                                        // Log giá trị gốc để kiểm tra xem có vấn đề gì không
-                                        console.log('Giá trị gốc:', priceValue);
-
                                         // Loại bỏ ký tự không phải số, ký hiệu tiền tệ và dấu cách
                                         const cleanedValue = priceValue.replace(/[^\d,.-]/g, '').replace(",", ".");
-                                        console.log('Giá trị đã làm sạch:', cleanedValue);
 
                                         // Kiểm tra nếu giá trị đã làm sạch là số hợp lệ
                                         if (cleanedValue && !isNaN(cleanedValue)) {
@@ -198,8 +214,6 @@
                                             const numericPrice = parseFloat(cleanedValue);
 
                                             const numericPriceUp = parseFloat(cleanedValue);
-
-                                            console.log(numericPriceUp)
 
                                             // Định dạng giá trị thành chuỗi với dấu chấm cách 3 số và thêm "VND"
                                             const formattedPrice =numericPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
@@ -262,36 +276,26 @@
             $('#comboTotalAmount1').text('0 VND');
         });
     });
-
-
-
 </script>
 <!-- modal -->
 <div th:replace="userViews/footer:: footer"></div>
 
 <script src="/slider_1-main/js/datve2.js"></script>
 <script src="/slider_1-main/js/help.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-
-
-<!-- Bootstrap JS -->
+<!-- Bootstrap Bundle (bao gồm cả Popper.js) -->
 <script
-        src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Bootstrap JS -->
-<script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
-        integrity="sha384-eMNrdBAl6Zn2oWrfmQpCdL6yOI/m8WxJ6vSPOhFuU0yl14p7mtUL6cI6K7wrKTm"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-5CmFjo1L6U14pT30F5gtuBz5HpUQxYjqTx1B4wRIPbDY6N0YcSeYFyj0u2iHtBmu"
         crossorigin="anonymous">
 </script>
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
-        integrity="sha384-cn7l7gDp0eydeubwZ3IStQpkoY2TXdh5Zj2u6pHf5r8P5eV9z0v6l2sqS5Zt1y5T"
-        crossorigin="anonymous">
-</script>
+
+<!-- SockJS và Stomp.js -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 </body>
 
 </html>

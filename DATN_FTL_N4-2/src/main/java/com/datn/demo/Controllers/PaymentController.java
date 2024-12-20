@@ -62,28 +62,31 @@ public class PaymentController {
         // Lấy danh sách ghế đã chọn từ session
         List<SeatInfo> selectedSeats = (List<SeatInfo>) session.getAttribute("selectedSeats");
 
-        if (selectedSeats != null && !selectedSeats.isEmpty()) {
-            System.out.println("Danh sách ghế đã chọn:");
-            for (SeatInfo seat : selectedSeats) {
-                System.out.println("Tên ghế: " + seat.getSeatName() + "ID ghế: " + seat.getSeatId());
-
-            }
-        } else {
-            System.out.println("Không có ghế nào được chọn.");
-        }
-
-
         // Lấy buổi chiếu từ session
         Integer showtimeId = (Integer) session.getAttribute("showtimeId");
-        System.out.println("showtimeId: " + showtimeId);
 
-        // Kiểm tra nếu giá trị tồn tại
-        if (totalPaymentInt == null) {
+        // Kiểm tra danh sách ghế đã chọn
+        if (selectedSeats == null || selectedSeats.isEmpty()) {
             model.addAttribute("Message", "Lỗi");
-            model.addAttribute("errorContent", "Không tìm thấy tài khoản thanh toán, vui lòng thử lại sau!!");
-            return "main/user/404"; // Trả về trang lỗi nếu không tìm thấy
+            model.addAttribute("errorContent", "Bạn chưa chọn ghế nào!");
+            return "main/user/404"; // Trả về trang lỗi nếu không có ghế được chọn
         }
 
+        // Lấy danh sách vé đã tồn tại cho suất chiếu
+        List<TicketEntity> existingTickets = ticketService.getTicketsByShowtimeId(showtimeId);
+
+        // Kiểm tra nếu ghế đã được đặt
+        for (SeatInfo selectedSeat : selectedSeats) {
+            for (TicketEntity ticket : existingTickets) {
+                if (selectedSeat.getSeatId() == (ticket.getSeatId())) {
+                    model.addAttribute("Message", "Lỗi");
+                    model.addAttribute("errorContent", "Có ghế đã được đặt trước! Vui lòng chọn ghế khác.");
+                    return "main/user/404"; // Trả về trang lỗi
+                }
+            }
+        }
+
+        // Lấy tài khoản người dùng từ session
         AccountEntity acc = (AccountEntity) session.getAttribute("acc");
 
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
@@ -93,9 +96,12 @@ public class PaymentController {
                 .matcher(Normalizer.normalize(acc.getFullName(), Normalizer.Form.NFD))
                 .replaceAll("");
 
+        // Tạo liên kết VNPay
         String vnpayUrl = vnPayService.createOrder(request, totalPaymentInt, fullNameWithoutAccent, baseUrl);
+
         return "redirect:" + vnpayUrl;
     }
+
 
     @GetMapping("/vnpay-payment-return")
     public String paymentCompleted(HttpServletRequest request, HttpSession session, Model model) {
@@ -169,7 +175,7 @@ public class PaymentController {
                 // Tạo ticket cho các ghế đã chọn
                 createTickets(session, invoice);
 
-                return "ordersuccess";
+                return "orderSuccess";
             } else {
                 model.addAttribute("Message", "Lỗi");
                 model.addAttribute("errorContent", "Không tìm thấy giá trị thanh toán, vui lòng thử lại sau!!");
@@ -179,7 +185,7 @@ public class PaymentController {
 
         } else {
             // Nếu thanh toán thất bại
-            return "orderfail";
+            return "orderFail";
         }
     }
 

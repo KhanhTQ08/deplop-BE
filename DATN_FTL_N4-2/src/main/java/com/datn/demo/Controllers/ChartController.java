@@ -4,6 +4,8 @@ import java.awt.*;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Locale;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Font;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +37,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.datn.demo.DTO.CinemaStatisticDTO;
@@ -50,9 +54,12 @@ public class ChartController {
 
     @Autowired
     private StatisticService statisticService;
+
     @GetMapping("/cinemas/export")
-    public String exportCinemaRevenueToExcel(RedirectAttributes redirectAttributes) {
-        String filePath = "D:\\DoanhThuRap.xlsx";
+    public ResponseEntity<Resource> exportCinemaRevenueToExcel() {
+        String fileName = "DoanhThuRap.xlsx";
+        Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
+        Path filePath = tempDir.resolve(fileName);
 
         try (Workbook workbook = new XSSFWorkbook()) {
             // Tạo sheet
@@ -104,33 +111,42 @@ public class ChartController {
             // Thêm tổng số vé
             Row ticketRow = sheet.createRow(rowIdx + 1);
             ticketRow.createCell(2).setCellValue("Tổng Số Vé Bán:");
-            ticketRow.createCell(3).setCellValue(totalTickets);
+            Cell totalTicketsCell = ticketRow.createCell(3);
+            totalTicketsCell.setCellValue(totalTickets);
 
-            // Ghi file vào ổ D
-            try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            // Áp dụng style cho dòng tổng cộng
+            CellStyle boldStyle = workbook.createCellStyle();
+            Font boldFont = workbook.createFont();
+            boldFont.setBold(true);
+            boldStyle.setFont(boldFont);
+
+            for (int col = 2; col <= 3; col++) {
+                totalRow.getCell(col).setCellStyle(boldStyle);
+                ticketRow.getCell(col).setCellStyle(boldStyle);
+            }
+
+            // Ghi file vào thư mục tạm
+            try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
                 workbook.write(fos);
             }
 
-            // Kiểm tra xem file có tồn tại không
-            File file = new File(filePath);
-            if (file.exists()) {
-                redirectAttributes.addFlashAttribute("successMessage", "File đã được lưu tại: " + filePath);
-                redirectAttributes.addFlashAttribute("filePath", filePath); // Truyền đường dẫn file cho frontend
-            } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "File không tồn tại sau khi xuất.");
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi xuất file Excel: " + e.getMessage());
-            return "redirect:/charts/cinemas"; // Quay lại trang rạp
-        }
+            // Trả file cho client
+            Resource fileResource = new UrlResource(filePath.toUri());
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(fileResource);
 
-        return "redirect:/charts/cinemas"; // Quay lại trang rạp
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi xuất file Excel: " + e.getMessage(), e);
+        }
     }
 
-
     @GetMapping("/movies/export")
-    public String exportMoviesToExcel(RedirectAttributes redirectAttributes) {
-        String filePath = "D:\\DoanhThuPhim.xlsx"; // Path to save the Excel file
+    public ResponseEntity<Resource> exportMoviesToExcel() {
+        String fileName = "DoanhThuPhim.xlsx";
+        Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
+        Path filePath = tempDir.resolve(fileName);
 
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Doanh Thu Phim");
@@ -183,8 +199,10 @@ public class ChartController {
             Row totalRow = sheet.createRow(rowCount++);
             totalRow.createCell(0).setCellValue("Tổng Cộng:");
             totalRow.createCell(2).setCellValue(totalTickets); // Total tickets
+
+            // Set cell value for total revenue with currency format
             Cell totalRevenueCell = totalRow.createCell(3);
-            totalRevenueCell.setCellValue(totalRevenue.doubleValue()); // Total revenue
+            totalRevenueCell.setCellValue(totalRevenue.doubleValue());
             totalRevenueCell.setCellStyle(currencyStyle); // Apply currency style for total revenue
 
             // Style totals row
@@ -192,6 +210,7 @@ public class ChartController {
             Font totalFont = workbook.createFont();
             totalFont.setBold(true);
             totalStyle.setFont(totalFont);
+
             for (int i = 0; i <= 3; i++) {
                 Cell cell = totalRow.getCell(i);
                 if (cell == null) {
@@ -205,21 +224,21 @@ public class ChartController {
                 sheet.autoSizeColumn(i);
             }
 
-            // Save Excel file
-            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+            // Save Excel file to temporary directory
+            try (FileOutputStream fileOut = new FileOutputStream(filePath.toFile())) {
                 workbook.write(fileOut);
             }
 
-            // Add success message
-            redirectAttributes.addFlashAttribute("statusMessage", "File đã được lưu tại: " + filePath);
-            redirectAttributes.addFlashAttribute("filePath", filePath);
+            // Return the file as a downloadable resource
+            Resource fileResource = new UrlResource(filePath.toUri());
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(fileResource);
 
         } catch (IOException e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("statusMessage", "Lỗi khi lưu file Excel!");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi khi xuất file Excel: " + e.getMessage(), e);
         }
-
-        return "redirect:/charts/movies";
     }
 
     @GetMapping("/files/open")
@@ -351,7 +370,7 @@ public class ChartController {
         model.addAttribute("monthlyRevenueFormatted", formattedMonthlyRevenue);
         model.addAttribute("currentDate", LocalDate.now());
 
-        return "admin/charts/indexChart";
+        return "admin/charts/indexchart";
     }
     public String formatCurrency(BigDecimal amount) {
         if (amount == null) return "0 VNĐ";

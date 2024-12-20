@@ -10,6 +10,7 @@ import com.datn.demo.Services.TicketService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,15 +37,17 @@ public class ShowtimeController {
     @Autowired
     private TicketService ticketService;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/booking/{showtimeId}")
     public String bookMovieTicket(@PathVariable("showtimeId") int showtimeId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-    	 AccountEntity acc = (AccountEntity) session.getAttribute("acc");
+        AccountEntity acc = (AccountEntity) session.getAttribute("acc");
 
-		    // Kiểm tra nếu đã đăng nhập và là admin
-    	 if (acc != null && acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
-		        return "redirect:/printErrorAdmin"; // Trả về trang 404 nếu là admin
-		    }
+        // Kiểm tra nếu đã đăng nhập và là admin
+        if (acc != null && acc.getRole().getRoleName().equalsIgnoreCase("admin")) {
+            return "redirect:/printError"; // Trả về trang 404 nếu là admin
+        }
         Optional<ShowtimeEntity> showtimeOpt = showtimeService.getShowtimeById(showtimeId);
 
         if (showtimeOpt.isPresent()) {
@@ -91,8 +94,25 @@ public class ShowtimeController {
             // Lấy danh sách ghế từ phòng chiếu
             List<SeatEntity> seats = room.getSeats();
 
+            // Phân loại giá ghế VIP và thường
+            double vipPrice = seats.stream()
+                    .filter(seat -> seat.getStatus().equalsIgnoreCase("VIP"))
+                    .mapToDouble(SeatEntity::getSeatPrice)
+                    .findFirst()
+                    .orElse(0.0); // Lấy giá ghế VIP (giả sử tất cả ghế VIP có cùng giá)
+
+            double regularPrice = seats.stream()
+                    .filter(seat -> seat.getStatus().equalsIgnoreCase("Thường"))
+                    .mapToDouble(SeatEntity::getSeatPrice)
+                    .findFirst()
+                    .orElse(0.0); // Lấy giá ghế thường
+
+            model.addAttribute("vipPrice", vipPrice);
+            model.addAttribute("regularPrice", regularPrice);
+
             // Lấy danh sách vé theo showtimeId để kiểm tra trạng thái ghế
             List<TicketEntity> tickets = ticketService.getTicketsByShowtimeId(showtimeId);
+
             model.addAttribute("seats", seats);
             model.addAttribute("tickets", tickets);
 
@@ -100,11 +120,13 @@ public class ShowtimeController {
             List<String> bookedSeatNames = tickets.stream()
                     .map(ticket -> ticket.getSeatId().toString()) // Chuyển seatId thành chuỗi, nếu seatName là seatId
                     .collect(Collectors.toList());
+
             model.addAttribute("bookedSeatNames", bookedSeatNames);
 
             // Thêm ShowtimeDetailsDTO vào model
             model.addAttribute("showtimes", showtimeDetails);
-
+            // Truyền showtimeId vào model
+            model.addAttribute("showtimeId", showtimeId);
             // Trả về trang đặt vé
             return "main/user/booking";
         } else {

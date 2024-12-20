@@ -324,8 +324,7 @@ button,
 						<div th:if="${successMessage != null}" class="alert alert-success">
 							<span th:text="${successMessage}"></span>
 							<!-- Nút mở file khi thành công -->
-							<a th:href="@{'/charts/files/open?filePath=' + ${filePath}}"
-							   class="btn btn-primary mt-2" target="_blank">
+							<a th:href="@{'/charts/files/open?filePath=' + ${filePath}}" class="btn btn-primary mt-2" target="_blank">
 								<i class="fas fa-folder-open"></i> Mở File
 							</a>
 						</div>
